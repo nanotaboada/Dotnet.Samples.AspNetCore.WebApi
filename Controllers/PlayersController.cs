@@ -21,10 +21,12 @@ public class PlayersController : ControllerBase
 {
 
     private readonly IPlayerService _playerService;
+    private readonly ILogger<PlayersController> _logger;
 
-    public PlayersController(IPlayerService playerService)
+    public PlayersController(IPlayerService playerService, ILogger<PlayersController> logger)
     {
         _playerService = playerService;
+        _logger = logger;
     }
 
     /*

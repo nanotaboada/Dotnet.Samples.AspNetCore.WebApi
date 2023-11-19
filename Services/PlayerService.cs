@@ -7,10 +7,12 @@ namespace Dotnet.AspNetCore.Samples.WebApi.Services;
 public class PlayerService : IPlayerService
 {
     private readonly PlayerContext _playerContext;
+    private readonly ILogger<PlayerService> _logger;
 
-    public PlayerService(PlayerContext playerContext)
+    public PlayerService(PlayerContext playerContext, ILogger<PlayerService> logger)
     {
         _playerContext = playerContext;
+        _logger = logger;
     }
 
     public async Task Create(Player player)
