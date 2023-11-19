@@ -1,64 +1,75 @@
+using Microsoft.AspNetCore.Mvc;
+using Dotnet.AspNetCore.Samples.WebApi.Models;
+using Dotnet.AspNetCore.Samples.WebApi.Services;
+
 namespace Dotnet.AspNetCore.Samples.WebApi.Controllers;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Dotnet.AspNetCore.Samples.WebApi.Models;
-
 /*
-    Scaffolded with dotnet-aspnet-codegenerator
-    https://learn.microsoft.com/en-us/aspnet/core/fundamentals/tools/dotnet-aspnet-codegenerator?view=aspnetcore-7.0
+---------------------------------------------------------------------------------------------------
+Scaffolded with dotnet-aspnet-codegenerator
+https://learn.microsoft.com/en-us/aspnet/core/fundamentals/tools/dotnet-aspnet-codegenerator
 
-    dotnet aspnet-codegenerator controller -name PlayersController \
-    -async -api --model Player --dataContext PlayerContext \ 
-    -outDir Controllers
+dotnet aspnet-codegenerator controller -name PlayersController \
+-async -api --model Player --dataContext PlayerContext \ 
+-outDir Controllers
+---------------------------------------------------------------------------------------------------
 */
+
 [Route("api/[controller]")]
 [ApiController]
 public class PlayersController : ControllerBase
 {
-    private readonly PlayerContext _context;
 
-    public PlayersController(PlayerContext context)
+    private readonly IPlayerService _playerService;
+
+    public PlayersController(IPlayerService playerService)
     {
-        _context = context;
+        _playerService = playerService;
     }
 
-    // GET: api/Players
+    /*
+    -----------------------------------------------------------------------------------------------
+    HTTP GET
+    -----------------------------------------------------------------------------------------------
+    */
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
     {
-        if (_context.Players == null)
+        var players = await _playerService.Retrieve();
+        
+        if (players == null || players.Count == 0)
         {
             return NotFound();
         }
-        return await _context.Players.ToListAsync();
+        else
+        {
+            return players;
+        }
     }
 
-    // GET: api/Players/5
     [HttpGet("{id}")]
     public async Task<ActionResult<Player>> GetPlayer(long id)
     {
-        if (_context.Players == null)
-        {
-            return NotFound();
-        }
-        var player = await _context.Players.FindAsync(id);
+        var player = await _playerService.RetrieveById(id);
 
         if (player == null)
         {
             return NotFound();
         }
-
-        return player;
+        else
+        {
+            return player;
+        }
     }
 
-    // PUT: api/Players/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /*
+    -----------------------------------------------------------------------------------------------
+    HTTP PUT
+    To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    -----------------------------------------------------------------------------------------------
+    */
+
     [HttpPut("{id}")]
     public async Task<IActionResult> PutPlayer(long id, Player player)
     {
@@ -66,66 +77,52 @@ public class PlayersController : ControllerBase
         {
             return BadRequest();
         }
-
-        _context.Entry(player).State = EntityState.Modified;
-
-        try
+        else if (await _playerService.RetrieveById(id) == null)
         {
-            await _context.SaveChangesAsync();
+            return NotFound();
         }
-        catch (DbUpdateConcurrencyException)
+        else
         {
-            if (!PlayerExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
+            await _playerService.Update(id, player);
 
-        return NoContent();
+            return NoContent();
+        }
     }
 
-    // POST: api/Players
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /*
+    -----------------------------------------------------------------------------------------------
+    HTTP POST
+    To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    -----------------------------------------------------------------------------------------------
+    */
+
     [HttpPost]
     public async Task<ActionResult<Player>> PostPlayer(Player player)
     {
-        if (_context.Players == null)
-        {
-            return Problem("Entity set 'PlayerContext.Players'  is null.");
-        }
-        _context.Players.Add(player);
-        await _context.SaveChangesAsync();
+        await _playerService.Create(player);
 
         return CreatedAtAction(nameof(GetPlayer), new { id = player.Id }, player);
     }
 
-    // DELETE: api/Players/5
+    /*
+    -----------------------------------------------------------------------------------------------
+    HTTP DELETE
+    -----------------------------------------------------------------------------------------------
+    */
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePlayer(long id)
     {
-        if (_context.Players == null)
+        if (await _playerService.RetrieveById(id) == null)
         {
             return NotFound();
         }
-        var player = await _context.Players.FindAsync(id);
-        if (player == null)
+        else
         {
-            return NotFound();
+            await _playerService.Delete(id);
+
+            return NoContent();
         }
-
-        _context.Players.Remove(player);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    private bool PlayerExists(long id)
-    {
-        return (_context.Players?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 }
 

@@ -1,6 +1,7 @@
-﻿namespace Dotnet.AspNetCore.Samples.WebApi.Models;
-
+﻿
 using Microsoft.EntityFrameworkCore;
+
+namespace Dotnet.AspNetCore.Samples.WebApi.Models;
 
 public class PlayerContext : DbContext
 {
