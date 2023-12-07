@@ -58,8 +58,11 @@ public class PlayerService : IPlayerService
     {
         var player = await _playerContext.Players.FindAsync(id);
 
-        _playerContext.Players.Remove(player);
-        await _playerContext.SaveChangesAsync();
+        if (player != null)
+        {
+            _playerContext.Players.Remove(player);
+            await _playerContext.SaveChangesAsync();
+        }
     }
 
     private bool PlayerExists(long id)
