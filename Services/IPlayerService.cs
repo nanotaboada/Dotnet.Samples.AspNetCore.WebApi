@@ -11,7 +11,7 @@ public interface IPlayerService
 
     public ValueTask<Player?> RetrieveById(long id);
 
-    public Task Update(long id, Player player);
+    public Task Update(Player player);
 
     public Task Delete(long id);
 }
