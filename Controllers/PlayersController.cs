@@ -85,7 +85,7 @@ public class PlayersController : ControllerBase
         }
         else
         {
-            await _playerService.Update(id, player);
+            await _playerService.Update(player);
 
             return NoContent();
         }

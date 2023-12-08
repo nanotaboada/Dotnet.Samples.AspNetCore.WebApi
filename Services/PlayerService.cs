@@ -1,5 +1,4 @@
-﻿
-using Dotnet.AspNetCore.Samples.WebApi.Models;
+﻿using Dotnet.AspNetCore.Samples.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -19,6 +18,11 @@ public class PlayerService : IPlayerService
         _memoryCache = memoryCache;
     }
 
+    /*
+    -----------------------------------------------------------------------------------------------
+    Create
+    -----------------------------------------------------------------------------------------------
+    */
     public async Task Create(Player player)
     {
         _playerContext.Players.Add(player);
@@ -26,6 +30,11 @@ public class PlayerService : IPlayerService
         _memoryCache.Remove(MemoryCacheKey_Retrieve);
     }
 
+    /*
+    -----------------------------------------------------------------------------------------------
+    Retrieve
+    -----------------------------------------------------------------------------------------------
+    */
     public Task<List<Player>> Retrieve()
     {
         if (_memoryCache.TryGetValue(MemoryCacheKey_Retrieve, out Task<List<Player>>? players)
@@ -53,7 +62,12 @@ public class PlayerService : IPlayerService
         return _playerContext.Players.FindAsync(id);
     }
 
-    public async Task Update(long id, Player player)
+    /*
+    -----------------------------------------------------------------------------------------------
+    Update
+    -----------------------------------------------------------------------------------------------
+    */
+    public async Task Update(Player player)
     {
         _playerContext.Entry(player).State = EntityState.Modified;
 
@@ -77,6 +91,11 @@ public class PlayerService : IPlayerService
         }
     }
 
+    /*
+    -----------------------------------------------------------------------------------------------
+    Delete
+    -----------------------------------------------------------------------------------------------
+    */
     public async Task Delete(long id)
     {
         var player = await _playerContext.Players.FindAsync(id);
