@@ -26,6 +26,7 @@ builder.Services.AddDbContext<PlayerContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
