@@ -5,7 +5,7 @@ namespace Dotnet.AspNetCore.Samples.WebApi.Data;
 
 public static class PlayerDataBuilder
 {
-    internal static Player[] SeedWithStarting11()
+    public static Player[] SeedWithStarting11()
     {
         var players = new List<Player>();
 
