@@ -19,7 +19,6 @@ dotnet aspnet-codegenerator controller -name PlayersController \
 [ApiController]
 public class PlayersController : ControllerBase
 {
-
     private readonly IPlayerService _playerService;
     private readonly ILogger<PlayersController> _logger;
 
@@ -127,4 +126,3 @@ public class PlayersController : ControllerBase
         }
     }
 }
-
