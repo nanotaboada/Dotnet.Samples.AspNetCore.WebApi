@@ -62,13 +62,13 @@ public class PlayersController : ControllerBase
     {
         var players = await _playerService.Retrieve();
         
-        if (players == null || players.Count == 0)
+        if (players.Any())
         {
-            return NotFound();
+            return players;
         }
         else
         {
-            return players;
+            return NotFound();
         }
     }
 
@@ -77,13 +77,13 @@ public class PlayersController : ControllerBase
     {
         var player = await _playerService.RetrieveById(id);
 
-        if (player == null)
+        if (player != null)
         {
-            return NotFound();
+            return player;
         }
         else
         {
-            return player;
+            return NotFound();
         }
     }
 
