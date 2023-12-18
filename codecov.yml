@@ -1,0 +1,5 @@
+ignore:
+  - "Dotnet.AspNetCore.Samples.WebApi/Program.cs"
+  - "Dotnet.AspNetCore.Samples.WebApi/Data"
+  - "Dotnet.AspNetCore.Samples.WebApi/Migrations"
+  - "Dotnet.AspNetCore.Samples.WebApi/Models"
