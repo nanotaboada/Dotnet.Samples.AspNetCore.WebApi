@@ -30,6 +30,28 @@ public class PlayersController : ControllerBase
 
     /*
     -----------------------------------------------------------------------------------------------
+    HTTP POST
+    To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    -----------------------------------------------------------------------------------------------
+    */
+
+    [HttpPost]
+    public async Task<ActionResult<Player>> PostPlayer(Player player)
+    {
+        if (await _playerService.RetrieveById(player.Id) != null)
+        {
+            return Conflict();
+        }
+        else
+        {
+            await _playerService.Create(player);
+
+            return CreatedAtAction(nameof(GetPlayer), new { id = player.Id }, player);
+        }
+    }
+
+    /*
+    -----------------------------------------------------------------------------------------------
     HTTP GET
     -----------------------------------------------------------------------------------------------
     */
@@ -39,13 +61,13 @@ public class PlayersController : ControllerBase
     {
         var players = await _playerService.Retrieve();
         
-        if (players == null || players.Count == 0)
+        if (players.Any())
         {
-            return NotFound();
+            return players;
         }
         else
         {
-            return players;
+            return NotFound();
         }
     }
 
@@ -54,13 +76,13 @@ public class PlayersController : ControllerBase
     {
         var player = await _playerService.RetrieveById(id);
 
-        if (player == null)
+        if (player != null)
         {
-            return NotFound();
+            return player;
         }
         else
         {
-            return player;
+            return NotFound();
         }
     }
 
@@ -88,21 +110,6 @@ public class PlayersController : ControllerBase
 
             return NoContent();
         }
-    }
-
-    /*
-    -----------------------------------------------------------------------------------------------
-    HTTP POST
-    To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    -----------------------------------------------------------------------------------------------
-    */
-
-    [HttpPost]
-    public async Task<ActionResult<Player>> PostPlayer(Player player)
-    {
-        await _playerService.Create(player);
-
-        return CreatedAtAction(nameof(GetPlayer), new { id = player.Id }, player);
     }
 
     /*
