@@ -108,11 +108,6 @@ public class PlayerService : IPlayerService
         }
     }
 
-    private bool PlayerExists(long id)
-    {
-        return (_playerContext.Players?.Any(e => e.Id == id)).GetValueOrDefault();
-    }
-
     private MemoryCacheEntryOptions GetMemoryCacheEntryOptions()
     {
         return new MemoryCacheEntryOptions()
