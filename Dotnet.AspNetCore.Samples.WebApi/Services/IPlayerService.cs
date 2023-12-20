@@ -5,13 +5,13 @@ namespace Dotnet.AspNetCore.Samples.WebApi.Services;
 
 public interface IPlayerService
 {
-    public Task Create(Player player);
+    public Task CreateAsync(Player player);
 
-    public Task<List<Player>> Retrieve();
+    public Task<List<Player>> RetrieveAsync();
 
     public ValueTask<Player?> RetrieveById(long id);
 
-    public Task Update(Player player);
+    public Task UpdateAsync(Player player);
 
-    public Task Delete(long id);
+    public Task DeleteAsync(long id);
 }
