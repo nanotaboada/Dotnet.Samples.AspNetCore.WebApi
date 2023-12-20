@@ -25,14 +25,14 @@ public class PlayerServiceTests
         var service = new PlayerService(context.Object, logger.Object, memoryCache);
 
         // Act
-        var first = await ExecutionTime(() => service.Retrieve());
-        var second = await ExecutionTime(() => service.Retrieve());
+        var first = await ExecutionTimeAsync(() => service.RetrieveAsync());
+        var second = await ExecutionTimeAsync(() => service.RetrieveAsync());
 
         // Assert
         second.Should().BeLessThan(first);
     }
 
-    public async Task<long> ExecutionTime(Func<Task> awaitable)
+    private async Task<long> ExecutionTimeAsync(Func<Task> awaitable)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();

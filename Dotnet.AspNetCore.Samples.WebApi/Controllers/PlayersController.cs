@@ -44,7 +44,7 @@ public class PlayersController : ControllerBase
         }
         else
         {
-            await _playerService.Create(player);
+            await _playerService.CreateAsync(player);
 
             return CreatedAtAction(nameof(GetPlayer), new { id = player.Id }, player);
         }
@@ -59,7 +59,7 @@ public class PlayersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
     {
-        var players = await _playerService.Retrieve();
+        var players = await _playerService.RetrieveAsync();
         
         if (players.Any())
         {
@@ -106,7 +106,7 @@ public class PlayersController : ControllerBase
         }
         else
         {
-            await _playerService.Update(player);
+            await _playerService.UpdateAsync(player);
 
             return NoContent();
         }
@@ -127,7 +127,7 @@ public class PlayersController : ControllerBase
         }
         else
         {
-            await _playerService.Delete(id);
+            await _playerService.DeleteAsync(id);
 
             return NoContent();
         }
