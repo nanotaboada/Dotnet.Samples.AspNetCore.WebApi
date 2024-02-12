@@ -38,7 +38,7 @@ public class PlayersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Player>> PostPlayer(Player player)
     {
-        if (await _playerService.RetrieveById(player.Id) != null)
+        if (await _playerService.RetrieveByIdAsync(player.Id) != null)
         {
             return Conflict();
         }
@@ -74,7 +74,7 @@ public class PlayersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Player>> GetPlayer(long id)
     {
-        var player = await _playerService.RetrieveById(id);
+        var player = await _playerService.RetrieveByIdAsync(id);
 
         if (player != null)
         {
@@ -100,7 +100,7 @@ public class PlayersController : ControllerBase
         {
             return BadRequest();
         }
-        else if (await _playerService.RetrieveById(id) == null)
+        else if (await _playerService.RetrieveByIdAsync(id) == null)
         {
             return NotFound();
         }
@@ -121,7 +121,7 @@ public class PlayersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePlayer(long id)
     {
-        if (await _playerService.RetrieveById(id) == null)
+        if (await _playerService.RetrieveByIdAsync(id) == null)
         {
             return NotFound();
         }
