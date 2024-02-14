@@ -57,7 +57,7 @@ public class PlayerService : IPlayerService
         }
     }
 
-    public ValueTask<Player?> RetrieveById(long id)
+    public ValueTask<Player?> RetrieveByIdAsync(long id)
     {
         return _playerContext.Players.FindAsync(id);
     }
