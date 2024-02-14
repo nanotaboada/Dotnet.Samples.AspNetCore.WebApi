@@ -9,7 +9,7 @@ public interface IPlayerService
 
     public Task<List<Player>> RetrieveAsync();
 
-    public ValueTask<Player?> RetrieveById(long id);
+    public ValueTask<Player?> RetrieveByIdAsync(long id);
 
     public Task UpdateAsync(Player player);
 
