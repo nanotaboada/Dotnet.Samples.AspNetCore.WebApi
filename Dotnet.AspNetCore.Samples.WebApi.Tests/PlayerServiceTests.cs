@@ -67,10 +67,10 @@ public class PlayerServiceTests : IDisposable
         // Arrange
         var players = PlayerDataBuilder.SeedWithDeserializedJson();
         var context = CreatePlayerContext();
-        var logger = new Mock<ILogger<PlayerService>>();
-        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var logger = CreateLoggerMock();
+        var memoryCache = CreateMemoryCacheMock(It.IsAny<object>());
 
-        var service = new PlayerService(context, logger.Object, memoryCache);
+        var service = new PlayerService(context, logger, memoryCache);
 
         // Act
         var result = await service.RetrieveAsync();
@@ -84,11 +84,12 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveAsync_WhenInvokedTwice_ThenSecondExecutionTimeShouldBeLessThanFirst()
     {
         // Arrange
+        var players = PlayerDataBuilder.SeedWithDeserializedJson();
         var context = CreatePlayerContext();
-        var logger = new Mock<ILogger<PlayerService>>();
-        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var logger = CreateLoggerMock();
+        var memoryCache = CreateMemoryCacheMock(players);
 
-        var service = new PlayerService(context, logger.Object, memoryCache);
+        var service = new PlayerService(context, logger, memoryCache);
 
         // Act
         var first = await ExecutionTimeAsync(() => service.RetrieveAsync());
@@ -98,16 +99,6 @@ public class PlayerServiceTests : IDisposable
         second.Should().BeLessThan(first);
     }
 
-    private async Task<long> ExecutionTimeAsync(Func<Task> awaitable)
-    {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
-        await awaitable();
-        stopwatch.Stop();
-
-        return stopwatch.ElapsedMilliseconds;
-    }
-
     [Fact]
     [Trait("Category", "Retrieve")]
     public async Task GivenRetrieveByIdAsync_WhenInvokedWithPlayerId_ThenShouldReturnThePlayer()
@@ -115,10 +106,10 @@ public class PlayerServiceTests : IDisposable
         // Arrange
         var player = PlayerDataBuilder.SeedOneById(10);
         var context = CreatePlayerContext();
-        var logger = new Mock<ILogger<PlayerService>>();
-        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var logger = CreateLoggerMock();
+        var memoryCache = CreateMemoryCacheMock(It.IsAny<object>());
 
-        var service = new PlayerService(context, logger.Object, memoryCache);
+        var service = new PlayerService(context, logger, memoryCache);
 
         // Act
         var result = await service.RetrieveByIdAsync(10);
@@ -126,5 +117,38 @@ public class PlayerServiceTests : IDisposable
         // Assert
         result.Should().BeOfType<Player>();
         result.Should().BeEquivalentTo(player);
+    }
+
+    private async Task<long> ExecutionTimeAsync(Func<Task> awaitable)
+    {
+        var stopwatch = new Stopwatch();
+
+        stopwatch.Start();
+        await awaitable();
+        stopwatch.Stop();
+
+        return stopwatch.ElapsedMilliseconds;
+    }
+
+    private static ILogger<PlayerService> CreateLoggerMock()
+    {
+        var mock = new Mock<ILogger<PlayerService>>();
+
+        return mock.Object;
+    }
+
+    private static IMemoryCache CreateMemoryCacheMock(object? value)
+    {
+        var mock = new Mock<IMemoryCache>();
+        
+        mock
+            .Setup(x => x.TryGetValue(It.IsAny<object>(), out value))
+            .Returns(true);
+
+        mock
+            .Setup(x => x.CreateEntry(It.IsAny<object>()))
+            .Returns(Mock.Of<ICacheEntry>);
+
+        return mock.Object;
     }
 }
