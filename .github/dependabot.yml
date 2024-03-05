@@ -5,7 +5,14 @@ updates:
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    groups:
+      efcore:
+        patterns:
+        - "Microsoft.EntityFrameworkCore*"
+      xunit:
+        patterns:
+        - "xunit*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
