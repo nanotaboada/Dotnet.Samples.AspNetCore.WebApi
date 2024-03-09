@@ -1,0 +1,22 @@
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      efcore:
+        patterns:
+        - "Microsoft.EntityFrameworkCore*"
+      xunit:
+        patterns:
+        - "xunit*"
+      coverlet:
+        patterns:
+        - "coverlet*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

@@ -23,9 +23,9 @@ public class PlayerService : IPlayerService
     Create
     -----------------------------------------------------------------------------------------------
     */
-    public async Task Create(Player player)
+    public async Task CreateAsync(Player player)
     {
-        _playerContext.Players.Add(player);
+        _playerContext.Entry(player).State = EntityState.Added;
         await _playerContext.SaveChangesAsync();
         _memoryCache.Remove(MemoryCacheKey_Retrieve);
     }
@@ -35,9 +35,9 @@ public class PlayerService : IPlayerService
     Retrieve
     -----------------------------------------------------------------------------------------------
     */
-    public Task<List<Player>> Retrieve()
+    public async Task<List<Player>> RetrieveAsync()
     {
-        if (_memoryCache.TryGetValue(MemoryCacheKey_Retrieve, out Task<List<Player>>? players)
+        if (_memoryCache.TryGetValue(MemoryCacheKey_Retrieve, out List<Player>? players)
             && players != null)
         {
             _logger.Log(LogLevel.Information, "Players retrieved from MemoryCache.");
@@ -47,9 +47,9 @@ public class PlayerService : IPlayerService
         {
             // Introduced on purpose to simulate a real database query with a
             // delay of beteen 1 and 2 seconds.
-            Task.Delay(new Random().Next(1000, 2000));
+            await Task.Delay(new Random().Next(1000, 2000));
 
-            players = _playerContext.Players.ToListAsync();
+            players = await _playerContext.Players.ToListAsync();
             _memoryCache.Set(MemoryCacheKey_Retrieve, players, GetMemoryCacheEntryOptions());
 
             _logger.Log(LogLevel.Information, "Players retrieved from DbContext.");
@@ -57,7 +57,7 @@ public class PlayerService : IPlayerService
         }
     }
 
-    public ValueTask<Player?> RetrieveById(long id)
+    public ValueTask<Player?> RetrieveByIdAsync(long id)
     {
         return _playerContext.Players.FindAsync(id);
     }
@@ -67,7 +67,7 @@ public class PlayerService : IPlayerService
     Update
     -----------------------------------------------------------------------------------------------
     */
-    public async Task Update(Player player)
+    public async Task UpdateAsync(Player player)
     {
         _playerContext.Entry(player).State = EntityState.Modified;
 
@@ -96,21 +96,16 @@ public class PlayerService : IPlayerService
     Delete
     -----------------------------------------------------------------------------------------------
     */
-    public async Task Delete(long id)
+    public async Task DeleteAsync(long id)
     {
         var player = await _playerContext.Players.FindAsync(id);
 
         if (player != null)
         {
-            _playerContext.Players.Remove(player);
+            _playerContext.Entry(player).State = EntityState.Deleted;
             await _playerContext.SaveChangesAsync();
             _memoryCache.Remove(MemoryCacheKey_Retrieve);
         }
-    }
-
-    private bool PlayerExists(long id)
-    {
-        return (_playerContext.Players?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 
     private MemoryCacheEntryOptions GetMemoryCacheEntryOptions()

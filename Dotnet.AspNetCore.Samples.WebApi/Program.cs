@@ -1,6 +1,7 @@
 using Dotnet.AspNetCore.Samples.WebApi;
 using Dotnet.AspNetCore.Samples.WebApi.Models;
 using Dotnet.AspNetCore.Samples.WebApi.Services;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,13 +14,8 @@ Services
 
 builder.Services.AddControllers();
 
-// var localApplicationData = Environment.SpecialFolder.LocalApplicationData;
-// var folderPath = Environment.GetFolderPath(localApplicationData);
-var projectDataFolder = "Data";
-var path = Path.Join(projectDataFolder, "players-sqlite3.db");
-
 builder.Services.AddDbContext<PlayerContext>(options =>
-    options.UseSqlite($"Data Source={path}")
+    options.UseSqlite(@"Data Source=Data/players-sqlite3.db")
     );
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

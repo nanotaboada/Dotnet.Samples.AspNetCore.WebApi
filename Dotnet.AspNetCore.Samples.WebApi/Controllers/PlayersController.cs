@@ -38,13 +38,13 @@ public class PlayersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Player>> PostPlayer(Player player)
     {
-        if (await _playerService.RetrieveById(player.Id) != null)
+        if (await _playerService.RetrieveByIdAsync(player.Id) != null)
         {
             return Conflict();
         }
         else
         {
-            await _playerService.Create(player);
+            await _playerService.CreateAsync(player);
 
             return CreatedAtAction(nameof(GetPlayer), new { id = player.Id }, player);
         }
@@ -59,7 +59,7 @@ public class PlayersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
     {
-        var players = await _playerService.Retrieve();
+        var players = await _playerService.RetrieveAsync();
         
         if (players.Any())
         {
@@ -74,7 +74,7 @@ public class PlayersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Player>> GetPlayer(long id)
     {
-        var player = await _playerService.RetrieveById(id);
+        var player = await _playerService.RetrieveByIdAsync(id);
 
         if (player != null)
         {
@@ -100,13 +100,13 @@ public class PlayersController : ControllerBase
         {
             return BadRequest();
         }
-        else if (await _playerService.RetrieveById(id) == null)
+        else if (await _playerService.RetrieveByIdAsync(id) == null)
         {
             return NotFound();
         }
         else
         {
-            await _playerService.Update(player);
+            await _playerService.UpdateAsync(player);
 
             return NoContent();
         }
@@ -121,13 +121,13 @@ public class PlayersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePlayer(long id)
     {
-        if (await _playerService.RetrieveById(id) == null)
+        if (await _playerService.RetrieveByIdAsync(id) == null)
         {
             return NotFound();
         }
         else
         {
-            await _playerService.Delete(id);
+            await _playerService.DeleteAsync(id);
 
             return NoContent();
         }
