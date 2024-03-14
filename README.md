@@ -1,6 +1,7 @@
 # Sample ASP.NET Core Web API
 
 ## Status
+
 [![.NET CI](https://github.com/nanotaboada/Dotnet.AspNetCore.Samples.WebApi/actions/workflows/dotnet.yml/badge.svg)](https://github.com/nanotaboada/Dotnet.AspNetCore.Samples.WebApi/actions/workflows/dotnet.yml) [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/dotnet.aspnetcore.samples.webapi/badge)](https://www.codefactor.io/repository/github/nanotaboada/dotnet.aspnetcore.samples.webapi) [![Maintainability](https://api.codeclimate.com/v1/badges/f6ea65015041cb0e1465/maintainability)](https://codeclimate.com/github/nanotaboada/Dotnet.AspNetCore.Samples.WebApi/maintainability) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/29596b95bbd54926a34fe05148f075e3)](https://app.codacy.com/gh/nanotaboada/Dotnet.AspNetCore.Samples.WebApi/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ## Manifesto
@@ -9,7 +10,7 @@
 
 ## About
 
-Proof of Concept for a Web API made with [ASP.NET Core 7.0](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-7.0?view=aspnetcore-7.0) targeting [.NET 7](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-7) following the tutorial "[Create a web API with ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-7.0&tabs=visual-studio-code)".
+Proof of Concept for a Web API made with [ASP.NET Core 8.0](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-8.0) targeting [.NET 8](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8) inspired by the official guide: [Create a web API with ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio-code).
 
 ## Credits
 
@@ -17,4 +18,4 @@ The solution has been coded using [Visual Studio Code](https://code.visualstudio
 
 ## Terms
 
-All trademarks, registered trademarks, service marks, product names, company names or logos are property of their respective owners and are used for educational purposes only.
+All trademarks, registered trademarks, service marks, product names, company names, or logos mentioned on this repository are the property of their respective owners. All usage of such terms herein is for identification purposes only and constitutes neither an endorsement nor a recommendation of those items. Furthermore, the use of such terms is intended to be for educational and informational purposes only.
