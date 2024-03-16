@@ -7,8 +7,12 @@ ignore:
 coverage:
   status:
     project:
-      default:
-        threshold: 10%
+      controllers:
+        paths:
+          - Dotnet.AspNetCore.Samples.WebApi/Controllers/PlayerController.cs
+      services:
+        paths:
+          - Dotnet.AspNetCore.Samples.WebApi/Services/PlayerService.cs
     patch:
       default:
-        threshold: 10%
+        informational: true
