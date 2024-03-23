@@ -1,5 +1,5 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# Building and testing .NET
+# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
 name: .NET CI
 
@@ -11,23 +11,28 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
+
     - name: Checkout repository
       uses: actions/checkout@v4
-    - name: Setup .NET 8
+
+    - name: Set up .NET 8
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build projects
       run: dotnet build --no-restore
-    - name: Run unit tests and collect coverage
+
+    - name: Run tests and collect coverage
       run: dotnet test --no-build --collect:"XPlat Code Coverage"
-    - name: Upload coverage reports to Codecov
+
+    - name: Upload coverage report to Codecov
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+
