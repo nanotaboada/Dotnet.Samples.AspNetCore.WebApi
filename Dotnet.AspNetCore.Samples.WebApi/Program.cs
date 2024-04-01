@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<PlayerContext>(options =>
     options.UseSqlite(@"Data Source=Data/players-sqlite3.db")
-    );
+);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -40,6 +40,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 // https://learn.microsoft.com/en-us/aspnet/core/security/cors
 app.UseCors();
 app.UseAuthorization();

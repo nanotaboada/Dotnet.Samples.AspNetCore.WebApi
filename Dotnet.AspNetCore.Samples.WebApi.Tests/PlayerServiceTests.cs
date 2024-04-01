@@ -33,23 +33,23 @@ public class PlayerServiceTests : IDisposable
             using var dbCommand = context.Database.GetDbConnection().CreateCommand();
 
             dbCommand.CommandText = """
-                CREATE TABLE IF NOT EXISTS "players"
-                (
-                    "id"	        INTEGER,
-                    "firstName"	    TEXT NOT NULL,
-                    "middleName"    TEXT,
-                    "lastName"	    TEXT NOT NULL,
-                    "dateOfBirth"	TEXT,
-                    "squadNumber"	INTEGER NOT NULL,
-                    "position"      TEXT NOT NULL,
-                    "abbrPosition"  TEXT,
-                    "team"          TEXT,
-                    "league"    	TEXT,
-                    "starting11"    BOOLEAN,
-                                    PRIMARY KEY("id")
-                );
-            """;
-            
+                    CREATE TABLE IF NOT EXISTS "players"
+                    (
+                        "id"	        INTEGER,
+                        "firstName"	    TEXT NOT NULL,
+                        "middleName"    TEXT,
+                        "lastName"	    TEXT NOT NULL,
+                        "dateOfBirth"	TEXT,
+                        "squadNumber"	INTEGER NOT NULL,
+                        "position"      TEXT NOT NULL,
+                        "abbrPosition"  TEXT,
+                        "team"          TEXT,
+                        "league"    	TEXT,
+                        "starting11"    BOOLEAN,
+                                        PRIMARY KEY("id")
+                    );
+                """;
+
             dbCommand.ExecuteNonQuery();
         }
 
@@ -58,6 +58,7 @@ public class PlayerServiceTests : IDisposable
     }
 
     PlayerContext CreatePlayerContext() => new PlayerContext(dbContextOptions);
+
     public void Dispose() => dbConnection.Dispose();
 
     [Fact]
@@ -140,14 +141,10 @@ public class PlayerServiceTests : IDisposable
     private static IMemoryCache CreateMemoryCacheMock(object? value)
     {
         var mock = new Mock<IMemoryCache>();
-        
-        mock
-            .Setup(x => x.TryGetValue(It.IsAny<object>(), out value))
-            .Returns(true);
 
-        mock
-            .Setup(x => x.CreateEntry(It.IsAny<object>()))
-            .Returns(Mock.Of<ICacheEntry>);
+        mock.Setup(x => x.TryGetValue(It.IsAny<object>(), out value)).Returns(true);
+
+        mock.Setup(x => x.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>);
 
         return mock.Object;
     }

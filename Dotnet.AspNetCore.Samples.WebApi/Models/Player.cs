@@ -3,13 +3,13 @@
 public class Player
 {
     public long Id { get; set; }
-    
+
     public string? FirstName { get; set; }
-    
+
     public string? MiddleName { get; set; }
-    
+
     public string? LastName { get; set; }
-    
+
     public DateTime? DateOfBirth { get; set; }
 
     public int SquadNumber { get; set; }
