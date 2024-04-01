@@ -11,7 +11,11 @@ public class PlayerService : IPlayerService
     private readonly ILogger<PlayerService> _logger;
     private readonly IMemoryCache _memoryCache;
 
-    public PlayerService(PlayerContext playerContext, ILogger<PlayerService> logger, IMemoryCache memoryCache)
+    public PlayerService(
+        PlayerContext playerContext,
+        ILogger<PlayerService> logger,
+        IMemoryCache memoryCache
+    )
     {
         _playerContext = playerContext;
         _logger = logger;
@@ -37,8 +41,10 @@ public class PlayerService : IPlayerService
     */
     public async Task<List<Player>> RetrieveAsync()
     {
-        if (_memoryCache.TryGetValue(MemoryCacheKey_Retrieve, out List<Player>? players)
-            && players != null)
+        if (
+            _memoryCache.TryGetValue(MemoryCacheKey_Retrieve, out List<Player>? players)
+            && players != null
+        )
         {
             _logger.Log(LogLevel.Information, "Players retrieved from MemoryCache.");
             return players;
@@ -84,8 +90,8 @@ public class PlayerService : IPlayerService
                 if (entry.Entity is Player)
                 {
                     throw new NotImplementedException(
-                        "Concurrency conflicts handling not implemented for "
-                        + entry.Metadata.Name);
+                        "Concurrency conflicts handling not implemented for " + entry.Metadata.Name
+                    );
                 }
             }
         }
