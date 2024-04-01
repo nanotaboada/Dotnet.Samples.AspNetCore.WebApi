@@ -1,5 +1,5 @@
-﻿using Dotnet.AspNetCore.Samples.WebApi.Models;
-using System.Text.Json;
+﻿using System.Text.Json;
+using Dotnet.AspNetCore.Samples.WebApi.Models;
 
 namespace Dotnet.AspNetCore.Samples.WebApi.Data;
 
@@ -7,8 +7,7 @@ public static class PlayerDataBuilder
 {
     public static Player? SeedOneById(int id)
     {
-        return SeedWithStarting11()
-            .SingleOrDefault(player => player.Id == id);
+        return SeedWithStarting11().SingleOrDefault(player => player.Id == id);
     }
 
     public static List<Player> SeedWithStarting11()
@@ -17,7 +16,7 @@ public static class PlayerDataBuilder
 
         players.Add(
             new Player
-            { 
+            {
                 Id = 1,
                 FirstName = "Damián",
                 MiddleName = "Emiliano",
@@ -31,10 +30,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 2,
                 FirstName = "Nahuel",
                 LastName = "Molina",
@@ -47,10 +46,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 3,
                 FirstName = "Cristian",
                 MiddleName = "Gabriel",
@@ -64,10 +63,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 4,
                 FirstName = "Nicolás",
                 MiddleName = "Hernán Gonzalo",
@@ -81,10 +80,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 5,
                 FirstName = "Nicolás",
                 MiddleName = "Alejandro",
@@ -98,10 +97,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 6,
                 FirstName = "Ángel",
                 MiddleName = "Fabián",
@@ -115,10 +114,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 7,
                 FirstName = "Rodrigo",
                 MiddleName = "Javier",
@@ -132,10 +131,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 8,
                 FirstName = "Enzo",
                 MiddleName = "Jeremías",
@@ -149,10 +148,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 9,
                 FirstName = "Alexis",
                 LastName = "Mac Allister",
@@ -165,10 +164,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 10,
                 FirstName = "Lionel",
                 MiddleName = "Andrés",
@@ -182,10 +181,10 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         players.Add(
             new Player
-            { 
+            {
                 Id = 11,
                 FirstName = "Julián",
                 LastName = "Álvarez",
@@ -198,158 +197,159 @@ public static class PlayerDataBuilder
                 Starting11 = true,
             }
         );
-        
+
         return players;
     }
+
     public static List<Player> SeedWithDeserializedJson()
     {
         var players = new List<Player>();
 
         var json = """
-            [{
-                "id": 1,
-                "firstName": "Damián",
-                "middleName": "Emiliano",
-                "lastName": "Martínez",
-                "dateOfBirth": "1992-09-01T00:00:00.000Z",
-                "squadNumber": 23,
-                "position": "Goalkeeper",
-                "abbrPosition": "GK",
-                "team": "Aston Villa FC",
-                "league": "Premier League",
-                "starting11": true
-            },
-            {
-                "id": 2,
-                "firstName": "Nahuel",
-                "middleName": null,
-                "lastName": "Molina",
-                "dateOfBirth": "1998-04-05T00:00:00.000Z",
-                "squadNumber": 26,
-                "position": "Right-Back",
-                "abbrPosition": "RB",
-                "team": "Atlético Madrid",
-                "league": "La Liga",
-                "starting11": true
-            },
-            {
-                "id": 3,
-                "firstName": "Cristian",
-                "middleName": "Gabriel",
-                "lastName": "Romero",
-                "dateOfBirth": "1998-04-26T00:00:00.000Z",
-                "squadNumber": 13,
-                "position": "Centre-Back",
-                "abbrPosition": "CB",
-                "team": "Tottenham Hotspur",
-                "league": "Premier League",
-                "starting11": true
-            },
-            {
-                "id": 4,
-                "firstName": "Nicolás",
-                "middleName": "Hernán Gonzalo",
-                "lastName": "Otamendi",
-                "dateOfBirth": "1988-02-11T00:00:00.000Z",
-                "squadNumber": 19,
-                "position": "Centre-Back",
-                "abbrPosition": "CB",
-                "team": "SL Benfica",
-                "league": "Liga Portugal",
-                "starting11": true
-            },
-            {
-                "id": 5,
-                "firstName": "Nicolás",
-                "middleName": "Alejandro",
-                "lastName": "Tagliafico",
-                "dateOfBirth": "1992-08-30T00:00:00.000Z",
-                "squadNumber": 3,
-                "position": "Left-Back",
-                "abbrPosition": "LB",
-                "team": "Olympique Lyon",
-                "league": "Ligue 1",
-                "starting11": true
-            },
-            {
-                "id": 6,
-                "firstName": "Ángel",
-                "middleName": "Fabián",
-                "lastName": "Di María",
-                "dateOfBirth": "1988-02-13T00:00:00.000Z",
-                "squadNumber": 11,
-                "position": "Right Winger",
-                "abbrPosition": "RW",
-                "team": "SL Benfica",
-                "league": "Liga Portugal",
-                "starting11": true
-            },
-            {
-                "id": 7,
-                "firstName": "Rodrigo",
-                "middleName": "Javier",
-                "lastName": "de Paul",
-                "dateOfBirth": "1994-05-23T00:00:00.000Z",
-                "squadNumber": 7,
-                "position": "Central Midfield",
-                "abbrPosition": "CM",
-                "team": "Atlético Madrid",
-                "league": "La Liga",
-                "starting11": true
-            },
-            {
-                "id": 8,
-                "firstName": "Enzo",
-                "middleName": "Jeremías",
-                "lastName": "Fernández",
-                "dateOfBirth": "2001-01-16T00:00:00.000Z",
-                "squadNumber": 24,
-                "position": "Central Midfield",
-                "abbrPosition": "CM",
-                "team": "Chelsea FC",
-                "league": "Premier League",
-                "starting11": true
-            },
-            {
-                "id": 9,
-                "firstName": "Alexis",
-                "middleName": null,
-                "lastName": "Mac Allister",
-                "dateOfBirth": "1998-12-23T00:00:00.000Z",
-                "squadNumber": 20,
-                "position": "Central Midfield",
-                "abbrPosition": "CM",
-                "team": "Liverpool FC",
-                "league": "Premier League",
-                "starting11": true
-            },
-            {
-                "id": 10,
-                "firstName": "Lionel",
-                "middleName": "Andrés",
-                "lastName": "Messi",
-                "dateOfBirth": "1987-06-23T00:00:00.000Z",
-                "squadNumber": 10,
-                "position": "Right Winger",
-                "abbrPosition": "RW",
-                "team": "Inter Miami CF",
-                "league": "Major League Soccer",
-                "starting11": true
-            },
-            {
-                "id": 11,
-                "firstName": "Julián",
-                "middleName": null,
-                "lastName": "Álvarez",
-                "dateOfBirth": "2000-01-30T00:00:00.000Z",
-                "squadNumber": 9,
-                "position": "Centre-Forward",
-                "abbrPosition": "CF",
-                "team": "Manchester City",
-                "league": "Premier League",
-                "starting11": true
-            }]
-        """;
+                [{
+                    "id": 1,
+                    "firstName": "Damián",
+                    "middleName": "Emiliano",
+                    "lastName": "Martínez",
+                    "dateOfBirth": "1992-09-01T00:00:00.000Z",
+                    "squadNumber": 23,
+                    "position": "Goalkeeper",
+                    "abbrPosition": "GK",
+                    "team": "Aston Villa FC",
+                    "league": "Premier League",
+                    "starting11": true
+                },
+                {
+                    "id": 2,
+                    "firstName": "Nahuel",
+                    "middleName": null,
+                    "lastName": "Molina",
+                    "dateOfBirth": "1998-04-05T00:00:00.000Z",
+                    "squadNumber": 26,
+                    "position": "Right-Back",
+                    "abbrPosition": "RB",
+                    "team": "Atlético Madrid",
+                    "league": "La Liga",
+                    "starting11": true
+                },
+                {
+                    "id": 3,
+                    "firstName": "Cristian",
+                    "middleName": "Gabriel",
+                    "lastName": "Romero",
+                    "dateOfBirth": "1998-04-26T00:00:00.000Z",
+                    "squadNumber": 13,
+                    "position": "Centre-Back",
+                    "abbrPosition": "CB",
+                    "team": "Tottenham Hotspur",
+                    "league": "Premier League",
+                    "starting11": true
+                },
+                {
+                    "id": 4,
+                    "firstName": "Nicolás",
+                    "middleName": "Hernán Gonzalo",
+                    "lastName": "Otamendi",
+                    "dateOfBirth": "1988-02-11T00:00:00.000Z",
+                    "squadNumber": 19,
+                    "position": "Centre-Back",
+                    "abbrPosition": "CB",
+                    "team": "SL Benfica",
+                    "league": "Liga Portugal",
+                    "starting11": true
+                },
+                {
+                    "id": 5,
+                    "firstName": "Nicolás",
+                    "middleName": "Alejandro",
+                    "lastName": "Tagliafico",
+                    "dateOfBirth": "1992-08-30T00:00:00.000Z",
+                    "squadNumber": 3,
+                    "position": "Left-Back",
+                    "abbrPosition": "LB",
+                    "team": "Olympique Lyon",
+                    "league": "Ligue 1",
+                    "starting11": true
+                },
+                {
+                    "id": 6,
+                    "firstName": "Ángel",
+                    "middleName": "Fabián",
+                    "lastName": "Di María",
+                    "dateOfBirth": "1988-02-13T00:00:00.000Z",
+                    "squadNumber": 11,
+                    "position": "Right Winger",
+                    "abbrPosition": "RW",
+                    "team": "SL Benfica",
+                    "league": "Liga Portugal",
+                    "starting11": true
+                },
+                {
+                    "id": 7,
+                    "firstName": "Rodrigo",
+                    "middleName": "Javier",
+                    "lastName": "de Paul",
+                    "dateOfBirth": "1994-05-23T00:00:00.000Z",
+                    "squadNumber": 7,
+                    "position": "Central Midfield",
+                    "abbrPosition": "CM",
+                    "team": "Atlético Madrid",
+                    "league": "La Liga",
+                    "starting11": true
+                },
+                {
+                    "id": 8,
+                    "firstName": "Enzo",
+                    "middleName": "Jeremías",
+                    "lastName": "Fernández",
+                    "dateOfBirth": "2001-01-16T00:00:00.000Z",
+                    "squadNumber": 24,
+                    "position": "Central Midfield",
+                    "abbrPosition": "CM",
+                    "team": "Chelsea FC",
+                    "league": "Premier League",
+                    "starting11": true
+                },
+                {
+                    "id": 9,
+                    "firstName": "Alexis",
+                    "middleName": null,
+                    "lastName": "Mac Allister",
+                    "dateOfBirth": "1998-12-23T00:00:00.000Z",
+                    "squadNumber": 20,
+                    "position": "Central Midfield",
+                    "abbrPosition": "CM",
+                    "team": "Liverpool FC",
+                    "league": "Premier League",
+                    "starting11": true
+                },
+                {
+                    "id": 10,
+                    "firstName": "Lionel",
+                    "middleName": "Andrés",
+                    "lastName": "Messi",
+                    "dateOfBirth": "1987-06-23T00:00:00.000Z",
+                    "squadNumber": 10,
+                    "position": "Right Winger",
+                    "abbrPosition": "RW",
+                    "team": "Inter Miami CF",
+                    "league": "Major League Soccer",
+                    "starting11": true
+                },
+                {
+                    "id": 11,
+                    "firstName": "Julián",
+                    "middleName": null,
+                    "lastName": "Álvarez",
+                    "dateOfBirth": "2000-01-30T00:00:00.000Z",
+                    "squadNumber": 9,
+                    "position": "Centre-Forward",
+                    "abbrPosition": "CF",
+                    "team": "Manchester City",
+                    "league": "Premier League",
+                    "starting11": true
+                }]
+            """;
 
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var starting11 = JsonSerializer.Deserialize<List<Player>>(json, options);

@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using Dotnet.AspNetCore.Samples.WebApi.Models;
 using Dotnet.AspNetCore.Samples.WebApi.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Dotnet.AspNetCore.Samples.WebApi.Controllers;
 
@@ -10,7 +10,7 @@ Scaffolded with dotnet-aspnet-codegenerator
 https://learn.microsoft.com/en-us/aspnet/core/fundamentals/tools/dotnet-aspnet-codegenerator
 
 dotnet aspnet-codegenerator controller -name PlayersController \
--async -api --model Player --dataContext PlayerContext \ 
+-async -api --model Player --dataContext PlayerContext \
 -outDir Controllers
 ---------------------------------------------------------------------------------------------------
 */
@@ -60,7 +60,7 @@ public class PlayersController : ControllerBase
     public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
     {
         var players = await _playerService.RetrieveAsync();
-        
+
         if (players.Any())
         {
             return players;

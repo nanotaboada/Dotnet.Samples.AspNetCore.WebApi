@@ -1,5 +1,4 @@
-﻿
-using Dotnet.AspNetCore.Samples.WebApi.Models;
+﻿using Dotnet.AspNetCore.Samples.WebApi.Models;
 
 namespace Dotnet.AspNetCore.Samples.WebApi.Services;
 
