@@ -1,8 +1,8 @@
 using System.Data.Common;
 using System.Diagnostics;
-using Dotnet.AspNetCore.Samples.WebApi.Data;
-using Dotnet.AspNetCore.Samples.WebApi.Models;
-using Dotnet.AspNetCore.Samples.WebApi.Services;
+using Dotnet.Samples.AspNetCore.WebApi.Data;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Services;
 using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Dotnet.AspNetCore.Samples.WebApi.Tests;
+namespace Dotnet.Samples.AspNetCore.WebApi.Tests;
 
 public class PlayerServiceTests : IDisposable
 {

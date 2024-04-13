@@ -1,8 +1,8 @@
-using Dotnet.AspNetCore.Samples.WebApi.Models;
-using Dotnet.AspNetCore.Samples.WebApi.Services;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Dotnet.AspNetCore.Samples.WebApi.Controllers;
+namespace Dotnet.Samples.AspNetCore.WebApi.Controllers;
 
 /*
 ---------------------------------------------------------------------------------------------------

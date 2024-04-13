@@ -1,8 +1,8 @@
-﻿using Dotnet.AspNetCore.Samples.WebApi.Models;
+﻿using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Dotnet.AspNetCore.Samples.WebApi.Services;
+namespace Dotnet.Samples.AspNetCore.WebApi.Services;
 
 public class PlayerService : IPlayerService
 {

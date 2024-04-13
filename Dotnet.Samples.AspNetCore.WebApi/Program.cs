@@ -1,6 +1,6 @@
-using Dotnet.AspNetCore.Samples.WebApi;
-using Dotnet.AspNetCore.Samples.WebApi.Models;
-using Dotnet.AspNetCore.Samples.WebApi.Services;
+using Dotnet.Samples.AspNetCore.WebApi;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 

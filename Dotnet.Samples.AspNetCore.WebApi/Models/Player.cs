@@ -1,4 +1,4 @@
-﻿namespace Dotnet.AspNetCore.Samples.WebApi.Models;
+﻿namespace Dotnet.Samples.AspNetCore.WebApi.Models;
 
 public class Player
 {

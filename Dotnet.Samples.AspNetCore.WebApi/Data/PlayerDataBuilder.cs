@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using Dotnet.AspNetCore.Samples.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
 
-namespace Dotnet.AspNetCore.Samples.WebApi.Data;
+namespace Dotnet.Samples.AspNetCore.WebApi.Data;
 
 public static class PlayerDataBuilder
 {

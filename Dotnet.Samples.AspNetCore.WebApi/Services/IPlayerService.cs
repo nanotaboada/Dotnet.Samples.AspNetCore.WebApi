@@ -1,6 +1,6 @@
-﻿using Dotnet.AspNetCore.Samples.WebApi.Models;
+﻿using Dotnet.Samples.AspNetCore.WebApi.Models;
 
-namespace Dotnet.AspNetCore.Samples.WebApi.Services;
+namespace Dotnet.Samples.AspNetCore.WebApi.Services;
 
 public interface IPlayerService
 {
