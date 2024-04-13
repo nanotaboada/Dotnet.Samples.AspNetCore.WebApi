@@ -141,8 +141,14 @@ public class PlayerServiceTests : IDisposable
     private static IMemoryCache CreateMemoryCacheMock(object? value)
     {
         var mock = new Mock<IMemoryCache>();
+        var fromCahe = false;
 
-        mock.Setup(x => x.TryGetValue(It.IsAny<object>(), out value)).Returns(true);
+        mock.Setup(x => x.TryGetValue(It.IsAny<object>(), out value)).Returns(() =>
+        {
+            bool hasValue = fromCahe;
+            fromCahe = true; // Subsequent invocations will return true
+            return hasValue;
+        });
 
         mock.Setup(x => x.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>);
 
