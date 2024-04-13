@@ -1,8 +1,8 @@
-﻿using Dotnet.AspNetCore.Samples.WebApi.Models;
+﻿using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Dotnet.AspNetCore.Samples.WebApi.Services;
+namespace Dotnet.Samples.AspNetCore.WebApi.Services;
 
 public class PlayerService : IPlayerService
 {
@@ -22,11 +22,10 @@ public class PlayerService : IPlayerService
         _memoryCache = memoryCache;
     }
 
-    /*
-    -----------------------------------------------------------------------------------------------
-    Create
-    -----------------------------------------------------------------------------------------------
-    */
+    /* -------------------------------------------------------------------------
+     * Create
+     * ---------------------------------------------------------------------- */
+
     public async Task CreateAsync(Player player)
     {
         _playerContext.Entry(player).State = EntityState.Added;
@@ -34,26 +33,21 @@ public class PlayerService : IPlayerService
         _memoryCache.Remove(MemoryCacheKey_Retrieve);
     }
 
-    /*
-    -----------------------------------------------------------------------------------------------
-    Retrieve
-    -----------------------------------------------------------------------------------------------
-    */
+    /* -------------------------------------------------------------------------
+     * Retrieve
+     * ---------------------------------------------------------------------- */
+
     public async Task<List<Player>> RetrieveAsync()
     {
-        if (
-            _memoryCache.TryGetValue(MemoryCacheKey_Retrieve, out List<Player>? players)
-            && players != null
-        )
+        if (_memoryCache.TryGetValue(MemoryCacheKey_Retrieve, out List<Player>? players))
         {
             _logger.Log(LogLevel.Information, "Players retrieved from MemoryCache.");
-            return players;
+            return players!;
         }
         else
         {
-            // Introduced on purpose to simulate a real database query with a
-            // delay of beteen 1 and 2 seconds.
-            await Task.Delay(new Random().Next(1000, 2000));
+            // Simulates a random delay
+            await Task.Delay(new Random().Next(2600, 4200));
 
             players = await _playerContext.Players.ToListAsync();
             _memoryCache.Set(MemoryCacheKey_Retrieve, players, GetMemoryCacheEntryOptions());
@@ -68,11 +62,10 @@ public class PlayerService : IPlayerService
         return _playerContext.Players.FindAsync(id);
     }
 
-    /*
-    -----------------------------------------------------------------------------------------------
-    Update
-    -----------------------------------------------------------------------------------------------
-    */
+    /* -------------------------------------------------------------------------
+     * Update
+     * ---------------------------------------------------------------------- */
+
     public async Task UpdateAsync(Player player)
     {
         _playerContext.Entry(player).State = EntityState.Modified;
@@ -97,11 +90,10 @@ public class PlayerService : IPlayerService
         }
     }
 
-    /*
-    -----------------------------------------------------------------------------------------------
-    Delete
-    -----------------------------------------------------------------------------------------------
-    */
+    /* -------------------------------------------------------------------------
+     * Delete
+     * ---------------------------------------------------------------------- */
+
     public async Task DeleteAsync(long id)
     {
         var player = await _playerContext.Players.FindAsync(id);
@@ -117,8 +109,8 @@ public class PlayerService : IPlayerService
     private MemoryCacheEntryOptions GetMemoryCacheEntryOptions()
     {
         return new MemoryCacheEntryOptions()
-            .SetAbsoluteExpiration(TimeSpan.FromHours(1))
             .SetSlidingExpiration(TimeSpan.FromMinutes(10))
+            .SetAbsoluteExpiration(TimeSpan.FromHours(1))
             .SetPriority(CacheItemPriority.Normal);
     }
 }

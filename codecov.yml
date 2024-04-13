@@ -1,18 +1,18 @@
 ignore:
-  - "Dotnet.AspNetCore.Samples.WebApi/Program.cs"
-  - "Dotnet.AspNetCore.Samples.WebApi/Data"
-  - "Dotnet.AspNetCore.Samples.WebApi/Migrations"
-  - "Dotnet.AspNetCore.Samples.WebApi/Models"
+  - "Dotnet.Samples.AspNetCore.WebApi/Program.cs"
+  - "Dotnet.Samples.AspNetCore.WebApi/Data"
+  - "Dotnet.Samples.AspNetCore.WebApi/Migrations"
+  - "Dotnet.Samples.AspNetCore.WebApi/Models"
 
 coverage:
   status:
     project:
       controllers:
         paths:
-          - Dotnet.AspNetCore.Samples.WebApi/Controllers/PlayerController.cs
+          - Dotnet.Samples.AspNetCore.WebApi/Controllers/PlayerController.cs
       services:
         paths:
-          - Dotnet.AspNetCore.Samples.WebApi/Services/PlayerService.cs
+          - Dotnet.Samples.AspNetCore.WebApi/Services/PlayerService.cs
     patch:
       default:
         informational: true

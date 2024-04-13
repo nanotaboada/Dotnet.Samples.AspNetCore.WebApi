@@ -1,16 +1,14 @@
-using Dotnet.AspNetCore.Samples.WebApi;
-using Dotnet.AspNetCore.Samples.WebApi.Models;
-using Dotnet.AspNetCore.Samples.WebApi.Services;
+using Dotnet.Samples.AspNetCore.WebApi;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-/*
------------------------------------------------------------------------------------------------
-Services
------------------------------------------------------------------------------------------------
-*/
+/* -----------------------------------------------------------------------------
+ * Services
+ * -------------------------------------------------------------------------- */
 
 builder.Services.AddControllers();
 
@@ -26,12 +24,10 @@ builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
-/*
------------------------------------------------------------------------------------------------
-Middlewares
-https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware
------------------------------------------------------------------------------------------------
-*/
+/* -----------------------------------------------------------------------------
+ * Middlewares
+ * https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware
+ * -------------------------------------------------------------------------- */
 
 if (app.Environment.IsDevelopment())
 {

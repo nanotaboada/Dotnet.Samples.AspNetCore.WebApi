@@ -1,8 +1,8 @@
-using Dotnet.AspNetCore.Samples.WebApi.Models;
-using Dotnet.AspNetCore.Samples.WebApi.Services;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Dotnet.AspNetCore.Samples.WebApi.Controllers;
+namespace Dotnet.Samples.AspNetCore.WebApi.Controllers;
 
 /*
 ---------------------------------------------------------------------------------------------------
@@ -28,12 +28,12 @@ public class PlayersController : ControllerBase
         _logger = logger;
     }
 
-    /*
-    -----------------------------------------------------------------------------------------------
-    HTTP POST
-    To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    -----------------------------------------------------------------------------------------------
-    */
+    /* -------------------------------------------------------------------------
+     * HTTP POST
+     *
+     * To protect from overposting attacks,
+     * see https://go.microsoft.com/fwlink/?linkid=2123754
+     * ---------------------------------------------------------------------- */
 
     [HttpPost]
     public async Task<ActionResult<Player>> PostPlayer(Player player)
@@ -50,11 +50,9 @@ public class PlayersController : ControllerBase
         }
     }
 
-    /*
-    -----------------------------------------------------------------------------------------------
-    HTTP GET
-    -----------------------------------------------------------------------------------------------
-    */
+    /* -------------------------------------------------------------------------
+     * HTTP GET
+     * ---------------------------------------------------------------------- */
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
@@ -86,12 +84,12 @@ public class PlayersController : ControllerBase
         }
     }
 
-    /*
-    -----------------------------------------------------------------------------------------------
-    HTTP PUT
-    To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    -----------------------------------------------------------------------------------------------
-    */
+    /* -------------------------------------------------------------------------
+     * HTTP PUT
+     *
+     * To protect from overposting attacks,
+     * see https://go.microsoft.com/fwlink/?linkid=2123754
+     * ---------------------------------------------------------------------- */
 
     [HttpPut("{id}")]
     public async Task<IActionResult> PutPlayer(long id, Player player)
@@ -112,11 +110,9 @@ public class PlayersController : ControllerBase
         }
     }
 
-    /*
-    -----------------------------------------------------------------------------------------------
-    HTTP DELETE
-    -----------------------------------------------------------------------------------------------
-    */
+    /* -------------------------------------------------------------------------
+     * HTTP DELETE
+     * ---------------------------------------------------------------------- */
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePlayer(long id)

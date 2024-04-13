@@ -1,8 +1,8 @@
-﻿using Dotnet.AspNetCore.Samples.WebApi.Data;
-using Dotnet.AspNetCore.Samples.WebApi.Models;
+﻿using Dotnet.Samples.AspNetCore.WebApi.Data;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dotnet.AspNetCore.Samples.WebApi;
+namespace Dotnet.Samples.AspNetCore.WebApi;
 
 public static class PlayerContextInitializer
 {
