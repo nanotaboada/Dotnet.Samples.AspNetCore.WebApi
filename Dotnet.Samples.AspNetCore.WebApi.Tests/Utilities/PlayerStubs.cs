@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests
 {
-    public static class PlayerDatabaseBuilder
+    public static class PlayerStubs
     {
-        public static (DbConnection, DbContextOptions<PlayerContext>) BuildDatabase()
+        public static (DbConnection, DbContextOptions<PlayerContext>) CreateSqliteConnection()
         {
             var dbConnection = new SqliteConnection("Filename=:memory:");
             dbConnection.Open();
@@ -21,7 +21,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests
             return (dbConnection, dbContextOptions);
         }
 
-        public static void CreateDatabase(PlayerContext context)
+        public static void CreateTable(PlayerContext context)
         {
             using var dbCommand = context.Database.GetDbConnection().CreateCommand();
 
@@ -46,7 +46,12 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests
             dbCommand.ExecuteNonQuery();
         }
 
-        public static void Seed(PlayerContext context)
+        public static PlayerContext CreateContext(DbContextOptions<PlayerContext> dbContextOptions)
+        {
+            return new PlayerContext(dbContextOptions);
+        }
+
+        public static void SeedContext(PlayerContext context)
         {
             context.AddRange(PlayerDataBuilder.SeedWithDeserializedJson());
             context.SaveChanges();

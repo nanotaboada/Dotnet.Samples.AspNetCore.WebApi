@@ -11,23 +11,22 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests;
 
 public class PlayerServiceTests : IDisposable
 {
-    private readonly DbConnection dbConnection;
-    private readonly DbContextOptions<PlayerContext> dbContextOptions;
-    private readonly PlayerContext context;
+    private readonly DbConnection _dbConnection;
+    private readonly DbContextOptions<PlayerContext> _dbContextOptions;
+    private readonly PlayerContext _context;
 
     public PlayerServiceTests()
     {
-        (dbConnection, dbContextOptions) = PlayerDatabaseBuilder.BuildDatabase();
-        context = PlayerContextBuilder.CreatePlayerContext(dbContextOptions);
-
-        PlayerDatabaseBuilder.CreateDatabase(context);
-        PlayerDatabaseBuilder.Seed(context);
+        (_dbConnection, _dbContextOptions) = PlayerStubs.CreateSqliteConnection();
+        _context = PlayerStubs.CreateContext(_dbContextOptions);
+        PlayerStubs.CreateTable(_context);
+        PlayerStubs.SeedContext(_context);
     }
 
     public void Dispose()
     {
-        context.Dispose();
-        dbConnection.Dispose();
+        _context.Dispose();
+        _dbConnection.Dispose();
         GC.SuppressFinalize(this);
     }
 
@@ -37,10 +36,10 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var players = PlayerDataBuilder.SeedWithDeserializedJson();
-        var logger = PlayerMocksBuilder.CreateLoggerMock<PlayerService>();
-        var memoryCache = PlayerMocksBuilder.CreateMemoryCacheMock(It.IsAny<object>());
+        var logger = PlayerMocks.LoggerMock<PlayerService>();
+        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
-        var service = new PlayerService(context, logger, memoryCache);
+        var service = new PlayerService(_context, logger, memoryCache);
 
         // Act
         var result = await service.RetrieveAsync();
@@ -55,10 +54,10 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var players = PlayerDataBuilder.SeedWithDeserializedJson();
-        var logger = PlayerMocksBuilder.CreateLoggerMock<PlayerService>();
-        var memoryCache = PlayerMocksBuilder.CreateMemoryCacheMock(players);
+        var logger = PlayerMocks.LoggerMock<PlayerService>();
+        var memoryCache = PlayerMocks.MemoryCacheMock(players);
 
-        var service = new PlayerService(context, logger, memoryCache);
+        var service = new PlayerService(_context, logger, memoryCache);
 
         // Act
         var first = await ExecutionTimeAsync(() => service.RetrieveAsync());
@@ -74,10 +73,10 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var player = PlayerDataBuilder.SeedOneById(10);
-        var logger = PlayerMocksBuilder.CreateLoggerMock<PlayerService>();
-        var memoryCache = PlayerMocksBuilder.CreateMemoryCacheMock(It.IsAny<object>());
+        var logger = PlayerMocks.LoggerMock<PlayerService>();
+        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
-        var service = new PlayerService(context, logger, memoryCache);
+        var service = new PlayerService(_context, logger, memoryCache);
 
         // Act
         var result = await service.RetrieveByIdAsync(10);

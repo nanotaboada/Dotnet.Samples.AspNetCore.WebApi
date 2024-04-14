@@ -12,28 +12,8 @@ using Moq;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests;
 
-public class PlayerControllerTests : IDisposable
+public class PlayerControllerTests
 {
-    private readonly DbConnection dbConnection;
-    private readonly DbContextOptions<PlayerContext> dbContextOptions;
-    private readonly PlayerContext context;
-
-    public PlayerControllerTests()
-    {
-        (dbConnection, dbContextOptions) = PlayerDatabaseBuilder.BuildDatabase();
-        context = PlayerContextBuilder.CreatePlayerContext(dbContextOptions);
-
-        PlayerDatabaseBuilder.CreateDatabase(context);
-        PlayerDatabaseBuilder.Seed(context);
-    }
-
-    public void Dispose()
-    {
-        context.Dispose();
-        dbConnection.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
     [Fact]
     [Trait("Category", "HTTP GET")]
     public async Task GivenHttpGet_WhenRequestPathHasNoId_ThenResponseStatusCodeShouldBeListOfPlayers()

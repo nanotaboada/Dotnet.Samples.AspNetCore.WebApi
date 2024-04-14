@@ -4,16 +4,16 @@ using Moq;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests
 {
-    public static class PlayerMocksBuilder
+    public static class PlayerMocks
     {
-        public static ILogger<T> CreateLoggerMock<T>()
+        public static ILogger<T> LoggerMock<T>()
             where T : class
         {
             var mock = new Mock<ILogger<T>>();
             return mock.Object;
         }
 
-        public static IMemoryCache CreateMemoryCacheMock(object? value)
+        public static IMemoryCache MemoryCacheMock(object? value)
         {
             var mock = new Mock<IMemoryCache>();
             var fromCache = false;
