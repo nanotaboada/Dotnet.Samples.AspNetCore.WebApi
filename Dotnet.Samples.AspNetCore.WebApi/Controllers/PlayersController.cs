@@ -1,52 +1,38 @@
+using System.Net.Mime;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Controllers;
 
-/*
----------------------------------------------------------------------------------------------------
-Scaffolded with dotnet-aspnet-codegenerator
-https://learn.microsoft.com/en-us/aspnet/core/fundamentals/tools/dotnet-aspnet-codegenerator
-
-dotnet aspnet-codegenerator controller -name PlayersController \
--async -api --model Player --dataContext PlayerContext \
--outDir Controllers
----------------------------------------------------------------------------------------------------
-*/
-
-[Route("api/[controller]")]
 [ApiController]
-public class PlayersController : ControllerBase
+[Route("[controller]")]
+public class PlayersController(IPlayerService playerService, ILogger<PlayersController> logger)
+    : ControllerBase
 {
-    private readonly IPlayerService _playerService;
-    private readonly ILogger<PlayersController> _logger;
-
-    public PlayersController(IPlayerService playerService, ILogger<PlayersController> logger)
-    {
-        _playerService = playerService;
-        _logger = logger;
-    }
+    private readonly IPlayerService _playerService = playerService;
+    private readonly ILogger<PlayersController> _logger = logger;
 
     /* -------------------------------------------------------------------------
      * HTTP POST
-     *
-     * To protect from overposting attacks,
-     * see https://go.microsoft.com/fwlink/?linkid=2123754
      * ---------------------------------------------------------------------- */
 
     [HttpPost]
-    public async Task<ActionResult<Player>> PostPlayer(Player player)
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<Player>(StatusCodes.Status201Created)]
+    public async Task<IResult> PostAsync(Player player)
     {
         if (await _playerService.RetrieveByIdAsync(player.Id) != null)
         {
-            return Conflict();
+            return Results.Conflict();
         }
         else
         {
             await _playerService.CreateAsync(player);
 
-            return CreatedAtAction(nameof(GetPlayer), new { id = player.Id }, player);
+            var location = Url.Action(nameof(PostAsync), new { id = player.Id }) ?? $"/{player.Id}";
+            return Results.Created(location, player);
         }
     }
 
@@ -55,58 +41,63 @@ public class PlayersController : ControllerBase
      * ---------------------------------------------------------------------- */
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
+    [ProducesResponseType<Player>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IResult> GetAsync()
     {
         var players = await _playerService.RetrieveAsync();
 
-        if (players.Any())
+        if (players.Count > 0)
         {
-            return players;
+            return Results.Ok(players);
         }
         else
         {
-            return NotFound();
+            return Results.NotFound();
         }
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Player>> GetPlayer(long id)
+    [ProducesResponseType<Player>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IResult> GetByIdAsync(long id)
     {
         var player = await _playerService.RetrieveByIdAsync(id);
 
         if (player != null)
         {
-            return player;
+            return Results.Ok(player);
         }
         else
         {
-            return NotFound();
+            return Results.NotFound();
         }
     }
 
     /* -------------------------------------------------------------------------
      * HTTP PUT
-     *
-     * To protect from overposting attacks,
-     * see https://go.microsoft.com/fwlink/?linkid=2123754
      * ---------------------------------------------------------------------- */
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutPlayer(long id, Player player)
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IResult> PutAsync(long id, Player player)
     {
         if (id != player.Id)
         {
-            return BadRequest();
+            return Results.BadRequest();
         }
         else if (await _playerService.RetrieveByIdAsync(id) == null)
         {
-            return NotFound();
+            return Results.NotFound();
         }
         else
         {
             await _playerService.UpdateAsync(player);
 
-            return NoContent();
+            return Results.NoContent();
         }
     }
 
@@ -115,17 +106,19 @@ public class PlayersController : ControllerBase
      * ---------------------------------------------------------------------- */
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeletePlayer(long id)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IResult> DeleteAsync(long id)
     {
         if (await _playerService.RetrieveByIdAsync(id) == null)
         {
-            return NotFound();
+            return Results.NotFound();
         }
         else
         {
             await _playerService.DeleteAsync(id);
 
-            return NoContent();
+            return Results.NoContent();
         }
     }
 }
