@@ -4,10 +4,7 @@ using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
 using FluentAssertions;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests;
@@ -16,50 +13,23 @@ public class PlayerServiceTests : IDisposable
 {
     private readonly DbConnection dbConnection;
     private readonly DbContextOptions<PlayerContext> dbContextOptions;
+    private readonly PlayerContext context;
 
     public PlayerServiceTests()
     {
-        dbConnection = new SqliteConnection("Filename=:memory:");
-        dbConnection.Open();
+        (dbConnection, dbContextOptions) = PlayerDatabaseBuilder.BuildDatabase();
+        context = PlayerContextBuilder.CreatePlayerContext(dbContextOptions);
 
-        dbContextOptions = new DbContextOptionsBuilder<PlayerContext>()
-            .UseSqlite(dbConnection)
-            .Options;
-
-        using var context = new PlayerContext(dbContextOptions);
-
-        if (context.Database.EnsureCreated())
-        {
-            using var dbCommand = context.Database.GetDbConnection().CreateCommand();
-
-            dbCommand.CommandText = """
-                    CREATE TABLE IF NOT EXISTS "players"
-                    (
-                        "id"	        INTEGER,
-                        "firstName"	    TEXT NOT NULL,
-                        "middleName"    TEXT,
-                        "lastName"	    TEXT NOT NULL,
-                        "dateOfBirth"	TEXT,
-                        "squadNumber"	INTEGER NOT NULL,
-                        "position"      TEXT NOT NULL,
-                        "abbrPosition"  TEXT,
-                        "team"          TEXT,
-                        "league"    	TEXT,
-                        "starting11"    BOOLEAN,
-                                        PRIMARY KEY("id")
-                    );
-                """;
-
-            dbCommand.ExecuteNonQuery();
-        }
-
-        context.AddRange(PlayerDataBuilder.SeedWithDeserializedJson());
-        context.SaveChanges();
+        PlayerDatabaseBuilder.CreateDatabase(context);
+        PlayerDatabaseBuilder.Seed(context);
     }
 
-    PlayerContext CreatePlayerContext() => new PlayerContext(dbContextOptions);
-
-    public void Dispose() => dbConnection.Dispose();
+    public void Dispose()
+    {
+        context.Dispose();
+        dbConnection.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     [Fact]
     [Trait("Category", "Retrieve")]
@@ -67,9 +37,8 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var players = PlayerDataBuilder.SeedWithDeserializedJson();
-        var context = CreatePlayerContext();
-        var logger = CreateLoggerMock();
-        var memoryCache = CreateMemoryCacheMock(It.IsAny<object>());
+        var logger = PlayerMocksBuilder.CreateLoggerMock<PlayerService>();
+        var memoryCache = PlayerMocksBuilder.CreateMemoryCacheMock(It.IsAny<object>());
 
         var service = new PlayerService(context, logger, memoryCache);
 
@@ -86,9 +55,8 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var players = PlayerDataBuilder.SeedWithDeserializedJson();
-        var context = CreatePlayerContext();
-        var logger = CreateLoggerMock();
-        var memoryCache = CreateMemoryCacheMock(players);
+        var logger = PlayerMocksBuilder.CreateLoggerMock<PlayerService>();
+        var memoryCache = PlayerMocksBuilder.CreateMemoryCacheMock(players);
 
         var service = new PlayerService(context, logger, memoryCache);
 
@@ -106,9 +74,8 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var player = PlayerDataBuilder.SeedOneById(10);
-        var context = CreatePlayerContext();
-        var logger = CreateLoggerMock();
-        var memoryCache = CreateMemoryCacheMock(It.IsAny<object>());
+        var logger = PlayerMocksBuilder.CreateLoggerMock<PlayerService>();
+        var memoryCache = PlayerMocksBuilder.CreateMemoryCacheMock(It.IsAny<object>());
 
         var service = new PlayerService(context, logger, memoryCache);
 
@@ -129,30 +96,5 @@ public class PlayerServiceTests : IDisposable
         stopwatch.Stop();
 
         return stopwatch.ElapsedMilliseconds;
-    }
-
-    private static ILogger<PlayerService> CreateLoggerMock()
-    {
-        var mock = new Mock<ILogger<PlayerService>>();
-
-        return mock.Object;
-    }
-
-    private static IMemoryCache CreateMemoryCacheMock(object? value)
-    {
-        var mock = new Mock<IMemoryCache>();
-        var fromCahe = false;
-
-        mock.Setup(x => x.TryGetValue(It.IsAny<object>(), out value))
-            .Returns(() =>
-            {
-                bool hasValue = fromCahe;
-                fromCahe = true; // Subsequent invocations will return true
-                return hasValue;
-            });
-
-        mock.Setup(x => x.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>);
-
-        return mock.Object;
     }
 }
