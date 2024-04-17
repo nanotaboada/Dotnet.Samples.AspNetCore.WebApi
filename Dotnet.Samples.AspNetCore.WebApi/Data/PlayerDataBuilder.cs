@@ -1,21 +1,21 @@
-﻿using System.Text.Json;
+﻿using System.IO.Compression;
+using System.Text.Json;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Data;
 
 public static class PlayerDataBuilder
 {
-    public static Player? SeedOneById(int id)
+    public static Player SeedOneById(int id)
     {
-        return SeedWithStarting11().SingleOrDefault(player => player.Id == id);
+        return SeedWithStarting11().SingleOrDefault(player => player.Id == id) ?? new Player();
     }
 
     public static List<Player> SeedWithStarting11()
     {
-        var players = new List<Player>();
-
-        players.Add(
-            new Player
+        var players = new List<Player>
+        {
+            new()
             {
                 Id = 1,
                 FirstName = "Damián",
@@ -28,11 +28,8 @@ public static class PlayerDataBuilder
                 Team = "Aston Villa FC",
                 League = "Premier League",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 2,
                 FirstName = "Nahuel",
@@ -44,11 +41,8 @@ public static class PlayerDataBuilder
                 Team = "Altético Madrid",
                 League = "La Liga",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 3,
                 FirstName = "Cristian",
@@ -61,11 +55,8 @@ public static class PlayerDataBuilder
                 Team = "Tottenham Hotspur",
                 League = "Premier League",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 4,
                 FirstName = "Nicolás",
@@ -78,11 +69,8 @@ public static class PlayerDataBuilder
                 Team = "SL Benfica",
                 League = "Liga Portugal",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 5,
                 FirstName = "Nicolás",
@@ -95,11 +83,8 @@ public static class PlayerDataBuilder
                 Team = "Olympique Lyon",
                 League = "Ligue 1",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 6,
                 FirstName = "Ángel",
@@ -112,11 +97,8 @@ public static class PlayerDataBuilder
                 Team = "SL Benfica",
                 League = "Liga Portugal",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 7,
                 FirstName = "Rodrigo",
@@ -129,11 +111,8 @@ public static class PlayerDataBuilder
                 Team = "Altético Madrid",
                 League = "La Liga",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 8,
                 FirstName = "Enzo",
@@ -146,11 +125,8 @@ public static class PlayerDataBuilder
                 Team = "Chelsea FC",
                 League = "Premier League",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 9,
                 FirstName = "Alexis",
@@ -162,11 +138,8 @@ public static class PlayerDataBuilder
                 Team = "Liverpool FC",
                 League = "Premier League",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 10,
                 FirstName = "Lionel",
@@ -179,11 +152,8 @@ public static class PlayerDataBuilder
                 Team = "Inter Miami CF",
                 League = "Major League Soccer",
                 Starting11 = true,
-            }
-        );
-
-        players.Add(
-            new Player
+            },
+            new()
             {
                 Id = 11,
                 FirstName = "Julián",
@@ -195,8 +165,22 @@ public static class PlayerDataBuilder
                 Team = "Manchester City",
                 League = "Premier League",
                 Starting11 = true,
+            },
+            new()
+            {
+                Id = 12,
+                FirstName = "Leandro",
+                MiddleName = "Daniel",
+                LastName = "Paredes",
+                DateOfBirth = new DateTime(1994, 06, 29, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 5,
+                Position = "Defensive Midfield",
+                AbbrPosition = "DM",
+                Team = "AS Roma",
+                League = "Serie A",
+                Starting11 = false
             }
-        );
+        };
 
         return players;
     }

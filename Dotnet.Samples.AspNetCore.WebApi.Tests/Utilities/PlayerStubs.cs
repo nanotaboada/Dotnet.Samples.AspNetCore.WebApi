@@ -2,6 +2,7 @@ using System;
 using System.Data.Common;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -55,6 +56,13 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests
         {
             context.AddRange(PlayerDataBuilder.SeedWithDeserializedJson());
             context.SaveChanges();
+        }
+
+        public static ModelStateDictionary CreateModelError(string key, string errorMessage)
+        {
+            var modelStateDictionary = new ModelStateDictionary();
+            modelStateDictionary.AddModelError(key, errorMessage);
+            return modelStateDictionary;
         }
     }
 }

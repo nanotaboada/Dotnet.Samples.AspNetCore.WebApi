@@ -23,15 +23,19 @@ public class PlayersController(IPlayerService playerService, ILogger<PlayersCont
     [ProducesResponseType<Player>(StatusCodes.Status201Created)]
     public async Task<IResult> PostAsync(Player player)
     {
-        if (await _playerService.RetrieveByIdAsync(player.Id) != null)
+        if (!ModelState.IsValid)
+        {
+            return Results.BadRequest();
+        }
+        else if (await _playerService.RetrieveByIdAsync(player.Id) != null)
         {
             return Results.Conflict();
         }
         else
         {
             await _playerService.CreateAsync(player);
-
             var location = Url.Action(nameof(PostAsync), new { id = player.Id }) ?? $"/{player.Id}";
+
             return Results.Created(location, player);
         }
     }
@@ -85,7 +89,7 @@ public class PlayersController(IPlayerService playerService, ILogger<PlayersCont
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IResult> PutAsync(long id, Player player)
     {
-        if (id != player.Id)
+        if (!ModelState.IsValid)
         {
             return Results.BadRequest();
         }
