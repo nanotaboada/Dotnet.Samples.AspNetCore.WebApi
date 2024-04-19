@@ -154,6 +154,9 @@ coverage*.info
 *.coverage
 *.coveragexml
 
+# dotnet test code coverage results
+coverage
+
 # NCrunch
 _NCrunch_*
 .*crunch*.local.xml
