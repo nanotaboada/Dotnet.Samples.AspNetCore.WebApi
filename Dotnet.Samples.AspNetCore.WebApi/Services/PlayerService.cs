@@ -6,7 +6,9 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Services;
 
 public class PlayerService : IPlayerService
 {
-    private const string MemoryCacheKey_Retrieve = "MemoryCacheKey_Retrieve";
+    private const string MemoryCache_Key_RetrieveAsync = "MemoryCache_Key_RetrieveAsync";
+    private const string EnvironmentVariable_Key = "ASPNETCORE_ENVIRONMENT";
+    private const string EnvironmentVariable_Value = "Development";
     private readonly PlayerContext _playerContext;
     private readonly ILogger<PlayerService> _logger;
     private readonly IMemoryCache _memoryCache;
@@ -30,7 +32,7 @@ public class PlayerService : IPlayerService
     {
         _playerContext.Entry(player).State = EntityState.Added;
         await _playerContext.SaveChangesAsync();
-        _memoryCache.Remove(MemoryCacheKey_Retrieve);
+        _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
     }
 
     /* -------------------------------------------------------------------------
@@ -39,18 +41,28 @@ public class PlayerService : IPlayerService
 
     public async Task<List<Player>> RetrieveAsync()
     {
-        if (_memoryCache.TryGetValue(MemoryCacheKey_Retrieve, out List<Player>? players))
+        if (_memoryCache.TryGetValue(MemoryCache_Key_RetrieveAsync, out List<Player>? players))
         {
             _logger.Log(LogLevel.Information, "Players retrieved from MemoryCache.");
             return players!;
         }
         else
         {
-            // Simulates a random delay
-            await Task.Delay(new Random().Next(2600, 4200));
+            /*
+                Use multiple environments in ASP.NET Core
+                https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-8.0
+            */
+            if (
+                Environment.GetEnvironmentVariable(EnvironmentVariable_Key)
+                == EnvironmentVariable_Value
+            )
+            {
+                // Simulates a random delay
+                await Task.Delay(new Random().Next(2600, 4200));
+            }
 
             players = await _playerContext.Players.ToListAsync();
-            _memoryCache.Set(MemoryCacheKey_Retrieve, players, GetMemoryCacheEntryOptions());
+            _memoryCache.Set(MemoryCache_Key_RetrieveAsync, players, GetMemoryCacheEntryOptions());
 
             _logger.Log(LogLevel.Information, "Players retrieved from DbContext.");
             return players;
@@ -68,25 +80,11 @@ public class PlayerService : IPlayerService
 
     public async Task UpdateAsync(Player player)
     {
-        _playerContext.Entry(player).State = EntityState.Modified;
-
-        try
+        if (await _playerContext.Players.FindAsync(player.Id) != null)
         {
+            _playerContext.Entry(player).State = EntityState.Modified;
             await _playerContext.SaveChangesAsync();
-            _memoryCache.Remove(MemoryCacheKey_Retrieve);
-        }
-        catch (DbUpdateConcurrencyException exception)
-        {
-            // https://learn.microsoft.com/en-us/ef/core/saving/concurrency
-            foreach (var entry in exception.Entries)
-            {
-                if (entry.Entity is Player)
-                {
-                    throw new NotImplementedException(
-                        "Concurrency conflicts handling not implemented for " + entry.Metadata.Name
-                    );
-                }
-            }
+            _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
         }
     }
 
@@ -102,7 +100,7 @@ public class PlayerService : IPlayerService
         {
             _playerContext.Entry(player).State = EntityState.Deleted;
             await _playerContext.SaveChangesAsync();
-            _memoryCache.Remove(MemoryCacheKey_Retrieve);
+            _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
         }
     }
 

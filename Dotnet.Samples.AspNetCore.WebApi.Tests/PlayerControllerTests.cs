@@ -24,7 +24,7 @@ public class PlayerControllerTests
         var service = new Mock<IPlayerService>();
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
         controller.ModelState.Merge(PlayerStubs.CreateModelError("FirstName", "Required"));
 
         // Act
@@ -46,7 +46,7 @@ public class PlayerControllerTests
         service.Setup(service => service.RetrieveByIdAsync(It.IsAny<long>())).ReturnsAsync(player);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
         var result = await controller.PostAsync(player);
@@ -72,9 +72,9 @@ public class PlayerControllerTests
         service.Setup(service => service.CreateAsync(It.IsAny<Player>()));
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger)
+        var controller = new PlayersController(service.Object, logger.Object)
         {
-            Url = PlayerMocks.UrlHelperMock()
+            Url = PlayerMocks.UrlHelperMock().Object,
         };
 
         // Act
@@ -102,7 +102,7 @@ public class PlayerControllerTests
         service.Setup(service => service.RetrieveAsync()).ReturnsAsync(players);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
         var result = await controller.GetAsync();
@@ -126,7 +126,7 @@ public class PlayerControllerTests
         service.Setup(service => service.RetrieveAsync()).ReturnsAsync(players);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
         var result = await controller.GetAsync();
@@ -149,7 +149,7 @@ public class PlayerControllerTests
             .ReturnsAsync(null as Player);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
         var result = await controller.GetByIdAsync(It.IsAny<long>());
@@ -171,7 +171,7 @@ public class PlayerControllerTests
         service.Setup(service => service.RetrieveByIdAsync(It.IsAny<long>())).ReturnsAsync(player);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
         var result = await controller.GetByIdAsync(It.IsAny<long>());
@@ -197,7 +197,7 @@ public class PlayerControllerTests
         var service = new Mock<IPlayerService>();
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
         controller.ModelState.Merge(PlayerStubs.CreateModelError("FirstName", "Required"));
 
         // Act
@@ -220,7 +220,7 @@ public class PlayerControllerTests
             .ReturnsAsync(null as Player);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
         var result = await controller.PutAsync(It.IsAny<long>(), It.IsAny<Player>());
@@ -244,7 +244,7 @@ public class PlayerControllerTests
         service.Setup(service => service.UpdateAsync(It.IsAny<Player>()));
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
         var result = await controller.PutAsync(id, player);
@@ -272,7 +272,7 @@ public class PlayerControllerTests
             .ReturnsAsync(null as Player);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
         var result = await controller.DeleteAsync(It.IsAny<long>());
@@ -295,7 +295,7 @@ public class PlayerControllerTests
         service.Setup(service => service.DeleteAsync(It.IsAny<long>()));
         var logger = PlayerMocks.LoggerMock<PlayersController>();
 
-        var controller = new PlayersController(service.Object, logger);
+        var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
         var result = await controller.DeleteAsync(It.IsAny<long>());
