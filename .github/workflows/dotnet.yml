@@ -22,6 +22,9 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: Install dotnet-coverage
+      run: dotnet tool install -g dotnet-coverage
+
     - name: Restore dependencies
       run: dotnet restore
 
@@ -29,10 +32,56 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Run tests and collect coverage
-      run: dotnet test --no-build --collect:"XPlat Code Coverage"
+      run: dotnet-coverage collect --output-format "cobertura" --output "./cobertura.xml" "dotnet test --no-build"
+
+    - name: Upload coverage report artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: cobertura.xml
+        path: ./cobertura.xml
+
+  coverage-codecov:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download coverage report artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: cobertura.xml
+
+    - name: Display structure of downloaded files
+      run: ls -R cobertura.xml
 
     - name: Upload coverage report to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v4.3.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        files: cobertura.xml
+        use_oidc: false
+        verbose: true
 
+  coverage-codacy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download coverage report artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: cobertura.xml
+
+    - name: Display coverage report file
+      run: ls -lah cobertura.xml
+
+    - name: Upload coverage report to Codacy
+      uses: codacy/codacy-coverage-reporter-action@v1.3.0
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: cobertura.xml
