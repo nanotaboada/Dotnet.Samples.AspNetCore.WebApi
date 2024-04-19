@@ -54,7 +54,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests
 
         public static void SeedContext(PlayerContext context)
         {
-            context.AddRange(PlayerDataBuilder.SeedWithDeserializedJson());
+            context.AddRange(PlayerDataBuilder.SeedWithStarting11());
             context.SaveChanges();
         }
 

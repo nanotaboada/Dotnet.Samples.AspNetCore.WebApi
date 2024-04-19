@@ -21,6 +21,7 @@ public class PlayerServiceTests : IDisposable
         _context = PlayerStubs.CreateContext(_dbContextOptions);
         PlayerStubs.CreateTable(_context);
         PlayerStubs.SeedContext(_context);
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
     }
 
     public void Dispose()
@@ -31,44 +32,54 @@ public class PlayerServiceTests : IDisposable
     }
 
     [Fact]
-    [Trait("Category", "Retrieve")]
+    [Trait("Category", "RetrieveAsync")]
     public async Task GivenRetrieveAsync_WhenInvoked_ThenShouldReturnAllPlayers()
     {
         // Arrange
-        var players = PlayerDataBuilder.SeedWithDeserializedJson();
+        var players = PlayerDataBuilder.SeedWithStarting11();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
+        var value = It.IsAny<object>();
 
-        var service = new PlayerService(_context, logger, memoryCache);
+        var service = new PlayerService(_context, logger.Object, memoryCache.Object);
 
         // Act
         var result = await service.RetrieveAsync();
 
         // Assert
+        memoryCache.Verify(
+            cache => cache.TryGetValue(It.IsAny<object>(), out value),
+            Times.Exactly(1)
+        );
         result.Should().BeEquivalentTo(players);
     }
 
     [Fact]
-    [Trait("Category", "Retrieve")]
+    [Trait("Category", "RetrieveAsync")]
     public async Task GivenRetrieveAsync_WhenInvokedTwice_ThenSecondExecutionTimeShouldBeLessThanFirst()
     {
         // Arrange
-        var players = PlayerDataBuilder.SeedWithDeserializedJson();
+        var players = PlayerDataBuilder.SeedWithStarting11();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(players);
+        var value = It.IsAny<object>();
 
-        var service = new PlayerService(_context, logger, memoryCache);
+        var service = new PlayerService(_context, logger.Object, memoryCache.Object);
 
         // Act
         var first = await ExecutionTimeAsync(() => service.RetrieveAsync());
         var second = await ExecutionTimeAsync(() => service.RetrieveAsync());
 
         // Assert
+        memoryCache.Verify(
+            cache => cache.TryGetValue(It.IsAny<object>(), out value),
+            Times.Exactly(2) // first + second
+        );
         second.Should().BeLessThan(first);
     }
 
     [Fact]
-    [Trait("Category", "Retrieve")]
+    [Trait("Category", "RetrieveByIdAsync")]
     public async Task GivenRetrieveByIdAsync_WhenInvokedWithPlayerId_ThenShouldReturnThePlayer()
     {
         // Arrange
@@ -76,7 +87,7 @@ public class PlayerServiceTests : IDisposable
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
-        var service = new PlayerService(_context, logger, memoryCache);
+        var service = new PlayerService(_context, logger.Object, memoryCache.Object);
 
         // Act
         var result = await service.RetrieveByIdAsync(10);
