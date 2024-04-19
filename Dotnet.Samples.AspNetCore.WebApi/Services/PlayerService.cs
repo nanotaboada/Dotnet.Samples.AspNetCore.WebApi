@@ -1,4 +1,5 @@
-﻿using Dotnet.Samples.AspNetCore.WebApi.Models;
+﻿using Dotnet.Samples.AspNetCore.WebApi.Data;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -80,9 +81,14 @@ public class PlayerService : IPlayerService
 
     public async Task UpdateAsync(Player player)
     {
-        if (await _playerContext.Players.FindAsync(player.Id) != null)
+        var entity = await _playerContext.Players.FindAsync(player.Id);
+
+        if (entity != null)
         {
-            _playerContext.Entry(player).State = EntityState.Modified;
+            // TODO: Add AutoMapper
+            entity.MapFrom(player);
+
+            _playerContext.Entry(entity).State = EntityState.Modified;
             await _playerContext.SaveChangesAsync();
             _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
         }
@@ -94,11 +100,11 @@ public class PlayerService : IPlayerService
 
     public async Task DeleteAsync(long id)
     {
-        var player = await _playerContext.Players.FindAsync(id);
+        var entity = await _playerContext.Players.FindAsync(id);
 
-        if (player != null)
+        if (entity != null)
         {
-            _playerContext.Entry(player).State = EntityState.Deleted;
+            _playerContext.Entry(entity).State = EntityState.Deleted;
             await _playerContext.SaveChangesAsync();
             _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
         }

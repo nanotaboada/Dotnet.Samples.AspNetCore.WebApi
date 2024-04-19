@@ -1,5 +1,4 @@
-﻿using System.IO.Compression;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Data;
@@ -10,6 +9,22 @@ public static class PlayerDataBuilder
     {
         return SeedWithStarting11().SingleOrDefault(player => player.Id == id) ?? new Player();
     }
+
+    public static Player SeedOneNew() =>
+        new()
+        {
+            Id = 12,
+            FirstName = "Leandro",
+            MiddleName = "Daniel",
+            LastName = "Paredes",
+            DateOfBirth = new DateTime(1994, 06, 29, 0, 0, 0, DateTimeKind.Utc),
+            SquadNumber = 5,
+            Position = "Defensive Midfield",
+            AbbrPosition = "DM",
+            Team = "AS Roma",
+            League = "Serie A",
+            Starting11 = false
+        };
 
     public static List<Player> SeedWithStarting11()
     {
@@ -165,20 +180,6 @@ public static class PlayerDataBuilder
                 Team = "Manchester City",
                 League = "Premier League",
                 Starting11 = true,
-            },
-            new()
-            {
-                Id = 12,
-                FirstName = "Leandro",
-                MiddleName = "Daniel",
-                LastName = "Paredes",
-                DateOfBirth = new DateTime(1994, 06, 29, 0, 0, 0, DateTimeKind.Utc),
-                SquadNumber = 5,
-                Position = "Defensive Midfield",
-                AbbrPosition = "DM",
-                Team = "AS Roma",
-                League = "Serie A",
-                Starting11 = false
             }
         };
 

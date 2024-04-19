@@ -63,7 +63,7 @@ public class PlayerControllerTests
     public async Task GivenPostAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe201Created()
     {
         // Arrange
-        var player = PlayerDataBuilder.SeedOneById(12);
+        var player = PlayerDataBuilder.SeedOneNew();
 
         var service = new Mock<IPlayerService>();
         service
