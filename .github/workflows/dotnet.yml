@@ -10,6 +10,7 @@ on:
     branches: [ "master" ]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -28,11 +29,72 @@ jobs:
     - name: Build projects
       run: dotnet build --no-restore
 
-    - name: Run tests and collect coverage
-      run: dotnet test --no-build --collect:"XPlat Code Coverage"
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run tests and collect code coverage (Cobertura)
+        run: dotnet test --results-directory "coverage" --collect:"Code Coverage;Format=cobertura"
+      - name: Install dotnet-coverage
+        run: dotnet tool update --global dotnet-coverage
+      - name: Merge coverage reports
+        run: dotnet-coverage merge coverage/**/*.cobertura.xml --output coverage/cobertura.xml --output-format cobertura
+      - name: Install ReportGenerator 
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      - name: Run ReportGenerator to generate Markdown summary
+        run: reportgenerator -reports:coverage/cobertura.xml -targetdir:coverage -reporttypes:"MarkdownSummaryGithub"
+      - name: Display Markdown summary
+        run: cat coverage/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura.xml
+          path: coverage/cobertura.xml
+
+  coverage-codecov:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download coverage report artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: cobertura.xml
+
+    - name: Display structure of downloaded files
+      run: ls -R cobertura.xml
 
     - name: Upload coverage report to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v4.3.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        files: cobertura.xml
+        use_oidc: false
+        verbose: true
 
+  coverage-codacy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download coverage report artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: cobertura.xml
+
+    - name: Display coverage report file
+      run: ls -lah cobertura.xml
+
+    - name: Upload coverage report to Codacy
+      uses: codacy/codacy-coverage-reporter-action@v1.3.0
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: cobertura.xml
