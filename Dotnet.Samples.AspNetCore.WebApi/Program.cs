@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 var dataSource =
     $"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}/Data/players-sqlite3.db";
 
-builder.Services.AddDbContext<PlayerContext>(options =>
+builder.Services.AddDbContextPool<PlayerContext>(options =>
     options.UseSqlite($"Data Source={dataSource}")
 );
 
