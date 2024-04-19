@@ -1,0 +1,13 @@
+exclude_paths:
+  - ".github"
+  - ".vscode"
+  - ".gitignore"
+  - "LICENSE"
+  - "README.md"
+  - "Dotnet.Samples.AspNetCore.WebApi.sln"
+  - "Dotnet.Samples.AspNetCore.WebApi/*.json"
+  - "Dotnet.Samples.AspNetCore.WebApi/Program.cs"
+  - "Dotnet.Samples.AspNetCore.WebApi/Data/**"
+  - "Dotnet.Samples.AspNetCore.WebApi/Migrations/**"
+  - "Dotnet.Samples.AspNetCore.WebApi/Models/**"
+  - "Dotnet.Samples.AspNetCore.WebApi.Tests/**"
