@@ -7,11 +7,11 @@
 # The pattern folder/* will not match recursively in the folder.
 # Please use this folder/**/*, which will exclude all files within the given folder.
 ignore:
-  - "Dotnet.Samples.AspNetCore.WebApi/Data/**/*"
-  - "Dotnet.Samples.AspNetCore.WebApi/Migrations/**/*"
-  - "Dotnet.Samples.AspNetCore.WebApi/Models/**/*"
-  - "Dotnet.Samples.AspNetCore.WebApi.Tests/**/*"
-  - "Program.cs"
+  - "Dotnet.Samples.AspNetCore.WebApi/Data"
+  - "Dotnet.Samples.AspNetCore.WebApi/Migrations"
+  - "Dotnet.Samples.AspNetCore.WebApi/Models"
+  - "Dotnet.Samples.AspNetCore.WebApi/Program.cs"
+  - "Dotnet.Samples.AspNetCore.WebApi.Tests"
 
 coverage:
   status:
@@ -20,10 +20,10 @@ coverage:
     project:
       controllers:
         paths:
-          - "Dotnet.Samples.AspNetCore.WebApi/Controllers/**/*"
+          - "Dotnet.Samples.AspNetCore.WebApi/Controllers/"
       services:
         paths:
-          - "Dotnet.Samples.AspNetCore.WebApi/Services/**/*"
+          - "Dotnet.Samples.AspNetCore.WebApi/Services/"
     patch:
       default:
         informational: true
