@@ -10,12 +10,12 @@ public class PlayerService : IPlayerService
     private const string MemoryCache_Key_RetrieveAsync = "MemoryCache_Key_RetrieveAsync";
     private const string EnvironmentVariable_Key = "ASPNETCORE_ENVIRONMENT";
     private const string EnvironmentVariable_Value = "Development";
-    private readonly PlayerContext _playerContext;
+    private readonly PlayerDbContext _playerContext;
     private readonly ILogger<PlayerService> _logger;
     private readonly IMemoryCache _memoryCache;
 
     public PlayerService(
-        PlayerContext playerContext,
+        PlayerDbContext playerContext,
         ILogger<PlayerService> logger,
         IMemoryCache memoryCache
     )

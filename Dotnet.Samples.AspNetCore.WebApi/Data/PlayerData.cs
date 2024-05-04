@@ -3,14 +3,14 @@ using Dotnet.Samples.AspNetCore.WebApi.Models;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Data;
 
-public static class PlayerDataBuilder
+public static class PlayerData
 {
-    public static Player SeedOneById(int id)
+    public static Player CreateOneByIdFromStarting11(int id)
     {
-        return SeedWithStarting11().SingleOrDefault(player => player.Id == id) ?? new Player();
+        return CreateStarting11().SingleOrDefault(player => player.Id == id) ?? new();
     }
 
-    public static Player SeedOneNew() =>
+    public static Player CreateOneNew() =>
         new()
         {
             Id = 12,
@@ -26,10 +26,10 @@ public static class PlayerDataBuilder
             Starting11 = false
         };
 
-    public static List<Player> SeedWithStarting11()
+    public static List<Player> CreateStarting11()
     {
-        var players = new List<Player>
-        {
+        return
+        [
             new()
             {
                 Id = 1,
@@ -181,12 +181,16 @@ public static class PlayerDataBuilder
                 League = "Premier League",
                 Starting11 = true,
             }
-        };
-
-        return players;
+        ];
     }
 
-    public static List<Player> SeedWithDeserializedJson()
+    /// <summary>
+    /// The purpose of this method is to demonstrate the capabilities of
+    /// System.Text.Json.JsonSerializer
+    /// https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/deserialization
+    /// </summary>
+    /// <returns>A list of Players.</returns>
+    public static List<Player> CreateFromDeserializedJson()
     {
         var players = new List<Player>();
 

@@ -1,8 +1,6 @@
 using System.Reflection;
-using Dotnet.Samples.AspNetCore.WebApi;
-using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -17,7 +15,7 @@ builder.Services.AddControllers();
 var dataSource =
     $"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}/Data/players-sqlite3.db";
 
-builder.Services.AddDbContextPool<PlayerContext>(options =>
+builder.Services.AddDbContextPool<PlayerDbContext>(options =>
     options.UseSqlite($"Data Source={dataSource}")
 );
 
@@ -75,8 +73,11 @@ app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
 
-// Data seeding
-// https://learn.microsoft.com/en-us/ef/core/modeling/data-seeding
-PlayerContextInitializer.Seed(app);
+/* -----------------------------------------------------------------------------
+ * Data Seeding
+ * https://learn.microsoft.com/en-us/ef/core/modeling/data-seeding
+ * -------------------------------------------------------------------------- */
+
+app.SeedDbContext();
 
 app.Run();

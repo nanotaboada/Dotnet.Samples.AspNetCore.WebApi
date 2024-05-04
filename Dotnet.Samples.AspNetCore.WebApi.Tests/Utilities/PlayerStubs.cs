@@ -1,7 +1,5 @@
-using System;
 using System.Data.Common;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
-using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -10,21 +8,21 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests
 {
     public static class PlayerStubs
     {
-        public static (DbConnection, DbContextOptions<PlayerContext>) CreateSqliteConnection()
+        public static (DbConnection, DbContextOptions<PlayerDbContext>) CreateSqliteConnection()
         {
             var dbConnection = new SqliteConnection("Filename=:memory:");
             dbConnection.Open();
 
-            var dbContextOptions = new DbContextOptionsBuilder<PlayerContext>()
+            var dbContextOptions = new DbContextOptionsBuilder<PlayerDbContext>()
                 .UseSqlite(dbConnection)
                 .Options;
 
             return (dbConnection, dbContextOptions);
         }
 
-        public static void CreateTable(PlayerContext context)
+        public static void CreateTable(PlayerDbContext dbContext)
         {
-            using var dbCommand = context.Database.GetDbConnection().CreateCommand();
+            using var dbCommand = dbContext.Database.GetDbConnection().CreateCommand();
 
             dbCommand.CommandText =
                 @"
@@ -47,15 +45,17 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests
             dbCommand.ExecuteNonQuery();
         }
 
-        public static PlayerContext CreateContext(DbContextOptions<PlayerContext> dbContextOptions)
+        public static PlayerDbContext CreateDbContext(
+            DbContextOptions<PlayerDbContext> dbContextOptions
+        )
         {
-            return new PlayerContext(dbContextOptions);
+            return new PlayerDbContext(dbContextOptions);
         }
 
-        public static void SeedContext(PlayerContext context)
+        public static void SeedDbContext(PlayerDbContext dbContext)
         {
-            context.AddRange(PlayerDataBuilder.SeedWithStarting11());
-            context.SaveChanges();
+            dbContext.AddRange(PlayerData.CreateStarting11());
+            dbContext.SaveChanges();
         }
 
         public static ModelStateDictionary CreateModelError(string key, string errorMessage)
