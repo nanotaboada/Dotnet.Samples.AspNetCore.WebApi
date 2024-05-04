@@ -13,11 +13,21 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 steps:
 - task: NuGetToolInstaller@1
 
+- task: Cache@2
+  inputs:
+    key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
+    restoreKeys: |
+      nuget | "$(Agent.OS)"
+    path: '$(NUGET_PACKAGES)'
+    cacheHitVar: 'CACHE_RESTORED'
+
 - task: NuGetCommand@2
+  condition: ne(variables.CACHE_RESTORED, true)
   inputs:
     restoreSolution: '$(solution)'
 
