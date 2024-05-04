@@ -28,11 +28,10 @@ public class PlayerControllerTests
         controller.ModelState.Merge(PlayerStubs.CreateModelError("FirstName", "Required"));
 
         // Act
-        var result = await controller.PostAsync(It.IsAny<Player>());
+        var response = await controller.PostAsync(It.IsAny<Player>()) as BadRequest;
 
         // Assert
-        result.Should().BeOfType<BadRequest>();
-        var response = result as BadRequest;
+        response.Should().NotBeNull().And.BeOfType<BadRequest>();
         response?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
@@ -49,12 +48,11 @@ public class PlayerControllerTests
         var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
-        var result = await controller.PostAsync(player);
+        var response = await controller.PostAsync(player) as Conflict;
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Exactly(1));
-        result.Should().BeOfType<Conflict>();
-        var response = result as Conflict;
+        response.Should().NotBeNull().And.BeOfType<Conflict>();
         response?.StatusCode.Should().Be(StatusCodes.Status409Conflict);
     }
 
@@ -78,13 +76,12 @@ public class PlayerControllerTests
         };
 
         // Act
-        var result = await controller.PostAsync(player);
+        var response = await controller.PostAsync(player) as Created<Player>;
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Exactly(1));
         service.Verify(service => service.CreateAsync(It.IsAny<Player>()), Times.Exactly(1));
-        result.Should().BeOfType<Created<Player>>();
-        var response = result as Created<Player>;
+        response.Should().NotBeNull().And.BeOfType<Created<Player>>();
         response?.StatusCode.Should().Be(StatusCodes.Status201Created);
     }
 
@@ -105,14 +102,13 @@ public class PlayerControllerTests
         var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
-        var result = await controller.GetAsync();
+        var response = await controller.GetAsync() as Ok<List<Player>>;
 
         // Assert
         service.Verify(service => service.RetrieveAsync(), Times.Exactly(1));
-        result.Should().BeOfType<Ok<List<Player>>>();
-        var response = result as Ok<List<Player>>;
+        response.Should().NotBeNull().And.BeOfType<Ok<List<Player>>>();
         response?.StatusCode.Should().Be(StatusCodes.Status200OK);
-        response?.Value.Should().BeOfType<List<Player>>();
+        response?.Value.Should().NotBeNull().And.BeOfType<List<Player>>();
         response?.Value.Should().BeEquivalentTo(players);
     }
 
@@ -129,12 +125,11 @@ public class PlayerControllerTests
         var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
-        var result = await controller.GetAsync();
+        var response = await controller.GetAsync() as NotFound;
 
         // Assert
         service.Verify(service => service.RetrieveAsync(), Times.Exactly(1));
-        result.Should().BeOfType<NotFound>();
-        var response = result as NotFound;
+        response.Should().NotBeNull().And.BeOfType<NotFound>();
         response?.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
@@ -152,12 +147,12 @@ public class PlayerControllerTests
         var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
-        var result = await controller.GetByIdAsync(It.IsAny<long>());
+        var response = await controller.GetByIdAsync(It.IsAny<long>()) as NotFound;
+        ;
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Exactly(1));
-        result.Should().BeOfType<NotFound>();
-        var response = result as NotFound;
+        response.Should().NotBeNull().And.BeOfType<NotFound>();
         response?.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
@@ -174,14 +169,13 @@ public class PlayerControllerTests
         var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
-        var result = await controller.GetByIdAsync(It.IsAny<long>());
+        var response = await controller.GetByIdAsync(It.IsAny<long>()) as Ok<Player>;
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Exactly(1));
-        result.Should().BeOfType<Ok<Player>>();
-        var response = result as Ok<Player>;
+        response.Should().NotBeNull().And.BeOfType<Ok<Player>>();
         response?.StatusCode.Should().Be(StatusCodes.Status200OK);
-        response?.Value.Should().BeOfType<Player>();
+        response?.Value.Should().NotBeNull().And.BeOfType<Player>();
         response?.Value.Should().BeEquivalentTo(player);
     }
 
@@ -201,11 +195,11 @@ public class PlayerControllerTests
         controller.ModelState.Merge(PlayerStubs.CreateModelError("FirstName", "Required"));
 
         // Act
-        var result = await controller.PutAsync(It.IsAny<long>(), It.IsAny<Player>());
+        var response =
+            await controller.PutAsync(It.IsAny<long>(), It.IsAny<Player>()) as BadRequest;
 
         // Assert
-        result.Should().BeOfType<BadRequest>();
-        var response = result as BadRequest;
+        response.Should().NotBeNull().And.BeOfType<BadRequest>();
         response?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
@@ -223,12 +217,11 @@ public class PlayerControllerTests
         var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
-        var result = await controller.PutAsync(It.IsAny<long>(), It.IsAny<Player>());
+        var response = await controller.PutAsync(It.IsAny<long>(), It.IsAny<Player>()) as NotFound;
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Exactly(1));
-        result.Should().BeOfType<NotFound>();
-        var response = result as NotFound;
+        response.Should().NotBeNull().And.BeOfType<NotFound>();
         response?.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
@@ -247,13 +240,12 @@ public class PlayerControllerTests
         var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
-        var result = await controller.PutAsync(id, player);
+        var response = await controller.PutAsync(id, player) as NoContent;
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Exactly(1));
         service.Verify(service => service.UpdateAsync(It.IsAny<Player>()), Times.Exactly(1));
-        result.Should().BeOfType<NoContent>();
-        var response = result as NoContent;
+        response.Should().NotBeNull().And.BeOfType<NoContent>();
         response?.StatusCode.Should().Be(StatusCodes.Status204NoContent);
     }
 
@@ -275,12 +267,11 @@ public class PlayerControllerTests
         var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
-        var result = await controller.DeleteAsync(It.IsAny<long>());
+        var response = await controller.DeleteAsync(It.IsAny<long>()) as NotFound;
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Exactly(1));
-        result.Should().BeOfType<NotFound>();
-        var response = result as NotFound;
+        response.Should().NotBeNull().And.BeOfType<NotFound>();
         response?.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
@@ -298,13 +289,12 @@ public class PlayerControllerTests
         var controller = new PlayersController(service.Object, logger.Object);
 
         // Act
-        var result = await controller.DeleteAsync(It.IsAny<long>());
+        var response = await controller.DeleteAsync(It.IsAny<long>()) as NoContent;
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Exactly(1));
         service.Verify(service => service.DeleteAsync(It.IsAny<long>()), Times.Exactly(1));
-        result.Should().BeOfType<NoContent>();
-        var response = result as NoContent;
+        response.Should().NotBeNull().And.BeOfType<NoContent>();
         response?.StatusCode.Should().Be(StatusCodes.Status204NoContent);
     }
 }

@@ -32,18 +32,16 @@ public class PlayersController(IPlayerService playerService, ILogger<PlayersCont
     {
         if (!ModelState.IsValid)
         {
-            return Results.BadRequest();
+            return TypedResults.BadRequest();
         }
         else if (await _playerService.RetrieveByIdAsync(player.Id) != null)
         {
-            return Results.Conflict();
+            return TypedResults.Conflict();
         }
         else
         {
             await _playerService.CreateAsync(player);
-            var location = Url.Action(nameof(PostAsync), new { id = player.Id }) ?? $"/{player.Id}";
-
-            return Results.Created(location, player);
+            return TypedResults.Created($"/players/{player.Id}", player);
         }
     }
 
@@ -65,11 +63,11 @@ public class PlayersController(IPlayerService playerService, ILogger<PlayersCont
 
         if (players.Count > 0)
         {
-            return Results.Ok(players);
+            return TypedResults.Ok(players);
         }
         else
         {
-            return Results.NotFound();
+            return TypedResults.NotFound();
         }
     }
 
@@ -88,11 +86,11 @@ public class PlayersController(IPlayerService playerService, ILogger<PlayersCont
 
         if (player != null)
         {
-            return Results.Ok(player);
+            return TypedResults.Ok(player);
         }
         else
         {
-            return Results.NotFound();
+            return TypedResults.NotFound();
         }
     }
 
@@ -117,17 +115,17 @@ public class PlayersController(IPlayerService playerService, ILogger<PlayersCont
     {
         if (!ModelState.IsValid)
         {
-            return Results.BadRequest();
+            return TypedResults.BadRequest();
         }
         else if (await _playerService.RetrieveByIdAsync(id) == null)
         {
-            return Results.NotFound();
+            return TypedResults.NotFound();
         }
         else
         {
             await _playerService.UpdateAsync(player);
 
-            return Results.NoContent();
+            return TypedResults.NoContent();
         }
     }
 
@@ -148,13 +146,13 @@ public class PlayersController(IPlayerService playerService, ILogger<PlayersCont
     {
         if (await _playerService.RetrieveByIdAsync(id) == null)
         {
-            return Results.NotFound();
+            return TypedResults.NotFound();
         }
         else
         {
             await _playerService.DeleteAsync(id);
 
-            return Results.NoContent();
+            return TypedResults.NoContent();
         }
     }
 }
