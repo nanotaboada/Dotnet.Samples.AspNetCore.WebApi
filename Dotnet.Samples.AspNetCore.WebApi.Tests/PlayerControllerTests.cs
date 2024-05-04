@@ -1,4 +1,3 @@
-using System.Data.Common;
 using Dotnet.Samples.AspNetCore.WebApi.Controllers;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
@@ -40,7 +39,7 @@ public class PlayerControllerTests
     public async Task GivenPostAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe409Conflict()
     {
         // Arrange
-        var player = PlayerDataBuilder.SeedOneById(10);
+        var player = PlayerData.CreateOneByIdFromStarting11(10);
         var service = new Mock<IPlayerService>();
         service.Setup(service => service.RetrieveByIdAsync(It.IsAny<long>())).ReturnsAsync(player);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
@@ -61,7 +60,7 @@ public class PlayerControllerTests
     public async Task GivenPostAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe201Created()
     {
         // Arrange
-        var player = PlayerDataBuilder.SeedOneNew();
+        var player = PlayerData.CreateOneNew();
 
         var service = new Mock<IPlayerService>();
         service
@@ -94,7 +93,7 @@ public class PlayerControllerTests
     public async Task GivenGetAsync_WhenServiceRetrieveAsyncReturnsListOfPlayers_ThenResponseShouldBeEquivalentToListOfPlayers()
     {
         // Arrange
-        var players = PlayerDataBuilder.SeedWithStarting11();
+        var players = PlayerData.CreateStarting11();
         var service = new Mock<IPlayerService>();
         service.Setup(service => service.RetrieveAsync()).ReturnsAsync(players);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
@@ -161,7 +160,7 @@ public class PlayerControllerTests
     public async Task GivenGetByIdAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe200Ok()
     {
         // Arrange
-        var player = PlayerDataBuilder.SeedOneById(10);
+        var player = PlayerData.CreateOneByIdFromStarting11(10);
         var service = new Mock<IPlayerService>();
         service.Setup(service => service.RetrieveByIdAsync(It.IsAny<long>())).ReturnsAsync(player);
         var logger = PlayerMocks.LoggerMock<PlayersController>();
@@ -231,7 +230,7 @@ public class PlayerControllerTests
     {
         // Arrange
         var id = 10;
-        var player = PlayerDataBuilder.SeedOneById(id);
+        var player = PlayerData.CreateOneByIdFromStarting11(id);
         var service = new Mock<IPlayerService>();
         service.Setup(service => service.RetrieveByIdAsync(It.IsAny<long>())).ReturnsAsync(player);
         service.Setup(service => service.UpdateAsync(It.IsAny<Player>()));
@@ -280,7 +279,7 @@ public class PlayerControllerTests
     public async Task GivenDeleteAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe204NoContent()
     {
         // Arrange
-        var player = PlayerDataBuilder.SeedOneById(10);
+        var player = PlayerData.CreateOneByIdFromStarting11(10);
         var service = new Mock<IPlayerService>();
         service.Setup(service => service.RetrieveByIdAsync(It.IsAny<long>())).ReturnsAsync(player);
         service.Setup(service => service.DeleteAsync(It.IsAny<long>()));

@@ -12,21 +12,21 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests;
 public class PlayerServiceTests : IDisposable
 {
     private readonly DbConnection _dbConnection;
-    private readonly DbContextOptions<PlayerContext> _dbContextOptions;
-    private readonly PlayerContext _context;
+    private readonly DbContextOptions<PlayerDbContext> _dbContextOptions;
+    private readonly PlayerDbContext _dbContext;
 
     public PlayerServiceTests()
     {
         (_dbConnection, _dbContextOptions) = PlayerStubs.CreateSqliteConnection();
-        _context = PlayerStubs.CreateContext(_dbContextOptions);
-        PlayerStubs.CreateTable(_context);
-        PlayerStubs.SeedContext(_context);
+        _dbContext = PlayerStubs.CreateDbContext(_dbContextOptions);
+        PlayerStubs.CreateTable(_dbContext);
+        PlayerStubs.SeedDbContext(_dbContext);
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
     }
 
     public void Dispose()
     {
-        _context.Dispose();
+        _dbContext.Dispose();
         _dbConnection.Dispose();
         GC.SuppressFinalize(this);
     }
@@ -40,15 +40,15 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenCreateAsync_WhenInvokedWithPlayer_ThenShouldAddPlayerToContextAndRemovePlayersCache()
     {
         // Arrange
-        var player = PlayerDataBuilder.SeedOneNew();
+        var player = PlayerData.CreateOneNew();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
-        var service = new PlayerService(_context, logger.Object, memoryCache.Object);
+        var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
 
         // Act
         await service.CreateAsync(player);
-        var result = await _context.Players.FindAsync(player.Id);
+        var result = await _dbContext.Players.FindAsync(player.Id);
 
         // Assert
         result.Should().NotBeNull();
@@ -64,12 +64,12 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveAsync_WhenInvoked_ThenShouldReturnAllPlayersAndCreatePlayersCache()
     {
         // Arrange
-        var players = PlayerDataBuilder.SeedWithStarting11();
+        var players = PlayerData.CreateStarting11();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
         var value = It.IsAny<object>();
 
-        var service = new PlayerService(_context, logger.Object, memoryCache.Object);
+        var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
 
         // Act
         var result = await service.RetrieveAsync();
@@ -88,12 +88,12 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveAsync_WhenInvokedTwice_ThenSecondExecutionTimeShouldBeLessThanFirst()
     {
         // Arrange
-        var players = PlayerDataBuilder.SeedWithStarting11();
+        var players = PlayerData.CreateStarting11();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(players);
         var value = It.IsAny<object>();
 
-        var service = new PlayerService(_context, logger.Object, memoryCache.Object);
+        var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
 
         // Act
         var first = await ExecutionTimeAsync(() => service.RetrieveAsync());
@@ -112,11 +112,11 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveByIdAsync_WhenInvokedWithPlayerId_ThenShouldReturnThePlayer()
     {
         // Arrange
-        var player = PlayerDataBuilder.SeedOneById(10);
+        var player = PlayerData.CreateOneByIdFromStarting11(10);
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
-        var service = new PlayerService(_context, logger.Object, memoryCache.Object);
+        var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
 
         // Act
         var result = await service.RetrieveByIdAsync(10);
@@ -135,17 +135,17 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenUpdateAsync_WhenInvokedWithPlayer_ThenShouldModifyPlayerInContextAndRemovePlayersCache()
     {
         // Arrange
-        var player = PlayerDataBuilder.SeedOneById(1);
+        var player = PlayerData.CreateOneByIdFromStarting11(1);
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
-        var service = new PlayerService(_context, logger.Object, memoryCache.Object);
+        var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
 
         // Act
         player.FirstName = "Emiliano";
         player.MiddleName = "";
         await service.UpdateAsync(player);
-        var result = await _context.Players.FindAsync(player.Id);
+        var result = await _dbContext.Players.FindAsync(player.Id);
 
         // Assert
         result!.FirstName.Should().Be(player.FirstName);
@@ -161,17 +161,17 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenDeleteAsync_WhenInvokedWithPlayerId_ThenShouldRemovePlayerFromContextAndRemovePlayersCache()
     {
         // Arrange
-        var player = PlayerDataBuilder.SeedOneNew();
+        var player = PlayerData.CreateOneNew();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
-        await _context.AddAsync(player);
-        await _context.SaveChangesAsync();
+        await _dbContext.AddAsync(player);
+        await _dbContext.SaveChangesAsync();
 
-        var service = new PlayerService(_context, logger.Object, memoryCache.Object);
+        var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
 
         // Act
         await service.DeleteAsync(player.Id);
-        var result = await _context.Players.FindAsync(player.Id);
+        var result = await _dbContext.Players.FindAsync(player.Id);
 
         // Assert
         result.Should().BeNull();
