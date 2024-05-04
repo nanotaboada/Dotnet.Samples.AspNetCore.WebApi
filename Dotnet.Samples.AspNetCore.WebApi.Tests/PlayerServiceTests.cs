@@ -37,7 +37,7 @@ public class PlayerServiceTests : IDisposable
 
     [Fact]
     [Trait("Category", "CreateAsync")]
-    public async Task GivenCreateAsync_WhenInvokedWithPlayer_ThenShouldAddPlayerToContextAndRemovePlayersFromCache()
+    public async Task GivenCreateAsync_WhenInvokedWithPlayer_ThenShouldAddPlayerToContextAndRemovePlayersCache()
     {
         // Arrange
         var player = PlayerDataBuilder.SeedOneNew();
@@ -61,7 +61,7 @@ public class PlayerServiceTests : IDisposable
 
     [Fact]
     [Trait("Category", "RetrieveAsync")]
-    public async Task GivenRetrieveAsync_WhenInvoked_ThenShouldReturnAllPlayers()
+    public async Task GivenRetrieveAsync_WhenInvoked_ThenShouldReturnAllPlayersAndCreatePlayersCache()
     {
         // Arrange
         var players = PlayerDataBuilder.SeedWithStarting11();
@@ -79,6 +79,7 @@ public class PlayerServiceTests : IDisposable
             cache => cache.TryGetValue(It.IsAny<object>(), out value),
             Times.Exactly(1)
         );
+        memoryCache.Verify(cache => cache.CreateEntry(It.IsAny<object>()), Times.Exactly(1));
         result.Should().BeEquivalentTo(players);
     }
 
@@ -131,7 +132,7 @@ public class PlayerServiceTests : IDisposable
 
     [Fact]
     [Trait("Category", "UpdateAsync")]
-    public async Task GivenUpdateAsync_WhenInvokedWithPlayer_ThenShouldModifyPlayerInContextAndRemovePlayersFromCache()
+    public async Task GivenUpdateAsync_WhenInvokedWithPlayer_ThenShouldModifyPlayerInContextAndRemovePlayersCache()
     {
         // Arrange
         var player = PlayerDataBuilder.SeedOneById(1);
@@ -157,7 +158,7 @@ public class PlayerServiceTests : IDisposable
 
     [Fact]
     [Trait("Category", "DeleteAsync")]
-    public async Task GivenDeleteAsync_WhenInvokedWithPlayerId_ThenShouldDeletePlayerInContextAndRemovePlayersFromCache()
+    public async Task GivenDeleteAsync_WhenInvokedWithPlayerId_ThenShouldRemovePlayerFromContextAndRemovePlayersCache()
     {
         // Arrange
         var player = PlayerDataBuilder.SeedOneNew();

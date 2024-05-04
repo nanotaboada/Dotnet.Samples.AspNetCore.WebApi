@@ -31,7 +31,7 @@ public class PlayerService : IPlayerService
 
     public async Task CreateAsync(Player player)
     {
-        _playerContext.Entry(player).State = EntityState.Added;
+        _playerContext.Add(player);
         await _playerContext.SaveChangesAsync();
         _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
     }
@@ -45,6 +45,7 @@ public class PlayerService : IPlayerService
         if (_memoryCache.TryGetValue(MemoryCache_Key_RetrieveAsync, out List<Player>? players))
         {
             _logger.Log(LogLevel.Information, "Players retrieved from MemoryCache.");
+
             return players!;
         }
         else
@@ -63,9 +64,14 @@ public class PlayerService : IPlayerService
             }
 
             players = await _playerContext.Players.ToListAsync();
-            _memoryCache.Set(MemoryCache_Key_RetrieveAsync, players, GetMemoryCacheEntryOptions());
-
             _logger.Log(LogLevel.Information, "Players retrieved from DbContext.");
+
+            using (var cacheEntry = _memoryCache.CreateEntry(MemoryCache_Key_RetrieveAsync))
+            {
+                cacheEntry.Value = players;
+                cacheEntry.SetOptions(GetMemoryCacheEntryOptions());
+            }
+
             return players;
         }
     }
@@ -81,14 +87,9 @@ public class PlayerService : IPlayerService
 
     public async Task UpdateAsync(Player player)
     {
-        var entity = await _playerContext.Players.FindAsync(player.Id);
-
-        if (entity != null)
+        if (await _playerContext.Players.FindAsync(player.Id) is Player entity)
         {
-            // TODO: Add AutoMapper
             entity.MapFrom(player);
-
-            _playerContext.Entry(entity).State = EntityState.Modified;
             await _playerContext.SaveChangesAsync();
             _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
         }
@@ -100,11 +101,9 @@ public class PlayerService : IPlayerService
 
     public async Task DeleteAsync(long id)
     {
-        var entity = await _playerContext.Players.FindAsync(id);
-
-        if (entity != null)
+        if (await _playerContext.Players.FindAsync(id) is Player entity)
         {
-            _playerContext.Entry(entity).State = EntityState.Deleted;
+            _playerContext.Remove(entity);
             await _playerContext.SaveChangesAsync();
             _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
         }
