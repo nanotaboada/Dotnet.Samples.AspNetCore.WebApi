@@ -147,7 +147,6 @@ public class PlayerControllerTests
 
         // Act
         var response = await controller.GetByIdAsync(It.IsAny<long>()) as NotFound;
-        ;
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Exactly(1));

@@ -13,4 +13,5 @@ exclude_paths:
   - "**/Data/**"
   - "**/Migrations/**"
   - "**/Models/**"
+  - "**/Utilities/**"
   - "**.Tests/**"

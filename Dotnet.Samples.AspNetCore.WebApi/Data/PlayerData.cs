@@ -343,7 +343,7 @@ public static class PlayerData
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var starting11 = JsonSerializer.Deserialize<List<Player>>(json, options);
 
-        if (starting11 != null && starting11.Any())
+        if (starting11 != null && starting11.Count > 0)
         {
             players.AddRange(starting11);
         }
