@@ -15,7 +15,8 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                 name: "Players",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     FirstName = table.Column<string>(type: "TEXT", nullable: false),
                     MiddleName = table.Column<string>(type: "TEXT", nullable: true),
@@ -23,7 +24,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                     DateOfBirth = table.Column<DateTime>(type: "TEXT", nullable: true),
                     SquadNumber = table.Column<int>(type: "INTEGER", nullable: false),
                     Position = table.Column<string>(type: "TEXT", nullable: false),
-                    AbbrPosition = table.Column<string>(type: "TEXT", nullable: true),
+                    AbbrPosition = table.Column<string>(type: "TEXT", nullable: false),
                     Team = table.Column<string>(type: "TEXT", nullable: true),
                     League = table.Column<string>(type: "TEXT", nullable: true),
                     Starting11 = table.Column<bool>(type: "INTEGER", nullable: false)
@@ -31,14 +32,14 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Players", x => x.Id);
-                });
+                }
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Players");
+            migrationBuilder.DropTable(name: "Players");
         }
     }
 }

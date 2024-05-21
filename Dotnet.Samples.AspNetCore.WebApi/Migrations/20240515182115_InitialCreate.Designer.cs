@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
 {
     [DbContext(typeof(PlayerDbContext))]
-    [Migration("20240504142708_InitialCreate")]
+    [Migration("20240515182115_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,6 +27,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AbbrPosition")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("DateOfBirth")
