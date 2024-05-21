@@ -8,8 +8,11 @@
 # Please use this folder/**/*, which will exclude all files within the given folder.
 ignore:
   - "Dotnet.Samples.AspNetCore.WebApi/Data"
+  - "Dotnet.Samples.AspNetCore.WebApi/Enums"
   - "Dotnet.Samples.AspNetCore.WebApi/Migrations"
   - "Dotnet.Samples.AspNetCore.WebApi/Models"
+  - "Dotnet.Samples.AspNetCore.WebApi/Properties"
+  - "Dotnet.Samples.AspNetCore.WebApi/Utilities"
   - "Dotnet.Samples.AspNetCore.WebApi/Program.cs"
   - "Dotnet.Samples.AspNetCore.WebApi.Tests"
 
