@@ -22,6 +22,7 @@ public class Player
     [Required]
     public string? Position { get; set; }
 
+    [Required]
     public string? AbbrPosition { get; set; }
 
     public string? Team { get; set; }

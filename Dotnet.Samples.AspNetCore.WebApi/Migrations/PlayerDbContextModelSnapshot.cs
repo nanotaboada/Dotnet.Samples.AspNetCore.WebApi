@@ -24,6 +24,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AbbrPosition")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("DateOfBirth")
