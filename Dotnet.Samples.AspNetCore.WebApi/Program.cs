@@ -2,9 +2,20 @@ using System.Reflection;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+/* -----------------------------------------------------------------------------
+ * Logging
+ * -------------------------------------------------------------------------- */
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Logging.ClearProviders();
+    builder.Logging.AddSimpleConsole(options => options.SingleLine = true);
+}
 
 /* -----------------------------------------------------------------------------
  * Services
@@ -16,8 +27,15 @@ var dataSource =
     $"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}/Data/players-sqlite3.db";
 
 builder.Services.AddDbContextPool<PlayerDbContext>(options =>
-    options.UseSqlite($"Data Source={dataSource}")
-);
+{
+    options.UseSqlite($"Data Source={dataSource}");
+
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+        options.LogTo(Console.WriteLine, LogLevel.Information);
+    }
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
