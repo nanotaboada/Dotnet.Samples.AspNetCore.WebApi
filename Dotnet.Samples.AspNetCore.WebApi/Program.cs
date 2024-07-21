@@ -46,13 +46,13 @@ builder.Services.AddSwaggerGen(options =>
         "v1",
         new OpenApiInfo
         {
-            Version = "v1",
+            Version = "1.0.0",
             Title = "Dotnet.Samples.AspNetCore.WebApi",
             Description =
-                "Proof of Concept for a Web API (Async) made with .NET 8 (LTS) and ASP.NET Core 8.0",
+                "🧪 Proof of Concept for a Web API (Async) made with .NET 8 (LTS) and ASP.NET Core 8.0",
             Contact = new OpenApiContact
             {
-                Name = "GitHub Repository",
+                Name = "GitHub",
                 Url = new Uri("https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi")
             },
             License = new OpenApiLicense
