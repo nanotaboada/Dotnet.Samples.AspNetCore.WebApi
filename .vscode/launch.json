@@ -1,32 +1,32 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Debug: ASP.NET Core (Swagger)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Dotnet.Samples.AspNetCore.WebApi/bin/Debug/net8.0/Dotnet.Samples.AspNetCore.WebApi.dll",
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+https://localhost:([0-9]+)",
-                "uriFormat": "https://localhost:%s/swagger"
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "https://localhost:9000",
-                "ASPNETCORE_DETAILEDERRORS": "1",
-                "ASPNETCORE_SHUTDOWNTIMEOUTSECONDS": "3"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
-        },
-        {
-            "name": "Attach: ASP.NET Core",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET: Launch ASP.NET Core (Debug)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Dotnet.Samples.AspNetCore.WebApi/bin/Debug/net8.0/Dotnet.Samples.AspNetCore.WebApi.dll",
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+https://localhost:([0-9]+)",
+        "uriFormat": "https://localhost:%s/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://localhost:9000",
+        "ASPNETCORE_DETAILEDERRORS": "1",
+        "ASPNETCORE_SHUTDOWNTIMEOUTSECONDS": "3"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      "name": "Attach: ASP.NET Core",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickProcess}"
+    }
+  ]
 }
