@@ -10,6 +10,8 @@ public interface IPlayerService
 
     public ValueTask<Player?> RetrieveByIdAsync(long id);
 
+    public ValueTask<Player?> RetrieveBySquadNumberAsync(int squadNumber);
+
     public Task UpdateAsync(Player player);
 
     public Task DeleteAsync(long id);

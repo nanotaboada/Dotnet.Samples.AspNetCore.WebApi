@@ -177,6 +177,59 @@ public class PlayerControllerTests
         response?.Value.Should().BeEquivalentTo(player);
     }
 
+    [Fact]
+    [Trait("Category", "GetBySquadNumberAsync")]
+    public async Task GivenGetBySquadNumberAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
+    {
+        // Arrange
+        var service = new Mock<IPlayerService>();
+        service
+            .Setup(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()))
+            .ReturnsAsync(null as Player);
+        var logger = PlayerMocks.LoggerMock<PlayersController>();
+
+        var controller = new PlayersController(service.Object, logger.Object);
+
+        // Act
+        var response = await controller.GetBySquadNumberAsync(It.IsAny<int>()) as NotFound;
+
+        // Assert
+        service.Verify(
+            service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()),
+            Times.Exactly(1)
+        );
+        response.Should().NotBeNull().And.BeOfType<NotFound>();
+        response?.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+    }
+
+    [Fact]
+    [Trait("Category", "GetBySquadNumberAsync")]
+    public async Task GivenGetBySquadNumberAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe200Ok()
+    {
+        // Arrange
+        var player = PlayerData.CreateOneByIdFromStarting11(10);
+        var service = new Mock<IPlayerService>();
+        service
+            .Setup(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()))
+            .ReturnsAsync(player);
+        var logger = PlayerMocks.LoggerMock<PlayersController>();
+
+        var controller = new PlayersController(service.Object, logger.Object);
+
+        // Act
+        var response = await controller.GetBySquadNumberAsync(It.IsAny<int>()) as Ok<Player>;
+
+        // Assert
+        service.Verify(
+            service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()),
+            Times.Exactly(1)
+        );
+        response.Should().NotBeNull().And.BeOfType<Ok<Player>>();
+        response?.StatusCode.Should().Be(StatusCodes.Status200OK);
+        response?.Value.Should().NotBeNull().And.BeOfType<Player>();
+        response?.Value.Should().BeEquivalentTo(player);
+    }
+
     /* -------------------------------------------------------------------------
      * HTTP PUT
      * ---------------------------------------------------------------------- */
