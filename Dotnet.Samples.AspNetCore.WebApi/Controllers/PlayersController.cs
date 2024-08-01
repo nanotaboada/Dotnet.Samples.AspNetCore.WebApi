@@ -96,6 +96,29 @@ public class PlayersController(IPlayerService playerService, ILogger<PlayersCont
         }
     }
 
+    /// <summary>
+    /// Retrieves a Player by its Squad Number
+    /// </summary>
+    /// <param name="squadNumber">Player.SquadNumber</param>
+    /// <response code="200">OK</response>
+    /// <response code="404">Not Found</response>
+    [HttpGet("squadNumber/{squadNumber}")]
+    [ProducesResponseType<Player>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IResult> GetBySquadNumberAsync([FromRoute] int squadNumber)
+    {
+        var player = await _playerService.RetrieveBySquadNumberAsync(squadNumber);
+
+        if (player != null)
+        {
+            return TypedResults.Ok(player);
+        }
+        else
+        {
+            return TypedResults.NotFound();
+        }
+    }
+
     /* -------------------------------------------------------------------------
      * HTTP PUT
      * ---------------------------------------------------------------------- */

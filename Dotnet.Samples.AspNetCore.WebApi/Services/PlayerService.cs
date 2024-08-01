@@ -76,9 +76,16 @@ public class PlayerService : IPlayerService
         }
     }
 
-    public ValueTask<Player?> RetrieveByIdAsync(long id)
+    public async ValueTask<Player?> RetrieveByIdAsync(long id)
     {
-        return _playerContext.Players.FindAsync(id);
+        return await _playerContext.Players.FindAsync(id);
+    }
+
+    public async ValueTask<Player?> RetrieveBySquadNumberAsync(int squadNumber)
+    {
+        return await _playerContext.Players.FirstOrDefaultAsync(player =>
+            player.SquadNumber == squadNumber
+        );
     }
 
     /* -------------------------------------------------------------------------

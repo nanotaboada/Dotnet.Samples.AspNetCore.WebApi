@@ -109,7 +109,25 @@ public class PlayerServiceTests : IDisposable
 
     [Fact]
     [Trait("Category", "RetrieveByIdAsync")]
-    public async Task GivenRetrieveByIdAsync_WhenInvokedWithPlayerId_ThenShouldReturnThePlayer()
+    public async Task GivenRetrieveByIdAsync_WhenInvokedWithNonexistentId_ThenShouldReturnNull()
+    {
+        // Arrange
+        var id = 999;
+        var logger = PlayerMocks.LoggerMock<PlayerService>();
+        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
+
+        var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
+
+        // Act
+        var result = await service.RetrieveByIdAsync(id);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    [Trait("Category", "RetrieveByIdAsync")]
+    public async Task GivenRetrieveByIdAsync_WhenInvokedWithExistingId_ThenShouldReturnPlayer()
     {
         // Arrange
         var player = PlayerData.CreateOneByIdFromStarting11(10);
@@ -119,7 +137,44 @@ public class PlayerServiceTests : IDisposable
         var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
 
         // Act
-        var result = await service.RetrieveByIdAsync(10);
+        var result = await service.RetrieveByIdAsync(player.Id);
+
+        // Assert
+        result.Should().BeOfType<Player>();
+        result.Should().BeEquivalentTo(player);
+    }
+
+    [Fact]
+    [Trait("Category", "RetrieveBySquadNumberAsync")]
+    public async Task GivenRetrieveBySquadNumberAsync_WhenInvokedWithNonexistentSquadNumber_ThenShouldReturnNull()
+    {
+        // Arrange
+        var squadNumber = 999;
+        var logger = PlayerMocks.LoggerMock<PlayerService>();
+        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
+
+        var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
+
+        // Act
+        var result = await service.RetrieveBySquadNumberAsync(squadNumber);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    [Trait("Category", "RetrieveBySquadNumberAsync")]
+    public async Task GivenRetrieveBySquadNumberAsync_WhenInvokedWithExistingSquadNumber_ThenShouldReturnPlayer()
+    {
+        // Arrange
+        var player = PlayerData.CreateOneByIdFromStarting11(6);
+        var logger = PlayerMocks.LoggerMock<PlayerService>();
+        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
+
+        var service = new PlayerService(_dbContext, logger.Object, memoryCache.Object);
+
+        // Act
+        var result = await service.RetrieveBySquadNumberAsync(player.SquadNumber);
 
         // Assert
         result.Should().BeOfType<Player>();
@@ -158,7 +213,7 @@ public class PlayerServiceTests : IDisposable
 
     [Fact]
     [Trait("Category", "DeleteAsync")]
-    public async Task GivenDeleteAsync_WhenInvokedWithPlayerId_ThenShouldRemovePlayerFromContextAndRemovePlayersCache()
+    public async Task GivenDeleteAsync_WhenInvokedWithId_ThenShouldRemovePlayerFromContextAndRemovePlayersCache()
     {
         // Arrange
         var player = PlayerData.CreateOneNew();
