@@ -18,15 +18,7 @@
         "ASPNETCORE_DETAILEDERRORS": "1",
         "ASPNETCORE_SHUTDOWNTIMEOUTSECONDS": "3"
       },
-      "sourceFileMap": {
-        "/Views": "${workspaceFolder}/Views"
-      }
-    },
-    {
-      "name": "Attach: ASP.NET Core",
-      "type": "coreclr",
-      "request": "attach",
-      "processId": "${command:pickProcess}"
+      "console": "internalConsole"
     }
   ]
 }
