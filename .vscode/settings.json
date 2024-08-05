@@ -1,13 +1,13 @@
 {
-    "editor.rulers": [
-        {
-            "column": 127
-        }
-    ],
-    "editor.wordWrap": "wordWrapColumn",
-    "editor.wordWrapColumn": 127,
-    "[csharp]": {
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "csharpier.csharpier-vscode"
+  "editor.rulers": [
+    {
+      "column": 127
     }
+  ],
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 127,
+  "[csharp]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "csharpier.csharpier-vscode"
+  }
 }
