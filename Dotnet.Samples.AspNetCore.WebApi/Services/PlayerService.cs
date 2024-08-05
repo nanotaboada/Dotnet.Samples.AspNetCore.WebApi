@@ -5,25 +5,18 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Services;
 
-public class PlayerService : IPlayerService
+public class PlayerService(
+    PlayerDbContext playerContext,
+    ILogger<PlayerService> logger,
+    IMemoryCache memoryCache
+) : IPlayerService
 {
     private const string MemoryCache_Key_RetrieveAsync = "MemoryCache_Key_RetrieveAsync";
     private const string EnvironmentVariable_Key = "ASPNETCORE_ENVIRONMENT";
     private const string EnvironmentVariable_Value = "Development";
-    private readonly PlayerDbContext _playerContext;
-    private readonly ILogger<PlayerService> _logger;
-    private readonly IMemoryCache _memoryCache;
-
-    public PlayerService(
-        PlayerDbContext playerContext,
-        ILogger<PlayerService> logger,
-        IMemoryCache memoryCache
-    )
-    {
-        _playerContext = playerContext;
-        _logger = logger;
-        _memoryCache = memoryCache;
-    }
+    private readonly PlayerDbContext _playerContext = playerContext;
+    private readonly ILogger<PlayerService> _logger = logger;
+    private readonly IMemoryCache _memoryCache = memoryCache;
 
     /* -------------------------------------------------------------------------
      * Create
@@ -116,11 +109,16 @@ public class PlayerService : IPlayerService
         }
     }
 
+    /// <summary>
+    /// Creates a MemoryCacheEntryOptions instance with Normal priority,
+    /// SlidingExpiration of 10 minutes and AbsoluteExpiration of 1 hour.
+    /// </summary>
+    /// <returns>A MemoryCacheEntryOptions instance with the specified options.</returns>
     private MemoryCacheEntryOptions GetMemoryCacheEntryOptions()
     {
         return new MemoryCacheEntryOptions()
+            .SetPriority(CacheItemPriority.Normal)
             .SetSlidingExpiration(TimeSpan.FromMinutes(10))
-            .SetAbsoluteExpiration(TimeSpan.FromHours(1))
-            .SetPriority(CacheItemPriority.Normal);
+            .SetAbsoluteExpiration(TimeSpan.FromHours(1));
     }
 }
