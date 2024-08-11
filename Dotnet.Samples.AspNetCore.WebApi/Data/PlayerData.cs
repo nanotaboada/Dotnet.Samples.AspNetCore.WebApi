@@ -6,27 +6,6 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Data;
 
 public static class PlayerData
 {
-    public static Player CreateOneByIdFromStarting11(int id)
-    {
-        return CreateStarting11().SingleOrDefault(player => player.Id == id) ?? new();
-    }
-
-    public static Player CreateOneNew() =>
-        new()
-        {
-            Id = 12,
-            FirstName = "Leandro",
-            MiddleName = "Daniel",
-            LastName = "Paredes",
-            DateOfBirth = new DateTime(1994, 06, 29, 0, 0, 0, DateTimeKind.Utc),
-            SquadNumber = 5,
-            Position = Position.DefensiveMidfield.Text,
-            AbbrPosition = Position.DefensiveMidfield.Abbr,
-            Team = "AS Roma",
-            League = "Serie A",
-            Starting11 = false
-        };
-
     public static List<Player> CreateStarting11()
     {
         return
@@ -341,7 +320,6 @@ public static class PlayerData
                 }]
             """;
 
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var starting11 = JsonSerializer.Deserialize<List<Player>>(json, options);
 
         if (starting11 != null && starting11.Count > 0)
@@ -351,4 +329,7 @@ public static class PlayerData
 
         return players;
     }
+
+    private static readonly JsonSerializerOptions options =
+        new() { PropertyNameCaseInsensitive = true };
 }

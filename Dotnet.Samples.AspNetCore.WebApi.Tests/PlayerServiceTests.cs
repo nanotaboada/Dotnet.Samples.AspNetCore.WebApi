@@ -40,7 +40,7 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenCreateAsync_WhenInvokedWithPlayer_ThenShouldAddPlayerToContextAndRemovePlayersCache()
     {
         // Arrange
-        var player = PlayerData.CreateOneNew();
+        var player = PlayerFakes.CreateOneNew();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
@@ -64,7 +64,7 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveAsync_WhenInvoked_ThenShouldReturnAllPlayersAndCreatePlayersCache()
     {
         // Arrange
-        var players = PlayerData.CreateStarting11();
+        var players = PlayerFakes.CreateStarting11();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
         var value = It.IsAny<object>();
@@ -88,7 +88,7 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveAsync_WhenInvokedTwice_ThenSecondExecutionTimeShouldBeLessThanFirst()
     {
         // Arrange
-        var players = PlayerData.CreateStarting11();
+        var players = PlayerFakes.CreateStarting11();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(players);
         var value = It.IsAny<object>();
@@ -130,7 +130,7 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveByIdAsync_WhenInvokedWithExistingId_ThenShouldReturnPlayer()
     {
         // Arrange
-        var player = PlayerData.CreateOneByIdFromStarting11(10);
+        var player = PlayerFakes.CreateOneByIdFromStarting11(10);
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
@@ -167,7 +167,7 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveBySquadNumberAsync_WhenInvokedWithExistingSquadNumber_ThenShouldReturnPlayer()
     {
         // Arrange
-        var player = PlayerData.CreateOneByIdFromStarting11(6);
+        var player = PlayerFakes.CreateOneByIdFromStarting11(6);
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
@@ -190,7 +190,7 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenUpdateAsync_WhenInvokedWithPlayer_ThenShouldModifyPlayerInContextAndRemovePlayersCache()
     {
         // Arrange
-        var player = PlayerData.CreateOneByIdFromStarting11(1);
+        var player = PlayerFakes.CreateOneByIdFromStarting11(1);
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
@@ -216,7 +216,7 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenDeleteAsync_WhenInvokedWithId_ThenShouldRemovePlayerFromContextAndRemovePlayersCache()
     {
         // Arrange
-        var player = PlayerData.CreateOneNew();
+        var player = PlayerFakes.CreateOneNew();
         var logger = PlayerMocks.LoggerMock<PlayerService>();
         var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
         await _dbContext.AddAsync(player);
