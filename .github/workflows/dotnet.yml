@@ -70,7 +70,7 @@ jobs:
       run: ls -R cobertura.xml
 
     - name: Upload coverage report to Codecov
-      uses: codecov/codecov-action@v5.1.2
+      uses: codecov/codecov-action@v5.3.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: cobertura.xml
