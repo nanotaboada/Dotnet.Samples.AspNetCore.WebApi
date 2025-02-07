@@ -4,6 +4,10 @@ using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
+// Import the APIToolkit namespace (Make sure to install the ApiToolkit.Net NuGet package)
+using ApiToolkit.Net;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 /* -----------------------------------------------------------------------------
@@ -12,8 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsDevelopment())
 {
-    builder.Logging.ClearProviders();
-    builder.Logging.AddSimpleConsole(options => options.SingleLine = true);
+  builder.Logging.ClearProviders();
+  builder.Logging.AddSimpleConsole(options => options.SingleLine = true);
 }
 
 /* -----------------------------------------------------------------------------
@@ -27,43 +31,43 @@ var dataSource =
 
 builder.Services.AddDbContextPool<PlayerDbContext>(options =>
 {
-    options.UseSqlite($"Data Source={dataSource}");
+  options.UseSqlite($"Data Source={dataSource}");
 
-    if (builder.Environment.IsDevelopment())
-    {
-        options.EnableSensitiveDataLogging();
-        options.LogTo(Console.WriteLine, LogLevel.Information);
-    }
+  if (builder.Environment.IsDevelopment())
+  {
+    options.EnableSensitiveDataLogging();
+    options.LogTo(Console.WriteLine, LogLevel.Information);
+  }
 });
 
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.AddSwaggerGen(options =>
-    {
-        options.SwaggerDoc(
-            "v1",
-            new OpenApiInfo
+  builder.Services.AddSwaggerGen(options =>
+  {
+    options.SwaggerDoc(
+          "v1",
+          new OpenApiInfo
+          {
+            Version = "1.0.0",
+            Title = "Dotnet.Samples.AspNetCore.WebApi",
+            Description =
+                  "🧪 Proof of Concept for a Web API (Async) made with .NET 8 (LTS) and ASP.NET Core 8.0",
+            Contact = new OpenApiContact
             {
-                Version = "1.0.0",
-                Title = "Dotnet.Samples.AspNetCore.WebApi",
-                Description =
-                    "🧪 Proof of Concept for a Web API (Async) made with .NET 8 (LTS) and ASP.NET Core 8.0",
-                Contact = new OpenApiContact
-                {
-                    Name = "GitHub",
-                    Url = new Uri("https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi")
-                },
-                License = new OpenApiLicense
-                {
-                    Name = "MIT License",
-                    Url = new Uri("https://opensource.org/license/mit")
-                }
+              Name = "GitHub",
+              Url = new Uri("https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi")
+            },
+            License = new OpenApiLicense
+            {
+              Name = "MIT License",
+              Url = new Uri("https://opensource.org/license/mit")
             }
-        );
+          }
+      );
 
-        var filePath = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, filePath));
-    });
+    var filePath = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, filePath));
+  });
 }
 
 builder.Services.AddScoped<IPlayerService, PlayerService>();
@@ -72,24 +76,40 @@ builder.Services.AddMemoryCache();
 var app = builder.Build();
 
 /* -----------------------------------------------------------------------------
+ * APItoolkit Configuration
+ * -------------------------------------------------------------------------- */
+
+var config = new Config
+{
+  ServiceVersion: "v2.0",
+  ServiceName = "MyService",
+};
+var client = APIToolkit.NewClient(config);
+
+/* -----------------------------------------------------------------------------
+ * APITtoolkit Middleware
+ * -------------------------------------------------------------------------- */
+app.Use(async (context, next) =>
+{
+  var apiToolkit = new APIToolkit(next, client);
+  await apiToolkit.InvokeAsync(context);
+});
+
+/* -----------------------------------------------------------------------------
  * Middlewares
  * https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware
  * -------------------------------------------------------------------------- */
 
 if (app.Environment.IsDevelopment())
 {
-    // https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle
-    app.UseSwagger();
-    app.UseSwaggerUI();
+  app.UseSwagger();
+  app.UseSwaggerUI();
 }
 
-// https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl
 app.UseHttpsRedirection();
 
-// https://learn.microsoft.com/en-us/aspnet/core/security/cors
 app.UseCors();
 
-// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#endpoints
 app.MapControllers();
 
 /* -----------------------------------------------------------------------------

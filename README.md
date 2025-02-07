@@ -33,3 +33,43 @@ The solution has been coded using [Visual Studio Code](https://code.visualstudio
 ## Terms
 
 All trademarks, registered trademarks, service marks, product names, company names, or logos mentioned on this repository are the property of their respective owners. All usage of such terms herein is for identification purposes only and constitutes neither an endorsement nor a recommendation of those items. Furthermore, the use of such terms is intended to be for educational and informational purposes only.
+
+## Installation
+
+Kindly run the command below to install the package:
+
+```sh
+dotnet add package ApiToolkit.Net
+```
+
+## Setup OpenTelemetry
+
+Run the following command to install the OpenTelemetry auto instrumentation for .NET:
+
+```sh
+# Download the bash script
+curl -sSfL https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/latest/download/otel-dotnet-auto-install.sh -O
+
+# Install core files
+sh ./otel-dotnet-auto-install.sh
+
+# Enable execution for the instrumentation script
+chmod +x $HOME/.otel-dotnet-auto/instrument.sh
+
+# Setup the instrumentation for the current shell session
+. $HOME/.otel-dotnet-auto/instrument.sh
+```
+
+#### OpenTelemetry Configuration
+
+After installating .NET autoinstrumentation packages, you can configure the OpenTelemetry instrumentation by setting the following environment variables:
+
+```sh
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://otelcol.apitoolkit.io:4317" # Specifies the endpoint to send the traces to.
+export OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES="APItoolkit.HTTPInstrumentation" # The apitoolkit instrumentation  activity resource.
+export OTEL_SERVICE_NAME="my-service" # Specifies the name of the service.
+export OTEL_RESOURCE_ATTRIBUTES="at-project-key={ENTER_YOUR_API_KEY_HERE}" # Adds your API KEY to the resource.
+export OTEL_EXPORTER_OTLP_PROTOCOL="grpc" # Specifies the protocol to use for the OpenTelemetry exporter.
+```
+
+After setting the environment variables, build and run your application and you should see the logs, traces and metrics in the APIToolkit dashboard.
