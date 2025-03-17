@@ -9,6 +9,9 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  DOTNET_VERSION: 8.0.x
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,18 +19,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET 8
+      - name: Set up .NET ${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
-
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          # The action searches for packages.lock.json in the repository root,
+          # calculates their hash, and uses it as a part of the cache key.
+          cache: true
 
       - name: Restore dependencies
         run: dotnet restore
@@ -42,25 +40,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run tests and collect code coverage (Cobertura)
+      - name: Run tests and generate Cobertura coverage reports
         run: dotnet test --results-directory "coverage" --collect:"Code Coverage;Format=cobertura"
 
       - name: Install dotnet-coverage tool
         run: dotnet tool install --global dotnet-coverage
 
-      - name: Merge coverage reports
+      - name: Merge Cobertura coverage reports
         run: dotnet-coverage merge coverage/**/*.cobertura.xml --output coverage/cobertura.xml --output-format cobertura
 
       - name: Install ReportGenerator tool
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
-      - name: Generate Markdown summary
+      - name: Generate Markdown summary of coverage report
         run: reportgenerator -reports:coverage/cobertura.xml -targetdir:coverage -reporttypes:"MarkdownSummaryGithub"
 
-      - name: Display Markdown summary
+      - name: Display Markdown summary of coverage report
         run: cat coverage/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
 
-      - name: Upload coverage report artifact
+      - name: Upload Cobertura coverage report artifact
         uses: actions/upload-artifact@v4
         with:
           name: cobertura.xml
@@ -71,26 +69,25 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [codecov, codacy]  # Parallel jobs for Codecov and Codacy
+        service: [codecov, codacy]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download coverage report artifact
+      - name: Download Cobertura coverage report artifact
         uses: actions/download-artifact@v4
         with:
           name: cobertura.xml
 
-      - name: Upload coverage report to ${{ matrix.service }}
+      - name: Upload Cobertura coverage report to ${{ matrix.service }}
         if: ${{ matrix.service == 'codecov' }}
         uses: codecov/codecov-action@v5.4.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: cobertura.xml
           use_oidc: false
-          verbose: true
 
-      - name: Upload coverage report to ${{ matrix.service }}
+      - name: Upload Cobertura coverage report to ${{ matrix.service }}
         if: ${{ matrix.service == 'codacy' }}
         uses: codacy/codacy-coverage-reporter-action@v1.3.0
         with:
