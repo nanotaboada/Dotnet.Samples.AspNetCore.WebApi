@@ -1,4 +1,6 @@
+using Dotnet.Samples.AspNetCore.WebApi.Controllers;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
+using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Caching.Memory;
@@ -16,11 +18,14 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
     /// </summary>
     public static class PlayerMocks
     {
+        public static Mock<IPlayerService> ServiceMock()
+        {
+            return new Mock<IPlayerService>();
+        }
+
         public static Mock<IPlayerRepository> RepositoryMock()
         {
-            var mock = new Mock<IPlayerRepository>();
-
-            return mock;
+            return new Mock<IPlayerRepository>();
         }
 
         public static Mock<ILogger<T>> LoggerMock<T>()
@@ -53,6 +58,28 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
             mock.Setup(url => url.Action(It.IsAny<UrlActionContext>())).Returns(It.IsAny<string>());
 
             return mock;
+        }
+
+        public static (
+            Mock<IPlayerRepository> repository,
+            Mock<ILogger<PlayerService>> logger,
+            Mock<IMemoryCache> memoryCache
+        ) SetupServiceMocks(object? cacheValue = null)
+        {
+            var repository = RepositoryMock();
+            var logger = LoggerMock<PlayerService>();
+            var memoryCache = MemoryCacheMock(cacheValue ?? It.IsAny<object>());
+            return (repository, logger, memoryCache);
+        }
+
+        public static (
+            Mock<IPlayerService> service,
+            Mock<ILogger<PlayerController>> logger
+        ) SetupControllerMocks(object? cacheValue = null)
+        {
+            var service = ServiceMock();
+            var logger = LoggerMock<PlayerController>();
+            return (service, logger);
         }
     }
 }

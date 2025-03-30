@@ -25,9 +25,7 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenCreateAsync_WhenRepositoryAddAsync_ThenAddsPlayerToRepositoryAndRemovesMemoryCache()
     {
         // Arrange
-        var repository = PlayerMocks.RepositoryMock();
-        var logger = PlayerMocks.LoggerMock<PlayerService>();
-        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
+        var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks();
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
 
@@ -49,10 +47,8 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var players = PlayerFakes.CreateStarting11();
-        var repository = PlayerMocks.RepositoryMock();
+        var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks();
         repository.Setup(repository => repository.GetAllAsync()).ReturnsAsync(players);
-        var logger = PlayerMocks.LoggerMock<PlayerService>();
-        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
         var value = It.IsAny<object>();
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
@@ -73,9 +69,7 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var players = PlayerFakes.CreateStarting11();
-        var repository = PlayerMocks.RepositoryMock();
-        var logger = PlayerMocks.LoggerMock<PlayerService>();
-        var memoryCache = PlayerMocks.MemoryCacheMock(players);
+        var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks(cacheValue: players);
         var value = It.IsAny<object>();
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
@@ -98,10 +92,8 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var id = 999;
-        var repository = PlayerMocks.RepositoryMock();
+        var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks();
         repository.Setup(repository => repository.FindByIdAsync(id)).ReturnsAsync((Player?)null);
-        var logger = PlayerMocks.LoggerMock<PlayerService>();
-        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
 
@@ -119,10 +111,8 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var player = PlayerFakes.CreateOneByIdFromStarting11(9);
-        var repository = PlayerMocks.RepositoryMock();
+        var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks();
         repository.Setup(repository => repository.FindByIdAsync(player.Id)).ReturnsAsync(player);
-        var logger = PlayerMocks.LoggerMock<PlayerService>();
-        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
 
@@ -141,12 +131,10 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var squadNumber = 999;
-        var repository = PlayerMocks.RepositoryMock();
+        var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks();
         repository
             .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
             .ReturnsAsync((Player?)null);
-        var logger = PlayerMocks.LoggerMock<PlayerService>();
-        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
 
@@ -167,12 +155,10 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var player = PlayerFakes.CreateOneByIdFromStarting11(9);
-        var repository = PlayerMocks.RepositoryMock();
+        var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks();
         repository
             .Setup(repository => repository.FindBySquadNumberAsync(player.SquadNumber))
             .ReturnsAsync(player);
-        var logger = PlayerMocks.LoggerMock<PlayerService>();
-        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
 
@@ -198,10 +184,8 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var player = PlayerFakes.CreateOneByIdFromStarting11(9);
-        var repository = PlayerMocks.RepositoryMock();
+        var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks();
         repository.Setup(repository => repository.FindByIdAsync(player.Id)).ReturnsAsync(player);
-        var logger = PlayerMocks.LoggerMock<PlayerService>();
-        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
 
@@ -224,10 +208,8 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var player = PlayerFakes.CreateOneNew();
-        var repository = PlayerMocks.RepositoryMock();
+        var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks();
         repository.Setup(repository => repository.FindByIdAsync(player.Id)).ReturnsAsync(player);
-        var logger = PlayerMocks.LoggerMock<PlayerService>();
-        var memoryCache = PlayerMocks.MemoryCacheMock(It.IsAny<object>());
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
 
