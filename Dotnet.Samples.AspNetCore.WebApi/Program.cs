@@ -36,6 +36,10 @@ builder.Services.AddDbContextPool<PlayerDbContext>(options =>
     }
 });
 
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddMemoryCache();
+
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddSwaggerGen(options =>
@@ -65,9 +69,6 @@ if (builder.Environment.IsDevelopment())
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, filePath));
     });
 }
-
-builder.Services.AddScoped<IPlayerService, PlayerService>();
-builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

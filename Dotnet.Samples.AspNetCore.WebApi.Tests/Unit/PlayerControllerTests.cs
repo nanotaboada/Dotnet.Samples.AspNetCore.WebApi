@@ -1,12 +1,13 @@
 using Dotnet.Samples.AspNetCore.WebApi.Controllers;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
+using Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
-namespace Dotnet.Samples.AspNetCore.WebApi.Tests;
+namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Unit;
 
 public class PlayerControllerTests
 {
@@ -15,7 +16,7 @@ public class PlayerControllerTests
      * ---------------------------------------------------------------------- */
 
     [Fact]
-    [Trait("Category", "PostAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenPostAsync_WhenModelStateIsInvalid_ThenResponseStatusCodeShouldBe400BadRequest()
     {
         // Arrange
@@ -34,7 +35,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "PostAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenPostAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe409Conflict()
     {
         // Arrange
@@ -55,7 +56,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "PostAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenPostAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe201Created()
     {
         // Arrange
@@ -88,7 +89,7 @@ public class PlayerControllerTests
      * ---------------------------------------------------------------------- */
 
     [Fact]
-    [Trait("Category", "GetAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenGetAsync_WhenServiceRetrieveAsyncReturnsListOfPlayers_ThenResponseShouldBeEquivalentToListOfPlayers()
     {
         // Arrange
@@ -111,7 +112,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "GetAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenGetAsync_WhenServiceRetrieveAsyncReturnsEmptyList_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
@@ -132,7 +133,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "GetByIdAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenGetByIdAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
@@ -154,7 +155,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "GetByIdAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenGetByIdAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe200Ok()
     {
         // Arrange
@@ -177,7 +178,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "GetBySquadNumberAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenGetBySquadNumberAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
@@ -202,7 +203,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "GetBySquadNumberAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenGetBySquadNumberAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe200Ok()
     {
         // Arrange
@@ -234,7 +235,7 @@ public class PlayerControllerTests
      * ---------------------------------------------------------------------- */
 
     [Fact]
-    [Trait("Category", "PutAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenPutAsync_WhenModelStateIsInvalid_ThenResponseStatusCodeShouldBe400BadRequest()
     {
         // Arrange
@@ -254,7 +255,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "PutAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenPutAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
@@ -276,7 +277,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "PutAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenPutAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe204NoContent()
     {
         // Arrange
@@ -304,7 +305,7 @@ public class PlayerControllerTests
      * ---------------------------------------------------------------------- */
 
     [Fact]
-    [Trait("Category", "DeleteAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenDeleteAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
@@ -326,7 +327,7 @@ public class PlayerControllerTests
     }
 
     [Fact]
-    [Trait("Category", "DeleteAsync")]
+    [Trait("Category", "Unit")]
     public async Task GivenDeleteAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe204NoContent()
     {
         // Arrange

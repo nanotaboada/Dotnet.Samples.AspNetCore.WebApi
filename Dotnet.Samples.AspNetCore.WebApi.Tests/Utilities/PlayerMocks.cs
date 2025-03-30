@@ -1,13 +1,28 @@
+using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Dotnet.Samples.AspNetCore.WebApi.Tests
+namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
 {
+    /// <summary>
+    /// A Mock is a dynamic test double that not only provides responses but
+    /// also records interactions. Mocks are pre‑programmed with expectations
+    /// (like “this method should be called once with these parameters”) and can
+    /// later verify that the expected calls occurred. Frameworks such as Moq
+    /// make it easy to set up and verify these interactions.
+    /// </summary>
     public static class PlayerMocks
     {
+        public static Mock<IPlayerRepository> RepositoryMock()
+        {
+            var mock = new Mock<IPlayerRepository>();
+
+            return mock;
+        }
+
         public static Mock<ILogger<T>> LoggerMock<T>()
             where T : class
         {
