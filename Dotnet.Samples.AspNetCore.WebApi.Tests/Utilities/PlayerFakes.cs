@@ -2,8 +2,15 @@ using System.Text.Json;
 using Dotnet.Samples.AspNetCore.WebApi.Enums;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 
-namespace Dotnet.Samples.AspNetCore.WebApi.Tests;
+namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities;
 
+/// <summary>
+/// A Fake is a working implementation that’s simpler than the real one.
+/// It usually has some “real” logic but is not suitable for production
+/// (e.g., an in‑memory database instead of a full SQL Server). Fakes are
+/// useful when you need behavior that’s closer to reality but still want
+/// to avoid external dependencies.
+/// </summary>
 public static class PlayerFakes
 {
     public static Player CreateOneByIdFromStarting11(int id)

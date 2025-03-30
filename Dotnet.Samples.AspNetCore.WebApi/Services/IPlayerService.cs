@@ -3,26 +3,26 @@
 namespace Dotnet.Samples.AspNetCore.WebApi.Services
 {
     /// <summary>
-    /// Interface for managing Player entities in the database context.
+    /// Interface for managing Player entities in the repository.
     /// </summary>
     public interface IPlayerService
     {
         /// <summary>
-        /// Adds a new Player to the database context.
+        /// Adds a new Player to the repository.
         /// </summary>
         /// <param name="player">The Player to create.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
         public Task CreateAsync(Player player);
 
         /// <summary>
-        /// Retrieves all players from the database context.
+        /// Retrieves all players from the repository.
         /// </summary>
         /// <returns>A Task representing the asynchronous operation,
         /// containing a list of all players.</returns>
         public Task<List<Player>> RetrieveAsync();
 
         /// <summary>
-        /// Retrieves a Player from the database context by its ID.
+        /// Retrieves a Player from the repository by its ID.
         /// </summary>
         /// <param name="id">The ID of the Player to retrieve.</param>
         /// <returns>
@@ -32,7 +32,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Services
         public ValueTask<Player?> RetrieveByIdAsync(long id);
 
         /// <summary>
-        /// Retrieves a Player from the database context by its Squad Number.
+        /// Retrieves a Player from the repository by its Squad Number.
         /// </summary>
         /// <param name="squadNumber">The Squad Number of the Player to retrieve.</param>
         /// <returns>
@@ -42,14 +42,14 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Services
         public ValueTask<Player?> RetrieveBySquadNumberAsync(int squadNumber);
 
         /// <summary>
-        /// Updates (entirely) an existing Player in the database context.
+        /// Updates (entirely) an existing Player in the repository.
         /// </summary>
         /// <param name="player">The Player to update.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
         public Task UpdateAsync(Player player);
 
         /// <summary>
-        /// Removes an existing Player from the database context.
+        /// Removes an existing Player from the repository.
         /// </summary>
         /// <param name="id">The ID of the Player to delete.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 namespace Dotnet.Samples.AspNetCore.WebApi.Services;
 
 public class PlayerService(
-    PlayerDbContext dbContext,
+    IPlayerRepository playerRepository,
     ILogger<PlayerService> logger,
     IMemoryCache memoryCache
 ) : IPlayerService
@@ -14,7 +14,7 @@ public class PlayerService(
     private const string MemoryCache_Key_RetrieveAsync = "MemoryCache_Key_RetrieveAsync";
     private const string AspNetCore_Environment = "ASPNETCORE_ENVIRONMENT";
     private const string Development = "Development";
-    private readonly PlayerDbContext _dbContext = dbContext;
+    private readonly IPlayerRepository _playerRepository = playerRepository;
     private readonly ILogger<PlayerService> _logger = logger;
     private readonly IMemoryCache _memoryCache = memoryCache;
 
@@ -24,8 +24,7 @@ public class PlayerService(
 
     public async Task CreateAsync(Player player)
     {
-        _dbContext.Add(player);
-        await _dbContext.SaveChangesAsync();
+        await _playerRepository.AddAsync(player);
         _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
     }
 
@@ -53,7 +52,7 @@ public class PlayerService(
                 await Task.Delay(new Random().Next(2600, 4200));
             }
 
-            players = await _dbContext.Players.ToListAsync();
+            players = await _playerRepository.GetAllAsync();
             _logger.Log(LogLevel.Information, "Players retrieved from DbContext.");
 
             using (var cacheEntry = _memoryCache.CreateEntry(MemoryCache_Key_RetrieveAsync))
@@ -66,17 +65,11 @@ public class PlayerService(
         }
     }
 
-    public async ValueTask<Player?> RetrieveByIdAsync(long id)
-    {
-        return await _dbContext.Players.FindAsync(id);
-    }
+    public async ValueTask<Player?> RetrieveByIdAsync(long id) =>
+        await _playerRepository.FindByIdAsync(id);
 
-    public async ValueTask<Player?> RetrieveBySquadNumberAsync(int squadNumber)
-    {
-        return await _dbContext.Players.FirstOrDefaultAsync(player =>
-            player.SquadNumber == squadNumber
-        );
-    }
+    public async ValueTask<Player?> RetrieveBySquadNumberAsync(int squadNumber) =>
+        await _playerRepository.FindBySquadNumberAsync(squadNumber);
 
     /* -------------------------------------------------------------------------
      * Update
@@ -84,10 +77,10 @@ public class PlayerService(
 
     public async Task UpdateAsync(Player player)
     {
-        if (await _dbContext.Players.FindAsync(player.Id) is Player entity)
+        if (await _playerRepository.FindByIdAsync(player.Id) is Player entity)
         {
             entity.MapFrom(player);
-            await _dbContext.SaveChangesAsync();
+            await _playerRepository.UpdateAsync(entity);
             _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
         }
     }
@@ -98,10 +91,9 @@ public class PlayerService(
 
     public async Task DeleteAsync(long id)
     {
-        if (await _dbContext.Players.FindAsync(id) is Player entity)
+        if (await _playerRepository.FindByIdAsync(id) is not null)
         {
-            _dbContext.Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            await _playerRepository.RemoveAsync(id);
             _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
         }
     }

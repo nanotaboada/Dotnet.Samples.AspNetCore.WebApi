@@ -8,11 +8,11 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
-public class PlayersController(IPlayerService playerService, ILogger<PlayersController> logger)
+public class PlayerController(IPlayerService playerService, ILogger<PlayerController> logger)
     : ControllerBase
 {
     private readonly IPlayerService _playerService = playerService;
-    private readonly ILogger<PlayersController> _logger = logger;
+    private readonly ILogger<PlayerController> _logger = logger;
 
     /* -------------------------------------------------------------------------
      * HTTP POST
