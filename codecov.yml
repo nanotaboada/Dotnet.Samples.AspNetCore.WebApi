@@ -1,5 +1,29 @@
 # https://docs.codecov.com/docs/codecov-yaml
 
+coverage:
+
+  #https://docs.codecov.com/docs/commit-status
+  status:
+    project:
+      default:
+        target: 80%            # Default target for all components
+        threshold: 10%         # Default threshold for all components
+        if_not_found: success  # If no coverage report is found, the status will be success
+        if_ci_failed: error    # If the CI failed, the status will be error
+
+      # Components inherit the default settings
+      controllers:
+        paths:
+          - "Dotnet.Samples.AspNetCore.WebApi/Controllers/"
+      services:
+        paths:
+          - "Dotnet.Samples.AspNetCore.WebApi/Services/"
+
+    patch:
+      default:
+        target: 80%            # Default target for all components
+        threshold: 10%         # Default threshold for all components
+
 ignore:
   - "Dotnet.Samples.AspNetCore.WebApi/Data"
   - "Dotnet.Samples.AspNetCore.WebApi/Enums"
@@ -9,16 +33,3 @@ ignore:
   - "Dotnet.Samples.AspNetCore.WebApi/Utilities"
   - "Dotnet.Samples.AspNetCore.WebApi/Program.cs"
   - "Dotnet.Samples.AspNetCore.WebApi.Tests"
-
-coverage:
-  status:
-    project:
-      controllers:
-        paths:
-          - "Dotnet.Samples.AspNetCore.WebApi/Controllers/"
-      services:
-        paths:
-          - "Dotnet.Samples.AspNetCore.WebApi/Services/"
-    patch:
-      default:
-        informational: true

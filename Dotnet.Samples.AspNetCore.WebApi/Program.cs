@@ -3,18 +3,24 @@ using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 /* -----------------------------------------------------------------------------
+ * Configuration
+ * -------------------------------------------------------------------------- */
+builder
+    .Configuration.SetBasePath(AppContext.BaseDirectory)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+/* -----------------------------------------------------------------------------
  * Logging
  * -------------------------------------------------------------------------- */
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Logging.ClearProviders();
-    builder.Logging.AddSimpleConsole(options => options.SingleLine = true);
-}
+builder.Host.UseSerilog();
 
 /* -----------------------------------------------------------------------------
  * Services
@@ -76,6 +82,8 @@ var app = builder.Build();
  * Middlewares
  * https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware
  * -------------------------------------------------------------------------- */
+
+app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
