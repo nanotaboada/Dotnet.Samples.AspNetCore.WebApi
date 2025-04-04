@@ -19,6 +19,10 @@ on:
 
 jobs:
   codacy-security-scan:
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     name: Codacy Security Scan
     runs-on: ubuntu-latest
     steps:
