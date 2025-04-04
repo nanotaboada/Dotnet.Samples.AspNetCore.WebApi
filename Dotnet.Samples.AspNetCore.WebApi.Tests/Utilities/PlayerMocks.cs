@@ -36,21 +36,33 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
 
         public static Mock<IMemoryCache> MemoryCacheMock(object? value)
         {
-            var fromCache = false;
+            var cachedValue = false;
             var mock = new Mock<IMemoryCache>();
-            mock.Setup(cache => cache.TryGetValue(It.IsAny<object>(), out value))
+
+            mock.Setup(cache => cache.TryGetValue(It.IsAny<object>(), out It.Ref<object>.IsAny!))
+                .Callback(
+                    new TryGetValueDelegate(
+                        (object _, out object? output) =>
+                        {
+                            output = cachedValue ? value : null;
+                        }
+                    )
+                )
                 .Returns(() =>
                 {
-                    bool hasValue = fromCache;
-                    fromCache = true; // Subsequent invocations will return true
+                    bool hasValue = cachedValue;
+                    cachedValue = true; // Subsequent invocations will return true
                     return hasValue;
                 });
+
             mock.Setup(cache => cache.CreateEntry(It.IsAny<object>()))
                 .Returns(Mock.Of<ICacheEntry>);
             mock.Setup(cache => cache.Remove(It.IsAny<object>()));
 
             return mock;
         }
+
+        private delegate void TryGetValueDelegate(object key, out object? value);
 
         public static Mock<IUrlHelper> UrlHelperMock()
         {

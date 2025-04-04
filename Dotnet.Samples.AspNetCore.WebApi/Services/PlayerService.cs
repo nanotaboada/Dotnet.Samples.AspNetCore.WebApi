@@ -25,7 +25,12 @@ public class PlayerService(
     public async Task CreateAsync(Player player)
     {
         await _playerRepository.AddAsync(player);
+        _logger.LogInformation("Player added to Repository: {Player}", player);
         _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
+        _logger.LogInformation(
+            "Key removed from MemoryCache: {Key}",
+            MemoryCache_Key_RetrieveAsync
+        );
     }
 
     /* -------------------------------------------------------------------------
@@ -36,27 +41,29 @@ public class PlayerService(
     {
         if (_memoryCache.TryGetValue(MemoryCache_Key_RetrieveAsync, out List<Player>? players))
         {
-            _logger.Log(LogLevel.Information, "Players retrieved from MemoryCache.");
-
+            _logger.LogInformation("Players retrieved from MemoryCache");
             return players!;
         }
         else
         {
-            /*
-                Use multiple environments in ASP.NET Core
-                https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-8.0
-            */
+            // Use multiple environments in ASP.NET Core
+            // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-8.0
             if (Environment.GetEnvironmentVariable(AspNetCore_Environment) == Development)
             {
-                // Simulates a random delay
-                await Task.Delay(new Random().Next(2600, 4200));
+                await SimulateRepositoryDelayAsync();
             }
 
             players = await _playerRepository.GetAllAsync();
-            _logger.Log(LogLevel.Information, "Players retrieved from DbContext.");
+            _logger.LogInformation("Players retrieved from Repository");
 
             using (var cacheEntry = _memoryCache.CreateEntry(MemoryCache_Key_RetrieveAsync))
             {
+                _logger.LogInformation(
+                    "{Count} players added to MemoryCache with key {Key}",
+                    players.Count,
+                    MemoryCache_Key_RetrieveAsync
+                );
+                cacheEntry.SetSize(players.Count);
                 cacheEntry.Value = players;
                 cacheEntry.SetOptions(GetMemoryCacheEntryOptions());
             }
@@ -81,7 +88,12 @@ public class PlayerService(
         {
             entity.MapFrom(player);
             await _playerRepository.UpdateAsync(entity);
+            _logger.LogInformation("Player updated in Repository: {Player}", player);
             _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
+            _logger.LogInformation(
+                "Key removed from MemoryCache: {Key}",
+                MemoryCache_Key_RetrieveAsync
+            );
         }
     }
 
@@ -94,7 +106,12 @@ public class PlayerService(
         if (await _playerRepository.FindByIdAsync(id) is not null)
         {
             await _playerRepository.RemoveAsync(id);
+            _logger.LogInformation("Player ID removed from Repository {Id}", id);
             _memoryCache.Remove(MemoryCache_Key_RetrieveAsync);
+            _logger.LogInformation(
+                "Key removed from MemoryCache: {Key}",
+                MemoryCache_Key_RetrieveAsync
+            );
         }
     }
 
@@ -109,5 +126,21 @@ public class PlayerService(
             .SetPriority(CacheItemPriority.Normal)
             .SetSlidingExpiration(TimeSpan.FromMinutes(10))
             .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+    }
+
+    /// <summary>
+    /// Simulates a delay in the repository call to mimic a long-running operation.
+    /// This is only used in the Development environment to simulate a delay
+    /// in the repository call. In production, this method should not be called.
+    /// </summary>
+    /// <returns>A Task representing the asynchronous operation.</returns>
+    private async Task SimulateRepositoryDelayAsync()
+    {
+        var milliseconds = new Random().Next(2600, 4200);
+        _logger.LogInformation(
+            "Simulating a random delay of {Milliseconds} milliseconds...",
+            milliseconds
+        );
+        await Task.Delay(milliseconds);
     }
 }

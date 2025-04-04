@@ -70,6 +70,7 @@ public class PlayerServiceTests : IDisposable
         // Arrange
         var players = PlayerFakes.CreateStarting11();
         var (repository, logger, memoryCache) = PlayerMocks.SetupServiceMocks(cacheValue: players);
+        repository.Setup(repository => repository.GetAllAsync()).ReturnsAsync(players);
         var value = It.IsAny<object>();
 
         var service = new PlayerService(repository.Object, logger.Object, memoryCache.Object);
