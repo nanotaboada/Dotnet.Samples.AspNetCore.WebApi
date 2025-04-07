@@ -21,7 +21,7 @@ Proof of Concept for a Web API made with [ASP.NET Core 8.0](https://learn.micros
 ## Start
 
 ```console
-dotnet watch run --project Dotnet.Samples.AspNetCore.WebApi/Dotnet.Samples.AspNetCore.WebApi.csproj
+dotnet watch run --project src/Dotnet.Samples.AspNetCore.WebApi/Dotnet.Samples.AspNetCore.WebApi.csproj
 ```
 
 ## Documentation
@@ -30,7 +30,7 @@ dotnet watch run --project Dotnet.Samples.AspNetCore.WebApi/Dotnet.Samples.AspNe
 https://localhost:9000/swagger/index.html
 ```
 
-![API Documentation](Dotnet.Samples.AspNetCore.WebApi.Swagger.png)
+![API Documentation](/docs/Swagger.png)
 
 ## Credits
 

@@ -1,21 +1,29 @@
-# https://docs.codacy.com/repositories-configure/codacy-configuration-file/
+# Codacy configuration for excluding files and folders from analysis
+# https://docs.codacy.com/repositories-configure/codacy-configuration-file/#ignore-files
+# Uses Java GLOB syntax: https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
 
 exclude_paths:
-  - ".github"
-  - ".vscode"
-  - ".gitignore"
-  - "LICENSE"
-  - "README.md"
-  - "**.sln"
-  - "**.csproj"
-  - "**.json"
-  - "**.yml"
-  - "**/*Program.cs"
-  - "**/Data/**"
-  - "**/Enums/**"
-  - "**/Mappings/**"
-  - "**/Migrations/**"
-  - "**/Models/**"
-  - "**/Properties/**"
-  - "**/Utilities/**"
-  - "**.Tests/**"
+  # Ignore all project-level metadata and documentation
+  - '.gitignore'           # root Git ignore file
+  - 'LICENSE'              # root license file
+  - 'README.md'            # root readme
+
+  # Ignore all file types that shouldn't be analyzed
+  - '**.yml'               # YAML files anywhere (build, config, pipelines)
+  - '**.json'              # JSON files (settings, config)
+  - '**.png'               # Images, e.g., Swagger diagram
+  - '**.sln'               # Solution files
+  - '**.csproj'            # C# project files
+
+  # Ignore generated or infrastructure files
+  - '**/*Program.cs'       # Main entry point, often not useful for static analysis
+
+  # Ignore specific folders across any depth in the project
+  - '**/Data/**'           # Repositories, DbContext, database file, etc.
+  - '**/Enums/**'          # Enumeration types
+  - '**/Mappings/**'       # AutoMapper profiles
+  - '**/Migrations/**'     # EF Core migration snapshots
+  - '**/Models/**'         # Domain and DTO models
+  - '**/Properties/**'     # launchSettings.json or AssemblyInfo.cs
+  - '**/Utilities/**'      # Helper extensions or static classes
+  - '**/test/**'           # Entire test suite (unit + integration)
