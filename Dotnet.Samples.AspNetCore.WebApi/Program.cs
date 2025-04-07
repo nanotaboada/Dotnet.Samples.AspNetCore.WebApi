@@ -2,6 +2,7 @@ using System.Reflection;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Mappings;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
+using Dotnet.Samples.AspNetCore.WebApi.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -20,26 +21,22 @@ builder
  * Logging
  * -------------------------------------------------------------------------- */
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
-
 builder.Host.UseSerilog();
 
 /* -----------------------------------------------------------------------------
  * Services
  * -------------------------------------------------------------------------- */
-
 builder.Services.AddControllers();
-
-var dataSource =
-    $"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}/Data/players-sqlite3.db";
-
 builder.Services.AddDbContextPool<PlayerDbContext>(options =>
 {
+    var dataSource = Path.Combine(AppContext.BaseDirectory, "Data", "players-sqlite3.db");
     options.UseSqlite($"Data Source={dataSource}");
-
     if (builder.Environment.IsDevelopment())
     {
         options.EnableSensitiveDataLogging();
-        options.LogTo(Console.WriteLine, LogLevel.Information);
+        options.LogTo(Log.Logger.Information, LogLevel.Information);
+        // https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-9.0/whatsnew#improved-data-seeding
+        options.UseAsyncSeeding(DbContextUtils.SeedAsync);
     }
 });
 
@@ -84,15 +81,15 @@ var app = builder.Build();
  * Middlewares
  * https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware
  * -------------------------------------------------------------------------- */
-
-app.UseSerilogRequestLogging();
-
 if (app.Environment.IsDevelopment())
 {
     // https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// https://github.com/serilog/serilog-aspnetcore
+app.UseSerilogRequestLogging();
 
 // https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl
 app.UseHttpsRedirection();
@@ -102,12 +99,5 @@ app.UseCors();
 
 // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#endpoints
 app.MapControllers();
-
-/* -----------------------------------------------------------------------------
- * Data Seeding
- * https://learn.microsoft.com/en-us/ef/core/modeling/data-seeding
- * -------------------------------------------------------------------------- */
-
-app.SeedDbContext();
 
 await app.RunAsync();
