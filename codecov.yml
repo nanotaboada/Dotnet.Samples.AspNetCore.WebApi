@@ -27,6 +27,7 @@ coverage:
 ignore:
   - "Dotnet.Samples.AspNetCore.WebApi/Data"
   - "Dotnet.Samples.AspNetCore.WebApi/Enums"
+  - "Dotnet.Samples.AspNetCore.WebApi/Mappings"
   - "Dotnet.Samples.AspNetCore.WebApi/Migrations"
   - "Dotnet.Samples.AspNetCore.WebApi/Models"
   - "Dotnet.Samples.AspNetCore.WebApi/Properties"

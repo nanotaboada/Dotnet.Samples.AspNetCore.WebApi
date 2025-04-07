@@ -44,6 +44,14 @@
         "resolved": "3.0.2",
         "contentHash": "oXbusR6iPq0xlqoikjdLvzh+wQDkMv9If58myz9MEzldS4nIcp442Btgs2sWbYWV+caEluMe2pQCZ0hUZgPiow=="
       },
+      "AutoMapper": {
+        "type": "Transitive",
+        "resolved": "14.0.0",
+        "contentHash": "OC+1neAPM4oCCqQj3g2GJ2shziNNhOkxmNB9cVS8jtx4JbgmRzLcUOxB9Tsz6cVPHugdkHgCaCrTjjSI0Z5sCQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Options": "8.0.0"
+        }
+      },
       "Azure.Core": {
         "type": "Transitive",
         "resolved": "1.38.0",
@@ -1806,6 +1814,7 @@
       "dotnet.samples.aspnetcore.webapi": {
         "type": "Project",
         "dependencies": {
+          "AutoMapper": "[14.0.0, )",
           "Microsoft.AspNetCore.OpenApi": "[8.0.14, )",
           "Microsoft.EntityFrameworkCore.InMemory": "[9.0.3, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[9.0.3, )",

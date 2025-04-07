@@ -1,5 +1,6 @@
 using System.Reflection;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
+using Dotnet.Samples.AspNetCore.WebApi.Mappings;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -45,6 +46,7 @@ builder.Services.AddDbContextPool<PlayerDbContext>(options =>
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddMemoryCache();
+builder.Services.AddAutoMapper(typeof(PlayerMappingProfile));
 
 if (builder.Environment.IsDevelopment())
 {

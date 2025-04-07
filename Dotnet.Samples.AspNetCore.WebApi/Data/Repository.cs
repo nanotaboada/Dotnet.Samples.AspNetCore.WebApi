@@ -20,7 +20,7 @@ public class Repository<T> : IRepository<T>
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<List<T>> GetAllAsync() => await _dbSet.ToListAsync();
+    public async Task<List<T>> GetAllAsync() => await _dbSet.AsNoTracking().ToListAsync();
 
     public async ValueTask<T?> FindByIdAsync(long id) => await _dbSet.FindAsync(id);
 
