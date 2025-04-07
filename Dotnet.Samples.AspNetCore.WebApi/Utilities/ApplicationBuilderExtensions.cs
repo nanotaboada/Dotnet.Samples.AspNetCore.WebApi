@@ -1,24 +1,38 @@
-﻿namespace Dotnet.Samples.AspNetCore.WebApi.Data;
+﻿using Dotnet.Samples.AspNetCore.WebApi.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Dotnet.Samples.AspNetCore.WebApi.Utilities;
 
 public static class ApplicationBuilderExtensions
 {
     /// <summary>
-    /// Simple extension method to populate the database with an initial set of data.
+    /// Async extension method to populate the database with initial data
     /// </summary>
-    public static void SeedDbContext(this IApplicationBuilder app)
+    public static async Task SeedDbContextAsync(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateScope();
-        var dbContext = scope.ServiceProvider.GetService<PlayerDbContext>();
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        var dbContext = services.GetRequiredService<PlayerDbContext>();
 
-        if (dbContext != null)
+        try
         {
-            // https://learn.microsoft.com/en-us/ef/core/managing-schemas/ensure-created
-            dbContext.Database.EnsureCreated();
+            await dbContext.Database.EnsureCreatedAsync();
 
-            if (!dbContext.Players.Any())
+            if (!await dbContext.Players.AnyAsync())
             {
-                dbContext.Players.AddRange(PlayerData.CreateStarting11());
+                await dbContext.Players.AddRangeAsync(PlayerData.CreateStarting11());
+                await dbContext.SaveChangesAsync();
+                logger.LogInformation("Successfully seeded database with initial data.");
             }
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "An error occurred while seeding the database");
+            throw new InvalidOperationException(
+                "An error occurred while seeding the database",
+                exception
+            );
         }
     }
 }
