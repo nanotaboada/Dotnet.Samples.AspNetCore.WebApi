@@ -1,3 +1,4 @@
+using AutoMapper;
 using Dotnet.Samples.AspNetCore.WebApi.Controllers;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
@@ -18,23 +19,40 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
     /// </summary>
     public static class PlayerMocks
     {
-        public static Mock<IPlayerService> ServiceMock()
+        public static (
+            Mock<IPlayerService> service,
+            Mock<ILogger<PlayerController>> logger
+        ) InitControllerMocks()
         {
-            return new Mock<IPlayerService>();
+            var service = new Mock<IPlayerService>();
+            var logger = new Mock<ILogger<PlayerController>>();
+
+            return (service, logger);
         }
 
-        public static Mock<IPlayerRepository> RepositoryMock()
+        public static Mock<IUrlHelper> SetupUrlHelperMock()
         {
-            return new Mock<IPlayerRepository>();
+            var mock = new Mock<IUrlHelper>();
+            mock.Setup(url => url.Action(It.IsAny<UrlActionContext>())).Returns(It.IsAny<string>());
+
+            return mock;
         }
 
-        public static Mock<ILogger<T>> LoggerMock<T>()
-            where T : class
+        public static (
+            Mock<IPlayerRepository> repository,
+            Mock<ILogger<PlayerService>> logger,
+            Mock<IMemoryCache> memoryCache,
+            Mock<IMapper> mapper
+        ) InitServiceMocks(object? cacheValue = null)
         {
-            return new Mock<ILogger<T>>();
+            var repository = new Mock<IPlayerRepository>();
+            var logger = new Mock<ILogger<PlayerService>>();
+            var memoryCache = SetupMemoryCacheMock(cacheValue ?? It.IsAny<object>());
+            var mapper = new Mock<IMapper>();
+            return (repository, logger, memoryCache, mapper);
         }
 
-        public static Mock<IMemoryCache> MemoryCacheMock(object? value)
+        public static Mock<IMemoryCache> SetupMemoryCacheMock(object? value)
         {
             var cachedValue = false;
             var mock = new Mock<IMemoryCache>();
@@ -63,35 +81,5 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
         }
 
         private delegate void TryGetValueDelegate(object key, out object? value);
-
-        public static Mock<IUrlHelper> UrlHelperMock()
-        {
-            var mock = new Mock<IUrlHelper>();
-            mock.Setup(url => url.Action(It.IsAny<UrlActionContext>())).Returns(It.IsAny<string>());
-
-            return mock;
-        }
-
-        public static (
-            Mock<IPlayerRepository> repository,
-            Mock<ILogger<PlayerService>> logger,
-            Mock<IMemoryCache> memoryCache
-        ) SetupServiceMocks(object? cacheValue = null)
-        {
-            var repository = RepositoryMock();
-            var logger = LoggerMock<PlayerService>();
-            var memoryCache = MemoryCacheMock(cacheValue ?? It.IsAny<object>());
-            return (repository, logger, memoryCache);
-        }
-
-        public static (
-            Mock<IPlayerService> service,
-            Mock<ILogger<PlayerController>> logger
-        ) SetupControllerMocks(object? cacheValue = null)
-        {
-            var service = ServiceMock();
-            var logger = LoggerMock<PlayerController>();
-            return (service, logger);
-        }
     }
 }

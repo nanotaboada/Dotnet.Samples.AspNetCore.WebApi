@@ -10,43 +10,44 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Services
         /// <summary>
         /// Adds a new Player to the repository.
         /// </summary>
-        /// <param name="player">The Player to create.</param>
-        /// <returns>A Task representing the asynchronous operation.</returns>
-        public Task CreateAsync(Player player);
+        /// <param name="playerRequestModel">The Player to create.</param>
+        /// <returns>A Task representing the asynchronous operation,
+        /// containing the created Player.</returns>
+        public Task<PlayerResponseModel> CreateAsync(PlayerRequestModel playerRequestModel);
 
         /// <summary>
         /// Retrieves all players from the repository.
         /// </summary>
         /// <returns>A Task representing the asynchronous operation,
         /// containing a list of all players.</returns>
-        public Task<List<Player>> RetrieveAsync();
+        public Task<List<PlayerResponseModel>> RetrieveAsync();
 
         /// <summary>
         /// Retrieves a Player from the repository by its ID.
         /// </summary>
         /// <param name="id">The ID of the Player to retrieve.</param>
         /// <returns>
-        /// A ValueTask representing the asynchronous operation, containing the Player if found,
+        /// A Task representing the asynchronous operation, containing the Player if found,
         /// or null if not.
         /// </returns>
-        public ValueTask<Player?> RetrieveByIdAsync(long id);
+        public Task<PlayerResponseModel?> RetrieveByIdAsync(long id);
 
         /// <summary>
         /// Retrieves a Player from the repository by its Squad Number.
         /// </summary>
         /// <param name="squadNumber">The Squad Number of the Player to retrieve.</param>
         /// <returns>
-        /// A ValueTask representing the asynchronous operation, containing the Player if found,
+        /// A Task representing the asynchronous operation, containing the Player if found,
         /// or null if not.
         /// </returns>
-        public ValueTask<Player?> RetrieveBySquadNumberAsync(int squadNumber);
+        public Task<PlayerResponseModel?> RetrieveBySquadNumberAsync(int squadNumber);
 
         /// <summary>
         /// Updates (entirely) an existing Player in the repository.
         /// </summary>
-        /// <param name="player">The Player to update.</param>
+        /// <param name="playerRequestModel">The Player to update.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
-        public Task UpdateAsync(Player player);
+        public Task UpdateAsync(PlayerRequestModel playerRequestModel);
 
         /// <summary>
         /// Removes an existing Player from the repository.

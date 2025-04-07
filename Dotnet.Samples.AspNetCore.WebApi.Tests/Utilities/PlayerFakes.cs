@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Dotnet.Samples.AspNetCore.WebApi.Enums;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 
@@ -13,28 +12,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities;
 /// </summary>
 public static class PlayerFakes
 {
-    public static Player CreateOneByIdFromStarting11(int id)
-    {
-        return CreateStarting11().SingleOrDefault(player => player.Id == id) ?? new();
-    }
-
-    public static Player CreateOneNew() =>
-        new()
-        {
-            Id = 12,
-            FirstName = "Leandro",
-            MiddleName = "Daniel",
-            LastName = "Paredes",
-            DateOfBirth = new DateTime(1994, 06, 29, 0, 0, 0, DateTimeKind.Utc),
-            SquadNumber = 5,
-            Position = Position.DefensiveMidfield.Text,
-            AbbrPosition = Position.DefensiveMidfield.Abbr,
-            Team = "AS Roma",
-            League = "Serie A",
-            Starting11 = false
-        };
-
-    public static List<Player> CreateStarting11()
+    public static List<Player> GetStarting11()
     {
         return
         [
@@ -190,5 +168,125 @@ public static class PlayerFakes
                 Starting11 = true,
             }
         ];
+    }
+
+    public static List<PlayerResponseModel> CreateStarting11ResponseModels() =>
+        [
+            .. GetStarting11()
+                .Select(player => new PlayerResponseModel
+                {
+                    Id = player.Id,
+                    FullName =
+                        $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
+                    Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+                    Dorsal = player.SquadNumber,
+                    Position = player.Position,
+                    Club = player.Team,
+                    League = player.League,
+                    Starting11 = player.Starting11 ? "Yes" : "No"
+                })
+        ];
+
+    public static Player CreateOneNew()
+    {
+        return new()
+        {
+            Id = 12,
+            FirstName = "Leandro",
+            MiddleName = "Daniel",
+            LastName = "Paredes",
+            DateOfBirth = new DateTime(1994, 06, 29, 0, 0, 0, DateTimeKind.Utc),
+            SquadNumber = 5,
+            Position = Position.DefensiveMidfield.Text,
+            AbbrPosition = Position.DefensiveMidfield.Abbr,
+            Team = "AS Roma",
+            League = "Serie A",
+            Starting11 = false
+        };
+    }
+
+    public static PlayerRequestModel CreateRequestModelForOneNew()
+    {
+        var player = CreateOneNew();
+
+        return new()
+        {
+            Id = player.Id,
+            FirstName = player.FirstName,
+            MiddleName = player.MiddleName,
+            LastName = player.LastName,
+            DateOfBirth = player.DateOfBirth,
+            SquadNumber = player.SquadNumber,
+            AbbrPosition = player.AbbrPosition,
+            Team = player.Team,
+            League = player.League
+        };
+    }
+
+    public static PlayerResponseModel CreateResponseModelForOneNew()
+    {
+        var player = CreateOneNew();
+
+        return new PlayerResponseModel
+        {
+            Id = player.Id,
+            FullName =
+                $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
+            Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+            Dorsal = player.SquadNumber,
+            Position = player.Position,
+            Club = player.Team,
+            League = player.League,
+            Starting11 = player.Starting11 ? "Yes" : "No"
+        };
+    }
+
+    public static Player GetOneExistingById(long id)
+    {
+        var player =
+            GetStarting11().SingleOrDefault(player => player.Id == id)
+            ?? throw new ArgumentNullException($"Player with ID {id} not found.");
+
+        return player;
+    }
+
+    public static PlayerRequestModel CreateRequestModelForOneExistingById(long id)
+    {
+        var player =
+            GetStarting11().SingleOrDefault(player => player.Id == id)
+            ?? throw new ArgumentNullException($"Player with ID {id} not found.");
+
+        return new PlayerRequestModel
+        {
+            Id = player.Id,
+            FirstName = player.FirstName,
+            MiddleName = player.MiddleName,
+            LastName = player.LastName,
+            DateOfBirth = player.DateOfBirth,
+            SquadNumber = player.SquadNumber,
+            AbbrPosition = player.AbbrPosition,
+            Team = player.Team,
+            League = player.League
+        };
+    }
+
+    public static PlayerResponseModel CreateResponseModelForOneExistingById(long id)
+    {
+        var player =
+            GetStarting11().SingleOrDefault(player => player.Id == id)
+            ?? throw new ArgumentNullException($"Player with ID {id} not found.");
+
+        return new PlayerResponseModel
+        {
+            Id = player.Id,
+            FullName =
+                $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
+            Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+            Dorsal = player.SquadNumber,
+            Position = player.Position,
+            Club = player.Team,
+            League = player.League,
+            Starting11 = player.Starting11 ? "Yes" : "No"
+        };
     }
 }
