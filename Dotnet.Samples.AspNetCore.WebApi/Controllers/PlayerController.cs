@@ -27,7 +27,7 @@ public class PlayerController(IPlayerService playerService, ILogger<PlayerContro
     /// <response code="409">Conflict</response>
     [HttpPost]
     [Consumes(MediaTypeNames.Application.Json)]
-    [ProducesResponseType<PlayerRequestModel>(StatusCodes.Status201Created)]
+    [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IResult> PostAsync([FromBody] PlayerRequestModel player)
@@ -42,8 +42,12 @@ public class PlayerController(IPlayerService playerService, ILogger<PlayerContro
         }
         else
         {
-            await _playerService.CreateAsync(player);
-            return TypedResults.Created($"/players/{player.Id}", player);
+            var result = await _playerService.CreateAsync(player);
+            return TypedResults.CreatedAtRoute(
+                routeName: "GetById",
+                routeValues: new { id = result.Id },
+                value: result
+            );
         }
     }
 
@@ -79,7 +83,7 @@ public class PlayerController(IPlayerService playerService, ILogger<PlayerContro
     /// <param name="id">The ID of the Player</param>
     /// <response code="200">OK</response>
     /// <response code="404">Not Found</response>
-    [HttpGet("{id}")]
+    [HttpGet("{id:long}", Name = "GetById")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetByIdAsync([FromRoute] long id)
@@ -102,7 +106,7 @@ public class PlayerController(IPlayerService playerService, ILogger<PlayerContro
     /// <param name="squadNumber">The Squad Number of the Player</param>
     /// <response code="200">OK</response>
     /// <response code="404">Not Found</response>
-    [HttpGet("squadNumber/{squadNumber}")]
+    [HttpGet("squad/{squadNumber:int}")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetBySquadNumberAsync([FromRoute] int squadNumber)
@@ -164,7 +168,7 @@ public class PlayerController(IPlayerService playerService, ILogger<PlayerContro
     /// <param name="id">The ID of the Player</param>
     /// <response code="204">No Content</response>
     /// <response code="404">Not Found</response>
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:long}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> DeleteAsync([FromRoute] long id)

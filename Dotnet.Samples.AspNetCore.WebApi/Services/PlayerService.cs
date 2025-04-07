@@ -25,7 +25,7 @@ public class PlayerService(
      * Create
      * ---------------------------------------------------------------------- */
 
-    public async Task CreateAsync(PlayerRequestModel playerRequestModel)
+    public async Task<PlayerResponseModel> CreateAsync(PlayerRequestModel playerRequestModel)
     {
         var player = _mapper.Map<Player>(playerRequestModel);
         await _playerRepository.AddAsync(player);
@@ -35,6 +35,7 @@ public class PlayerService(
             "Removed objects from Cache with Key: {Key}",
             CacheKey_RetrieveAsync
         );
+        return _mapper.Map<PlayerResponseModel>(player);
     }
 
     /* -------------------------------------------------------------------------
@@ -71,7 +72,6 @@ public class PlayerService(
                 cacheEntry.Value = playerResponseModels;
                 cacheEntry.SetOptions(GetMemoryCacheEntryOptions());
             }
-
             return playerResponseModels;
         }
     }

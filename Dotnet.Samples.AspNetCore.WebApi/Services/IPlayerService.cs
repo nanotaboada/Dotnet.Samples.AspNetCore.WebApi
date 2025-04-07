@@ -11,8 +11,9 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Services
         /// Adds a new Player to the repository.
         /// </summary>
         /// <param name="playerRequestModel">The Player to create.</param>
-        /// <returns>A Task representing the asynchronous operation.</returns>
-        public Task CreateAsync(PlayerRequestModel playerRequestModel);
+        /// <returns>A Task representing the asynchronous operation,
+        /// containing the created Player.</returns>
+        public Task<PlayerResponseModel> CreateAsync(PlayerRequestModel playerRequestModel);
 
         /// <summary>
         /// Retrieves all players from the repository.

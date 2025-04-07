@@ -25,7 +25,11 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenCreateAsync_WhenRepositoryAddAsync_ThenAddsPlayerToRepositoryAndRemovesCache()
     {
         // Arrange
+        var response = PlayerFakes.CreateResponseModelForOneExistingById(9);
         var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        mapper
+            .Setup(mapper => mapper.Map<PlayerResponseModel>(It.IsAny<PlayerRequestModel>()))
+            .Returns(response);
 
         var service = new PlayerService(
             repository.Object,
@@ -40,6 +44,10 @@ public class PlayerServiceTests : IDisposable
         // Assert
         repository.Verify(repository => repository.AddAsync(It.IsAny<Player>()), Times.Once);
         memoryCache.Verify(cache => cache.Remove(It.IsAny<object>()), Times.Once);
+        mapper.Verify(
+            mapper => mapper.Map<PlayerResponseModel>(It.IsAny<PlayerRequestModel>()),
+            Times.Once
+        );
     }
 
     /* -------------------------------------------------------------------------
@@ -111,6 +119,8 @@ public class PlayerServiceTests : IDisposable
             cache => cache.TryGetValue(It.IsAny<object>(), out value),
             Times.Exactly(2) // first + second
         );
+        memoryCache.Verify(cache => cache.CreateEntry(It.IsAny<object>()), Times.Once); // first only
+        repository.Verify(repository => repository.GetAllAsync(), Times.Once); // first only
         mapper.Verify(
             mapper => mapper.Map<List<PlayerResponseModel>>(It.IsAny<List<Player>>()),
             Times.Once // first only
@@ -140,6 +150,7 @@ public class PlayerServiceTests : IDisposable
 
         // Assert
         repository.Verify(repository => repository.FindByIdAsync(It.IsAny<long>()), Times.Once);
+        mapper.Verify(mapper => mapper.Map<PlayerResponseModel>(It.IsAny<Player>()), Times.Never);
         result.Should().BeNull();
     }
 
@@ -201,6 +212,7 @@ public class PlayerServiceTests : IDisposable
             repository => repository.FindBySquadNumberAsync(It.IsAny<int>()),
             Times.Once
         );
+        mapper.Verify(mapper => mapper.Map<PlayerResponseModel>(It.IsAny<Player>()), Times.Never);
         result.Should().BeNull();
     }
 
@@ -306,7 +318,7 @@ public class PlayerServiceTests : IDisposable
         // Assert
         repository.Verify(repository => repository.FindByIdAsync(It.IsAny<long>()), Times.Once);
         repository.Verify(repository => repository.RemoveAsync(It.IsAny<long>()), Times.Once);
-        memoryCache.Verify(cache => cache.Remove(It.IsAny<object>()), Times.Exactly(1));
+        memoryCache.Verify(cache => cache.Remove(It.IsAny<object>()), Times.Once);
     }
 
     private static async Task<long> ExecutionTimeAsync(Func<Task> awaitable)
