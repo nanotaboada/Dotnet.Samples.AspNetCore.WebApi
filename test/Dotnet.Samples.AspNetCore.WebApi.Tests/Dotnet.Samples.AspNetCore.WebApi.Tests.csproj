@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Dotnet.Samples.AspNetCore.WebApi\Dotnet.Samples.AspNetCore.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Dotnet.Samples.AspNetCore.WebApi\Dotnet.Samples.AspNetCore.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

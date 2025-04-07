@@ -29,8 +29,8 @@ jobs:
           # Use cache-dependency-path for cases when multiple dependency files
           # are used, or they are located in different subdirectories.
           cache-dependency-path: |
-            Dotnet.Samples.AspNetCore.WebApi/packages.lock.json
-            Dotnet.Samples.AspNetCore.WebApi.Tests/packages.lock.json
+            src/Dotnet.Samples.AspNetCore.WebApi/packages.lock.json
+            test/Dotnet.Samples.AspNetCore.WebApi.Tests/packages.lock.json
 
       - name: Restore dependencies
         run: dotnet restore

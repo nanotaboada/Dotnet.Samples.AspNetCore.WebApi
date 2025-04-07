@@ -2,16 +2,16 @@
 
 coverage:
 
-  #https://docs.codecov.com/docs/commit-status
+  # https://docs.codecov.com/docs/commit-status
   status:
     project:
       default:
         target: 80%            # Default target for all components
-        threshold: 10%         # Default threshold for all components
-        if_not_found: success  # If no coverage report is found, the status will be success
-        if_ci_failed: error    # If the CI failed, the status will be error
+        threshold: 10%         # Allowable drop in coverage without failing
+        if_not_found: success  # If no coverage report is found, don't fail
+        if_ci_failed: error    # CI failure should fail coverage check
 
-      # Components inherit the default settings
+      # Components for focused coverage metrics
       controllers:
         paths:
           - "Dotnet.Samples.AspNetCore.WebApi/Controllers/"
@@ -21,16 +21,32 @@ coverage:
 
     patch:
       default:
-        target: 80%            # Default target for all components
-        threshold: 10%         # Default threshold for all components
+        target: 80%            # Target for changed lines
+        threshold: 10%
 
+# https://docs.codecov.com/docs/ignoring-paths
 ignore:
-  - "Dotnet.Samples.AspNetCore.WebApi/Data"
-  - "Dotnet.Samples.AspNetCore.WebApi/Enums"
-  - "Dotnet.Samples.AspNetCore.WebApi/Mappings"
-  - "Dotnet.Samples.AspNetCore.WebApi/Migrations"
-  - "Dotnet.Samples.AspNetCore.WebApi/Models"
-  - "Dotnet.Samples.AspNetCore.WebApi/Properties"
-  - "Dotnet.Samples.AspNetCore.WebApi/Utilities"
-  - "Dotnet.Samples.AspNetCore.WebApi/Program.cs"
-  - "Dotnet.Samples.AspNetCore.WebApi.Tests"
+  # Ignore common project metadata and config files
+  - '.*\.sln'                  # Solution files
+  - '.*\.csproj'               # C# project files
+  - '.*\.json'                 # JSON config files (e.g., appsettings)
+  - '.*\.yml'                  # YAML config files (e.g., pipelines)
+  - '.*\.png'                  # Image assets (e.g., Swagger diagram)
+
+  # Ignore test project entirely
+  - '.*\/test\/.*'             # Any file in the test folder (unit/integration/utils)
+
+  # Ignore infrastructure and support folders anywhere in the project
+  - '.*\/Data\/.*'             # Repositories, DbContext, database files
+  - '.*\/Enums\/.*'            # Enums like Position
+  - '.*\/Mappings\/.*'         # AutoMapper profiles
+  - '.*\/Migrations\/.*'       # EF Core migration artifacts
+  - '.*\/Models\/.*'           # Domain and DTO models
+  - '.*\/Properties\/.*'       # launchSettings.json or other system files
+  - '.*\/Utilities\/.*'        # Static helper and extension classes
+
+  # Ignore application entry point and documentation files
+  - '.*\/Program\.cs'          # ASP.NET Core entry point
+  - '.*\/\.gitignore'          # Git ignore file
+  - '.*\/LICENSE'              # License text
+  - '.*\/README\.md'           # Project readme

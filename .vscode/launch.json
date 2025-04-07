@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/Dotnet.Samples.AspNetCore.WebApi/bin/Debug/net8.0/Dotnet.Samples.AspNetCore.WebApi.dll",
+      "program": "${workspaceFolder}/src/Dotnet.Samples.AspNetCore.WebApi/bin/Debug/net8.0/Dotnet.Samples.AspNetCore.WebApi.dll",
       "serverReadyAction": {
         "action": "openExternally",
         "pattern": "\\bNow listening on:\\s+https://localhost:([0-9]+)",
