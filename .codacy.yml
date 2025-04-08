@@ -1,10 +1,12 @@
 # Codacy configuration for excluding files and folders from analysis
 # https://docs.codacy.com/repositories-configure/codacy-configuration-file/#ignore-files
-# Uses Java GLOB syntax: https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+# Uses Java glob syntax: https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
 
 exclude_paths:
-  # Ignore all project-level metadata and documentation
+
+  # Ignore all root-level metadata and documentation
   - '.gitignore'           # root Git ignore file
+  - '.runsettings'         # root runsettings file
   - 'LICENSE'              # root license file
   - 'README.md'            # root readme
 
@@ -26,4 +28,4 @@ exclude_paths:
   - '**/Models/**'         # Domain and DTO models
   - '**/Properties/**'     # launchSettings.json or AssemblyInfo.cs
   - '**/Utilities/**'      # Helper extensions or static classes
-  - '**/test/**'           # Entire test suite (unit + integration)
+  - 'test/**/*'            # Entire test suite (unit + integration)
