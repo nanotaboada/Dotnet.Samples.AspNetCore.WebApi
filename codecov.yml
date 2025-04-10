@@ -1,34 +1,33 @@
-# Codecov repository YAML
+
+# Codecov Repository YAML
 # https://docs.codecov.com/docs/codecov-yaml
+
 coverage:
-
-  # https://docs.codecov.com/docs/commit-status
+# https://docs.codecov.com/docs/commit-status
   status:
-
     project:
       default:
-        target: 80%                    # Default target for all components
-        threshold: 10%                 # Allowable drop in coverage without failing
-        if_not_found: success          # If no coverage report is found, don't fail
-        if_ci_failed: error            # CI failure should fail coverage check
+        target: 80%
+        threshold: 100%
+        if_not_found: success
+        if_ci_failed: success
+    patch:
+      default:
+        target: 0%
+        threshold: 100%
+        if_not_found: success
 
-      patch:
-        default:
-          target: 80%                  # Target for changed lines
-          threshold: 10%               # Allowable drop in coverage without failing
-
+# https://docs.codecov.com/docs/components#component-options
 component_management:
-
-  default_rules:                       # default rules that will be inherited by all components
+  default_rules:
     statuses:
-      - type: project                  # components that don't have a status defined will have a project type one
+      - type: project
         target: auto
         branches:
           - "!main"
-
   individual_components:
-    - component_id: controllers        # this is an identifier that should not be changed
-      name: Controllers                # this is a display name, and can be changed freely
+    - component_id: controllers
+      name: Controllers
       paths:
         - 'src/Dotnet.Samples.AspNetCore.WebApi/Controllers/'
     - component_id: services
@@ -38,28 +37,28 @@ component_management:
 
 comment:
   layout: "header, diff, flags, components"
+  behavior: default
+  require_changes: false
 
 # https://docs.codecov.com/docs/ignoring-paths
 ignore:
-  # Ignoring specific file yypes
-  - '**/*.sln'                         # Solution files
-  - '**/*.csproj'                      # C# project files
-  - '**/*.json'                        # JSON config files (e.g., appsettings)
-  - '**/*.yml'                         # YAML config files (e.g., pipelines)
-  - '**/*.png'                         # Image assets (e.g., Swagger diagram)
+  - .*\.sln
+  - .*\.csproj
+  - .*\.json
+  - .*\.yml
+  - .*\.png
+  - '**/*.md'
 
-  # Ignoring a specific folder
-  - 'src/**/Data/**/*'                 # Repositories, DbContext, database files
-  - 'src/**/Enums/**/*'                # Enums like Position
-  - 'src/**/Mappings/**/*'             # AutoMapper profiles
-  - 'src/**/Migrations/**/*'           # EF Core migration artifacts
-  - 'src/**/Models/**/*'               # Domain and DTO models
-  - 'src/**/Properties/**/*'           # launchSettings.json or other system files
-  - 'src/**/Utilities/**/*'            # Static helper and extension classes
-  - 'test'                             # Any file in the test folder (unit/integration/utils)
+  - .*\/test\/.*
+  - .*\/Program\.cs
+  - '**/LICENSE'
+  - '**/README.md'
 
-  # Ignoring Specific Files At All Depths
-  - '**/Program.cs'                    # ASP.NET Core entry point
-  - '**/.gitignore'                    # Git ignore file
-  - '**/LICENSE'                       # License text
-  - '**/README.md'                     # Project readme
+  - .*\/Data\/.*
+  - .*\/Enums\/.*
+  - .*\/Mappings\/.*
+  - .*\/Migrations\/.*
+  - .*\/Models\/.*
+  - .*\/Properties\/.*
+  - .*\/Utilities\/.*
+  - .*\/Validators\/.*

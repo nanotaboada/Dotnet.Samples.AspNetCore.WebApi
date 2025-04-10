@@ -2,11 +2,14 @@
 <RunSettings>
   <DataCollectionRunSettings>
     <DataCollectors>
-      <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0">
+      <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
+          <Format>cobertura</Format>
+          <SkipAutoProps>true</SkipAutoProps>
+          <BasePath>$(MSBuildProjectDirectory)</BasePath>
           <CodeCoverage>
-            <!-- Exclude all test projects -->
             <ModulePaths>
+              <!-- Exclude all test projects -->
               <Exclude>
                 <ModulePath>.*\.Tests\.dll$</ModulePath>
               </Exclude>

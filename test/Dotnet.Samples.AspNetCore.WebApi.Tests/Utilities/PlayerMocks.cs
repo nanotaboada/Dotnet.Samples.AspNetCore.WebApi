@@ -1,7 +1,9 @@
 using AutoMapper;
 using Dotnet.Samples.AspNetCore.WebApi.Controllers;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Caching.Memory;
@@ -21,13 +23,15 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
     {
         public static (
             Mock<IPlayerService> service,
-            Mock<ILogger<PlayerController>> logger
+            Mock<ILogger<PlayerController>> logger,
+            Mock<IValidator<PlayerRequestModel>> validator
         ) InitControllerMocks()
         {
             var service = new Mock<IPlayerService>();
             var logger = new Mock<ILogger<PlayerController>>();
+            var validator = new Mock<IValidator<PlayerRequestModel>>();
 
-            return (service, logger);
+            return (service, logger, validator);
         }
 
         public static Mock<IUrlHelper> SetupUrlHelperMock()
