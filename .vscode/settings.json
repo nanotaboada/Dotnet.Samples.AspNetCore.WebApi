@@ -9,5 +9,9 @@
   "[csharp]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "csharpier.csharpier-vscode"
+  },
+  "sonarlint.connectedMode.project": {
+    "connectionId": "nanotaboada",
+    "projectKey": "nanotaboada_Dotnet.Samples.AspNetCore.WebApi"
   }
 }
