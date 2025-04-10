@@ -49,29 +49,13 @@ if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddSwaggerGen(options =>
     {
-        options.SwaggerDoc(
-            "v1",
-            new OpenApiInfo
-            {
-                Version = "1.0.0",
-                Title = "Dotnet.Samples.AspNetCore.WebApi",
-                Description =
-                    "🧪 Proof of Concept for a Web API (Async) made with .NET 8 (LTS) and ASP.NET Core 8.0",
-                Contact = new OpenApiContact
-                {
-                    Name = "GitHub",
-                    Url = new Uri("https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi")
-                },
-                License = new OpenApiLicense
-                {
-                    Name = "MIT License",
-                    Url = new Uri("https://opensource.org/license/mit")
-                }
-            }
+        options.SwaggerDoc("v1", builder.Configuration.GetSection("SwaggerDoc").Get<OpenApiInfo>());
+        options.IncludeXmlComments(
+            Path.Combine(
+                AppContext.BaseDirectory,
+                $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"
+            )
         );
-
-        var filePath = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, filePath));
     });
 }
 
