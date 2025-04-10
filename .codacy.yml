@@ -28,4 +28,5 @@ exclude_paths:
   - '**/Models/**'         # Domain and DTO models
   - '**/Properties/**'     # launchSettings.json or AssemblyInfo.cs
   - '**/Utilities/**'      # Helper extensions or static classes
+  - '**/Validators/**'     # FluentValidation validators
   - 'test/**/*'            # Entire test suite (unit + integration)
