@@ -1,8 +1,11 @@
 using System.Reflection;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Mappings;
+using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Dotnet.Samples.AspNetCore.WebApi.Utilities;
+using Dotnet.Samples.AspNetCore.WebApi.Validators;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -44,6 +47,7 @@ builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddAutoMapper(typeof(PlayerMappingProfile));
+builder.Services.AddScoped<IValidator<PlayerRequestModel>, PlayerRequestModelValidator>();
 
 if (builder.Environment.IsDevelopment())
 {

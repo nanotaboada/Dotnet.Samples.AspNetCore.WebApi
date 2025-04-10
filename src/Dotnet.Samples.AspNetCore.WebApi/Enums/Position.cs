@@ -17,18 +17,47 @@ public class Position : Enumeration
     public static readonly Position LeftWinger = new(11, "Left Winger", "LW");
 
     private Position(int id, string name, string abbr)
-        : base(id, name)
-    {
-        Abbr = abbr;
-    }
+        : base(id, name) => Abbr = abbr;
 
-    public static Position? FromAbbr(string abbr)
-    {
-        return GetAll<Position>().FirstOrDefault(position => position.Abbr == abbr);
-    }
+    /// <summary>
+    /// Returns a Position object based on the abbreviation.
+    /// </summary>
+    /// <remarks>
+    /// This method searches through all the Position objects and returns the one
+    /// that matches the provided abbreviation. If no match is found, it returns null.
+    /// </remarks>
+    /// <param name="abbr">The abbreviation of the Position.</param>
+    /// <returns>
+    /// A Position object if found; otherwise, null.
+    /// </returns>
+    public static Position? FromAbbr(string abbr) =>
+        GetAll<Position>().FirstOrDefault(position => position.Abbr == abbr);
 
-    public static Position? FromId(int id)
-    {
-        return GetAll<Position>().FirstOrDefault(position => position.Id == id);
-    }
+    /// <summary>
+    /// Returns a Position object based on the ID.
+    /// </summary>
+    /// <remarks>
+    /// This method searches through all the Position objects and returns the one
+    /// that matches the provided ID. If no match is found, it returns null.
+    /// </remarks>
+    /// <param name="id">The ID of the Position.</param>
+    /// <returns>
+    /// A Position object if found; otherwise, null.
+    /// </returns>
+    public static Position? FromId(int id) =>
+        GetAll<Position>().FirstOrDefault(position => position.Id == id);
+
+    /// <summary>
+    /// Checks if the provided abbreviation is valid.
+    /// </summary>
+    /// <remarks>
+    /// This method checks if the provided abbreviation is not null or empty and
+    /// if it corresponds to a valid Position object.
+    /// </remarks>
+    /// <param name="abbr">The abbreviation to check.</param>
+    /// <returns>
+    /// True if the abbreviation is valid; otherwise, false.
+    /// </returns>
+    public static bool IsValidAbbr(string? abbr) =>
+        !string.IsNullOrWhiteSpace(abbr) && FromAbbr(abbr!) is not null;
 }

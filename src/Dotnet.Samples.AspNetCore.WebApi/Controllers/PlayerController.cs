@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Controllers;
@@ -8,11 +9,15 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
-public class PlayerController(IPlayerService playerService, ILogger<PlayerController> logger)
-    : ControllerBase
+public class PlayerController(
+    IPlayerService playerService,
+    ILogger<PlayerController> logger,
+    IValidator<PlayerRequestModel> validator
+) : ControllerBase
 {
     private readonly IPlayerService _playerService = playerService;
     private readonly ILogger<PlayerController> _logger = logger;
+    private readonly IValidator<PlayerRequestModel> validator = validator;
 
     /* -------------------------------------------------------------------------
      * HTTP POST
@@ -32,23 +37,30 @@ public class PlayerController(IPlayerService playerService, ILogger<PlayerContro
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IResult> PostAsync([FromBody] PlayerRequestModel player)
     {
-        if (!ModelState.IsValid)
+        var validation = await validator.ValidateAsync(player);
+
+        if (!validation.IsValid)
         {
-            return TypedResults.BadRequest();
+            var errors = validation
+                .Errors.Select(error => new { error.PropertyName, error.ErrorMessage })
+                .ToArray();
+
+            _logger.LogWarning("POST validation failed: {@Errors}", errors);
+            return TypedResults.BadRequest(errors);
         }
-        else if (await _playerService.RetrieveByIdAsync(player.Id) != null)
+
+        if (await _playerService.RetrieveByIdAsync(player.Id) != null)
         {
             return TypedResults.Conflict();
         }
-        else
-        {
-            var result = await _playerService.CreateAsync(player);
-            return TypedResults.CreatedAtRoute(
-                routeName: "GetById",
-                routeValues: new { id = result.Id },
-                value: result
-            );
-        }
+
+        var result = await _playerService.CreateAsync(player);
+
+        return TypedResults.CreatedAtRoute(
+            routeName: "GetById",
+            routeValues: new { id = result.Id },
+            value: result
+        );
     }
 
     /* -------------------------------------------------------------------------
@@ -142,20 +154,26 @@ public class PlayerController(IPlayerService playerService, ILogger<PlayerContro
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> PutAsync([FromRoute] long id, [FromBody] PlayerRequestModel player)
     {
-        if (!ModelState.IsValid)
+        var validation = await validator.ValidateAsync(player);
+
+        if (!validation.IsValid)
         {
-            return TypedResults.BadRequest();
+            var errors = validation
+                .Errors.Select(error => new { error.PropertyName, error.ErrorMessage })
+                .ToArray();
+
+            _logger.LogWarning("PUT /players/{Id} validation failed: {@Errors}", id, errors);
+            return TypedResults.BadRequest(errors);
         }
-        else if (await _playerService.RetrieveByIdAsync(id) == null)
+
+        if (await _playerService.RetrieveByIdAsync(id) == null)
         {
             return TypedResults.NotFound();
         }
-        else
-        {
-            await _playerService.UpdateAsync(player);
 
-            return TypedResults.NoContent();
-        }
+        await _playerService.UpdateAsync(player);
+
+        return TypedResults.NoContent();
     }
 
     /* -------------------------------------------------------------------------

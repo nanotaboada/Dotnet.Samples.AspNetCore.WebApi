@@ -89,6 +89,11 @@
           "System.Diagnostics.EventLog": "6.0.0"
         }
       },
+      "FluentValidation": {
+        "type": "Transitive",
+        "resolved": "11.11.0",
+        "contentHash": "cyIVdQBwSipxWG8MA3Rqox7iNbUNUTK5bfJi9tIdm4CAfH71Oo5ABLP4/QyrUwuakqpUEPGtE43BDddvEehuYw=="
+      },
       "Humanizer": {
         "type": "Transitive",
         "resolved": "2.14.1",
@@ -1815,6 +1820,7 @@
         "type": "Project",
         "dependencies": {
           "AutoMapper": "[14.0.0, )",
+          "FluentValidation": "[11.11.0, )",
           "Microsoft.AspNetCore.OpenApi": "[8.0.14, )",
           "Microsoft.EntityFrameworkCore.InMemory": "[9.0.3, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[9.0.3, )",
