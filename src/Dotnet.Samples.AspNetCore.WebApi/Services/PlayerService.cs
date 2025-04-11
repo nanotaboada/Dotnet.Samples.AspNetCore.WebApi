@@ -16,26 +16,18 @@ public class PlayerService(
     private static readonly string AspNetCore_Environment = "ASPNETCORE_ENVIRONMENT";
     private static readonly string Development = "Development";
 
-    private readonly IPlayerRepository _playerRepository = playerRepository;
-    private readonly ILogger<PlayerService> _logger = logger;
-    private readonly IMemoryCache _memoryCache = memoryCache;
-    private readonly IMapper _mapper = mapper;
-
     /* -------------------------------------------------------------------------
      * Create
      * ---------------------------------------------------------------------- */
 
     public async Task<PlayerResponseModel> CreateAsync(PlayerRequestModel playerRequestModel)
     {
-        var player = _mapper.Map<Player>(playerRequestModel);
-        await _playerRepository.AddAsync(player);
-        _logger.LogInformation("Player added to Repository: {Player}", player);
-        _memoryCache.Remove(CacheKey_RetrieveAsync);
-        _logger.LogInformation(
-            "Removed objects from Cache with Key: {Key}",
-            CacheKey_RetrieveAsync
-        );
-        return _mapper.Map<PlayerResponseModel>(player);
+        var player = mapper.Map<Player>(playerRequestModel);
+        await playerRepository.AddAsync(player);
+        logger.LogInformation("Player added to Repository: {Player}", player);
+        memoryCache.Remove(CacheKey_RetrieveAsync);
+        logger.LogInformation("Removed objects from Cache with Key: {Key}", CacheKey_RetrieveAsync);
+        return mapper.Map<PlayerResponseModel>(player);
     }
 
     /* -------------------------------------------------------------------------
@@ -44,9 +36,9 @@ public class PlayerService(
 
     public async Task<List<PlayerResponseModel>> RetrieveAsync()
     {
-        if (_memoryCache.TryGetValue(CacheKey_RetrieveAsync, out List<PlayerResponseModel>? cached))
+        if (memoryCache.TryGetValue(CacheKey_RetrieveAsync, out List<PlayerResponseModel>? cached))
         {
-            _logger.LogInformation("Players retrieved from Cache");
+            logger.LogInformation("Players retrieved from Cache");
             return cached!;
         }
         else
@@ -58,12 +50,12 @@ public class PlayerService(
                 await SimulateRepositoryDelayAsync();
             }
 
-            var players = await _playerRepository.GetAllAsync();
-            _logger.LogInformation("Players retrieved from Repository");
-            var playerResponseModels = _mapper.Map<List<PlayerResponseModel>>(players);
-            using (var cacheEntry = _memoryCache.CreateEntry(CacheKey_RetrieveAsync))
+            var players = await playerRepository.GetAllAsync();
+            logger.LogInformation("Players retrieved from Repository");
+            var playerResponseModels = mapper.Map<List<PlayerResponseModel>>(players);
+            using (var cacheEntry = memoryCache.CreateEntry(CacheKey_RetrieveAsync))
             {
-                _logger.LogInformation(
+                logger.LogInformation(
                     "{Count} entries created in Cache with key: {Key}",
                     playerResponseModels.Count,
                     CacheKey_RetrieveAsync
@@ -78,14 +70,14 @@ public class PlayerService(
 
     public async Task<PlayerResponseModel?> RetrieveByIdAsync(long id)
     {
-        var player = await _playerRepository.FindByIdAsync(id);
-        return player is not null ? _mapper.Map<PlayerResponseModel>(player) : null;
+        var player = await playerRepository.FindByIdAsync(id);
+        return player is not null ? mapper.Map<PlayerResponseModel>(player) : null;
     }
 
     public async Task<PlayerResponseModel?> RetrieveBySquadNumberAsync(int squadNumber)
     {
-        var player = await _playerRepository.FindBySquadNumberAsync(squadNumber);
-        return player is not null ? _mapper.Map<PlayerResponseModel>(player) : null;
+        var player = await playerRepository.FindBySquadNumberAsync(squadNumber);
+        return player is not null ? mapper.Map<PlayerResponseModel>(player) : null;
     }
 
     /* -------------------------------------------------------------------------
@@ -94,13 +86,13 @@ public class PlayerService(
 
     public async Task UpdateAsync(PlayerRequestModel playerRequestModel)
     {
-        if (await _playerRepository.FindByIdAsync(playerRequestModel.Id) is Player player)
+        if (await playerRepository.FindByIdAsync(playerRequestModel.Id) is Player player)
         {
-            _mapper.Map(playerRequestModel, player);
-            await _playerRepository.UpdateAsync(player);
-            _logger.LogInformation("Player updated in Repository: {Player}", player);
-            _memoryCache.Remove(CacheKey_RetrieveAsync);
-            _logger.LogInformation(
+            mapper.Map(playerRequestModel, player);
+            await playerRepository.UpdateAsync(player);
+            logger.LogInformation("Player updated in Repository: {Player}", player);
+            memoryCache.Remove(CacheKey_RetrieveAsync);
+            logger.LogInformation(
                 "Removed objects from Cache with Key: {Key}",
                 CacheKey_RetrieveAsync
             );
@@ -113,12 +105,12 @@ public class PlayerService(
 
     public async Task DeleteAsync(long id)
     {
-        if (await _playerRepository.FindByIdAsync(id) is not null)
+        if (await playerRepository.FindByIdAsync(id) is not null)
         {
-            await _playerRepository.RemoveAsync(id);
-            _logger.LogInformation("Player with Id {Id} removed from Repository", id);
-            _memoryCache.Remove(CacheKey_RetrieveAsync);
-            _logger.LogInformation(
+            await playerRepository.RemoveAsync(id);
+            logger.LogInformation("Player with Id {Id} removed from Repository", id);
+            memoryCache.Remove(CacheKey_RetrieveAsync);
+            logger.LogInformation(
                 "Removed objects from Cache with Key: {Key}",
                 CacheKey_RetrieveAsync
             );
@@ -147,7 +139,7 @@ public class PlayerService(
     private async Task SimulateRepositoryDelayAsync()
     {
         var milliseconds = new Random().Next(2600, 4200);
-        _logger.LogInformation(
+        logger.LogInformation(
             "Simulating a random delay of {Milliseconds} milliseconds...",
             milliseconds
         );
