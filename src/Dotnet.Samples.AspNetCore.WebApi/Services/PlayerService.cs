@@ -12,14 +12,34 @@ public class PlayerService(
     IMapper mapper
 ) : IPlayerService
 {
-    private static readonly string CacheKey_RetrieveAsync = nameof(RetrieveAsync);
-    private static readonly string AspNetCore_Environment = "ASPNETCORE_ENVIRONMENT";
-    private static readonly string Development = "Development";
+    /// <summary>
+    /// Creates a MemoryCacheEntryOptions instance with Normal priority,
+    /// SlidingExpiration of 10 minutes and AbsoluteExpiration of 1 hour.
+    /// </summary>
+    private static readonly MemoryCacheEntryOptions CacheEntryOptions =
+        new MemoryCacheEntryOptions()
+            .SetPriority(CacheItemPriority.Normal)
+            .SetSlidingExpiration(TimeSpan.FromMinutes(10))
+            .SetAbsoluteExpiration(TimeSpan.FromHours(1));
 
-    private readonly IPlayerRepository _playerRepository = playerRepository;
-    private readonly ILogger<PlayerService> _logger = logger;
-    private readonly IMemoryCache _memoryCache = memoryCache;
-    private readonly IMapper _mapper = mapper;
+    /// <summary>
+    /// The key used to store the list of Players in the cache.
+    /// </summary>
+    private static readonly string CacheKey_RetrieveAsync = nameof(RetrieveAsync);
+
+    /// <summary>
+    /// The key used to store the environment variable for ASP.NET Core.
+    /// <br/>
+    /// <see href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-8.0">
+    /// Use multiple environments in ASP.NET Core
+    /// </see>
+    /// </summary>
+    private static readonly string AspNetCore_Environment = "ASPNETCORE_ENVIRONMENT";
+
+    /// <summary>
+    /// The value used to check if the environment is Development.
+    /// </summary>
+    private static readonly string Development = "Development";
 
     /* -------------------------------------------------------------------------
      * Create
@@ -27,15 +47,12 @@ public class PlayerService(
 
     public async Task<PlayerResponseModel> CreateAsync(PlayerRequestModel playerRequestModel)
     {
-        var player = _mapper.Map<Player>(playerRequestModel);
-        await _playerRepository.AddAsync(player);
-        _logger.LogInformation("Player added to Repository: {Player}", player);
-        _memoryCache.Remove(CacheKey_RetrieveAsync);
-        _logger.LogInformation(
-            "Removed objects from Cache with Key: {Key}",
-            CacheKey_RetrieveAsync
-        );
-        return _mapper.Map<PlayerResponseModel>(player);
+        var player = mapper.Map<Player>(playerRequestModel);
+        await playerRepository.AddAsync(player);
+        logger.LogInformation("Player added to Repository: {Player}", player);
+        memoryCache.Remove(CacheKey_RetrieveAsync);
+        logger.LogInformation("Removed objects from Cache with Key: {Key}", CacheKey_RetrieveAsync);
+        return mapper.Map<PlayerResponseModel>(player);
     }
 
     /* -------------------------------------------------------------------------
@@ -44,33 +61,30 @@ public class PlayerService(
 
     public async Task<List<PlayerResponseModel>> RetrieveAsync()
     {
-        if (_memoryCache.TryGetValue(CacheKey_RetrieveAsync, out List<PlayerResponseModel>? cached))
+        if (memoryCache.TryGetValue(CacheKey_RetrieveAsync, out List<PlayerResponseModel>? cached))
         {
-            _logger.LogInformation("Players retrieved from Cache");
+            logger.LogInformation("Players retrieved from Cache");
             return cached!;
         }
         else
         {
-            // Use multiple environments in ASP.NET Core
-            // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-8.0
             if (Environment.GetEnvironmentVariable(AspNetCore_Environment) == Development)
             {
                 await SimulateRepositoryDelayAsync();
             }
-
-            var players = await _playerRepository.GetAllAsync();
-            _logger.LogInformation("Players retrieved from Repository");
-            var playerResponseModels = _mapper.Map<List<PlayerResponseModel>>(players);
-            using (var cacheEntry = _memoryCache.CreateEntry(CacheKey_RetrieveAsync))
+            var players = await playerRepository.GetAllAsync();
+            logger.LogInformation("Players retrieved from Repository");
+            var playerResponseModels = mapper.Map<List<PlayerResponseModel>>(players);
+            using (var cacheEntry = memoryCache.CreateEntry(CacheKey_RetrieveAsync))
             {
-                _logger.LogInformation(
+                logger.LogInformation(
                     "{Count} entries created in Cache with key: {Key}",
                     playerResponseModels.Count,
                     CacheKey_RetrieveAsync
                 );
                 cacheEntry.SetSize(playerResponseModels.Count);
                 cacheEntry.Value = playerResponseModels;
-                cacheEntry.SetOptions(GetMemoryCacheEntryOptions());
+                cacheEntry.SetOptions(CacheEntryOptions);
             }
             return playerResponseModels;
         }
@@ -78,14 +92,14 @@ public class PlayerService(
 
     public async Task<PlayerResponseModel?> RetrieveByIdAsync(long id)
     {
-        var player = await _playerRepository.FindByIdAsync(id);
-        return player is not null ? _mapper.Map<PlayerResponseModel>(player) : null;
+        var player = await playerRepository.FindByIdAsync(id);
+        return player is not null ? mapper.Map<PlayerResponseModel>(player) : null;
     }
 
     public async Task<PlayerResponseModel?> RetrieveBySquadNumberAsync(int squadNumber)
     {
-        var player = await _playerRepository.FindBySquadNumberAsync(squadNumber);
-        return player is not null ? _mapper.Map<PlayerResponseModel>(player) : null;
+        var player = await playerRepository.FindBySquadNumberAsync(squadNumber);
+        return player is not null ? mapper.Map<PlayerResponseModel>(player) : null;
     }
 
     /* -------------------------------------------------------------------------
@@ -94,13 +108,13 @@ public class PlayerService(
 
     public async Task UpdateAsync(PlayerRequestModel playerRequestModel)
     {
-        if (await _playerRepository.FindByIdAsync(playerRequestModel.Id) is Player player)
+        if (await playerRepository.FindByIdAsync(playerRequestModel.Id) is Player player)
         {
-            _mapper.Map(playerRequestModel, player);
-            await _playerRepository.UpdateAsync(player);
-            _logger.LogInformation("Player updated in Repository: {Player}", player);
-            _memoryCache.Remove(CacheKey_RetrieveAsync);
-            _logger.LogInformation(
+            mapper.Map(playerRequestModel, player);
+            await playerRepository.UpdateAsync(player);
+            logger.LogInformation("Player updated in Repository: {Player}", player);
+            memoryCache.Remove(CacheKey_RetrieveAsync);
+            logger.LogInformation(
                 "Removed objects from Cache with Key: {Key}",
                 CacheKey_RetrieveAsync
             );
@@ -113,29 +127,16 @@ public class PlayerService(
 
     public async Task DeleteAsync(long id)
     {
-        if (await _playerRepository.FindByIdAsync(id) is not null)
+        if (await playerRepository.FindByIdAsync(id) is not null)
         {
-            await _playerRepository.RemoveAsync(id);
-            _logger.LogInformation("Player with Id {Id} removed from Repository", id);
-            _memoryCache.Remove(CacheKey_RetrieveAsync);
-            _logger.LogInformation(
+            await playerRepository.RemoveAsync(id);
+            logger.LogInformation("Player with Id {Id} removed from Repository", id);
+            memoryCache.Remove(CacheKey_RetrieveAsync);
+            logger.LogInformation(
                 "Removed objects from Cache with Key: {Key}",
                 CacheKey_RetrieveAsync
             );
         }
-    }
-
-    /// <summary>
-    /// Creates a MemoryCacheEntryOptions instance with Normal priority,
-    /// SlidingExpiration of 10 minutes and AbsoluteExpiration of 1 hour.
-    /// </summary>
-    /// <returns>A MemoryCacheEntryOptions instance with the specified options.</returns>
-    private static MemoryCacheEntryOptions GetMemoryCacheEntryOptions()
-    {
-        return new MemoryCacheEntryOptions()
-            .SetPriority(CacheItemPriority.Normal)
-            .SetSlidingExpiration(TimeSpan.FromMinutes(10))
-            .SetAbsoluteExpiration(TimeSpan.FromHours(1));
     }
 
     /// <summary>
@@ -147,7 +148,7 @@ public class PlayerService(
     private async Task SimulateRepositoryDelayAsync()
     {
         var milliseconds = new Random().Next(2600, 4200);
-        _logger.LogInformation(
+        logger.LogInformation(
             "Simulating a random delay of {Milliseconds} milliseconds...",
             milliseconds
         );

@@ -15,10 +15,6 @@ public class PlayerController(
     IValidator<PlayerRequestModel> validator
 ) : ControllerBase
 {
-    private readonly IPlayerService _playerService = playerService;
-    private readonly ILogger<PlayerController> _logger = logger;
-    private readonly IValidator<PlayerRequestModel> validator = validator;
-
     /* -------------------------------------------------------------------------
      * HTTP POST
      * ---------------------------------------------------------------------- */
@@ -45,17 +41,22 @@ public class PlayerController(
                 .Errors.Select(error => new { error.PropertyName, error.ErrorMessage })
                 .ToArray();
 
-            _logger.LogWarning("POST validation failed: {@Errors}", errors);
+            logger.LogWarning("POST /players validation failed: {@Errors}", errors);
             return TypedResults.BadRequest(errors);
         }
 
-        if (await _playerService.RetrieveByIdAsync(player.Id) != null)
+        if (await playerService.RetrieveByIdAsync(player.Id) != null)
         {
+            logger.LogWarning(
+                "POST /players failed: Player with ID {Id} already exists",
+                player.Id
+            );
             return TypedResults.Conflict();
         }
 
-        var result = await _playerService.CreateAsync(player);
+        var result = await playerService.CreateAsync(player);
 
+        logger.LogInformation("POST /players created: {@Player}", result);
         return TypedResults.CreatedAtRoute(
             routeName: "GetById",
             routeValues: new { id = result.Id },
@@ -77,14 +78,16 @@ public class PlayerController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetAsync()
     {
-        var players = await _playerService.RetrieveAsync();
+        var players = await playerService.RetrieveAsync();
 
         if (players.Count > 0)
         {
+            logger.LogInformation("GET /players retrieved");
             return TypedResults.Ok(players);
         }
         else
         {
+            logger.LogWarning("GET /players not found");
             return TypedResults.NotFound();
         }
     }
@@ -100,14 +103,15 @@ public class PlayerController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetByIdAsync([FromRoute] long id)
     {
-        var player = await _playerService.RetrieveByIdAsync(id);
-
+        var player = await playerService.RetrieveByIdAsync(id);
         if (player != null)
         {
+            logger.LogInformation("GET /players/{Id} retrieved: {@Player}", id, player);
             return TypedResults.Ok(player);
         }
         else
         {
+            logger.LogWarning("GET /players/{Id} not found", id);
             return TypedResults.NotFound();
         }
     }
@@ -123,14 +127,19 @@ public class PlayerController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetBySquadNumberAsync([FromRoute] int squadNumber)
     {
-        var player = await _playerService.RetrieveBySquadNumberAsync(squadNumber);
-
+        var player = await playerService.RetrieveBySquadNumberAsync(squadNumber);
         if (player != null)
         {
+            logger.LogInformation(
+                "GET /players/squad/{SquadNumber} retrieved: {@Player}",
+                squadNumber,
+                player
+            );
             return TypedResults.Ok(player);
         }
         else
         {
+            logger.LogWarning("GET /players/squad/{SquadNumber} not found", squadNumber);
             return TypedResults.NotFound();
         }
     }
@@ -155,24 +164,22 @@ public class PlayerController(
     public async Task<IResult> PutAsync([FromRoute] long id, [FromBody] PlayerRequestModel player)
     {
         var validation = await validator.ValidateAsync(player);
-
         if (!validation.IsValid)
         {
             var errors = validation
                 .Errors.Select(error => new { error.PropertyName, error.ErrorMessage })
                 .ToArray();
 
-            _logger.LogWarning("PUT /players/{Id} validation failed: {@Errors}", id, errors);
+            logger.LogWarning("PUT /players/{Id} validation failed: {@Errors}", id, errors);
             return TypedResults.BadRequest(errors);
         }
-
-        if (await _playerService.RetrieveByIdAsync(id) == null)
+        if (await playerService.RetrieveByIdAsync(id) == null)
         {
+            logger.LogWarning("PUT /players/{Id} not found", id);
             return TypedResults.NotFound();
         }
-
-        await _playerService.UpdateAsync(player);
-
+        await playerService.UpdateAsync(player);
+        logger.LogInformation("PUT /players/{Id} updated: {@Player}", id, player);
         return TypedResults.NoContent();
     }
 
@@ -191,14 +198,15 @@ public class PlayerController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> DeleteAsync([FromRoute] long id)
     {
-        if (await _playerService.RetrieveByIdAsync(id) == null)
+        if (await playerService.RetrieveByIdAsync(id) == null)
         {
+            logger.LogWarning("DELETE /players/{Id} not found", id);
             return TypedResults.NotFound();
         }
         else
         {
-            await _playerService.DeleteAsync(id);
-
+            await playerService.DeleteAsync(id);
+            logger.LogInformation("DELETE /players/{Id} deleted", id);
             return TypedResults.NoContent();
         }
     }
