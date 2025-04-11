@@ -12,8 +12,33 @@ public class PlayerService(
     IMapper mapper
 ) : IPlayerService
 {
+    /// <summary>
+    /// Creates a MemoryCacheEntryOptions instance with Normal priority,
+    /// SlidingExpiration of 10 minutes and AbsoluteExpiration of 1 hour.
+    /// </summary>
+    private static readonly MemoryCacheEntryOptions CacheEntryOptions =
+        new MemoryCacheEntryOptions()
+            .SetPriority(CacheItemPriority.Normal)
+            .SetSlidingExpiration(TimeSpan.FromMinutes(10))
+            .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+
+    /// <summary>
+    /// The key used to store the list of Players in the cache.
+    /// </summary>
     private static readonly string CacheKey_RetrieveAsync = nameof(RetrieveAsync);
+
+    /// <summary>
+    /// The key used to store the environment variable for ASP.NET Core.
+    /// <br/>
+    /// <see href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-8.0">
+    /// Use multiple environments in ASP.NET Core
+    /// </see>
+    /// </summary>
     private static readonly string AspNetCore_Environment = "ASPNETCORE_ENVIRONMENT";
+
+    /// <summary>
+    /// The value used to check if the environment is Development.
+    /// </summary>
     private static readonly string Development = "Development";
 
     /* -------------------------------------------------------------------------
@@ -43,13 +68,10 @@ public class PlayerService(
         }
         else
         {
-            // Use multiple environments in ASP.NET Core
-            // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-8.0
             if (Environment.GetEnvironmentVariable(AspNetCore_Environment) == Development)
             {
                 await SimulateRepositoryDelayAsync();
             }
-
             var players = await playerRepository.GetAllAsync();
             logger.LogInformation("Players retrieved from Repository");
             var playerResponseModels = mapper.Map<List<PlayerResponseModel>>(players);
@@ -62,7 +84,7 @@ public class PlayerService(
                 );
                 cacheEntry.SetSize(playerResponseModels.Count);
                 cacheEntry.Value = playerResponseModels;
-                cacheEntry.SetOptions(GetMemoryCacheEntryOptions());
+                cacheEntry.SetOptions(CacheEntryOptions);
             }
             return playerResponseModels;
         }
@@ -115,19 +137,6 @@ public class PlayerService(
                 CacheKey_RetrieveAsync
             );
         }
-    }
-
-    /// <summary>
-    /// Creates a MemoryCacheEntryOptions instance with Normal priority,
-    /// SlidingExpiration of 10 minutes and AbsoluteExpiration of 1 hour.
-    /// </summary>
-    /// <returns>A MemoryCacheEntryOptions instance with the specified options.</returns>
-    private static MemoryCacheEntryOptions GetMemoryCacheEntryOptions()
-    {
-        return new MemoryCacheEntryOptions()
-            .SetPriority(CacheItemPriority.Normal)
-            .SetSlidingExpiration(TimeSpan.FromMinutes(10))
-            .SetAbsoluteExpiration(TimeSpan.FromHours(1));
     }
 
     /// <summary>
