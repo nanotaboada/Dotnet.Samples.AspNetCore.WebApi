@@ -48,7 +48,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
 
         public static void Seed(this PlayerDbContext context)
         {
-            context.Players.AddRange(PlayerFakes.GetStarting11());
+            context.Players.AddRange(PlayerFakes.MakeStarting11());
             context.SaveChanges();
         }
     }
