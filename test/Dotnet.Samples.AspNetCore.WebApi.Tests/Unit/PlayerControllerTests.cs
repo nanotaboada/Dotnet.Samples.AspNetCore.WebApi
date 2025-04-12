@@ -27,10 +27,10 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenPostAsync_WhenValidatorReturnsErrors_ThenResponseStatusCodeShouldBe400BadRequest()
     {
         // Arrange
-        var payload = PlayerFakes.CreateRequestModelForOneNew();
+        var request = PlayerFakes.MakeRequestModelForCreate();
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         validator
-            .Setup(validator => validator.ValidateAsync(payload, It.IsAny<CancellationToken>()))
+            .Setup(validator => validator.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(
                 new ValidationResult(
                     new List<ValidationFailure>
@@ -43,7 +43,7 @@ public class PlayerControllerTests : IDisposable
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         // Act
-        var result = await controller.PostAsync(payload);
+        var result = await controller.PostAsync(request);
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Never);
@@ -56,10 +56,10 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is BadRequest response)
+        if (result is BadRequest httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<BadRequest>();
-            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            httpResult.Should().NotBeNull().And.BeOfType<BadRequest>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
         }
     }
 
@@ -68,11 +68,12 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenPostAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe409Conflict()
     {
         // Arrange
-        var id = 1;
-        var player = PlayerFakes.CreateResponseModelForOneExistingById(id);
-        var payload = PlayerFakes.CreateRequestModelForOneExistingById(id);
+        var request = PlayerFakes.MakeRequestModelForCreate();
+        var response = PlayerFakes.MakeResponseModelForCreate();
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
-        service.Setup(service => service.RetrieveByIdAsync(It.IsAny<long>())).ReturnsAsync(player);
+        service
+            .Setup(service => service.RetrieveByIdAsync(It.IsAny<long>()))
+            .ReturnsAsync(response);
         validator
             .Setup(validator =>
                 validator.ValidateAsync(
@@ -85,7 +86,7 @@ public class PlayerControllerTests : IDisposable
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         // Act
-        var result = await controller.PostAsync(payload);
+        var result = await controller.PostAsync(request);
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
@@ -98,10 +99,10 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is Conflict response)
+        if (result is Conflict httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<Conflict>();
-            response.StatusCode.Should().Be(StatusCodes.Status409Conflict);
+            httpResult.Should().NotBeNull().And.BeOfType<Conflict>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status409Conflict);
         }
     }
 
@@ -110,16 +111,14 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenPostAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe201Created()
     {
         // Arrange
-        var id = 1;
-        var payload = PlayerFakes.CreateRequestModelForOneNew();
-        var content = PlayerFakes.CreateResponseModelForOneNew();
+        var id = 999;
+        var request = PlayerFakes.MakeRequestModelForCreate();
+        var response = PlayerFakes.MakeResponseModelForCreate();
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveByIdAsync(id))
             .ReturnsAsync(null as PlayerResponseModel);
-        service
-            .Setup(service => service.CreateAsync(It.IsAny<PlayerRequestModel>()))
-            .ReturnsAsync(content);
+        service.Setup(service => service.CreateAsync(request)).ReturnsAsync(response);
         validator
             .Setup(validator =>
                 validator.ValidateAsync(
@@ -135,7 +134,7 @@ public class PlayerControllerTests : IDisposable
         };
 
         // Act
-        var result = await controller.PostAsync(payload);
+        var result = await controller.PostAsync(request);
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
@@ -148,13 +147,13 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is CreatedAtRoute<PlayerRequestModel> response)
+        if (result is CreatedAtRoute<PlayerRequestModel> httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<Created<PlayerResponseModel>>();
-            response.StatusCode.Should().Be(StatusCodes.Status201Created);
-            response.Value.Should().BeEquivalentTo(content);
-            response.RouteName.Should().Be("GetById");
-            response.RouteValues.Should().NotBeNull().And.ContainKey("id");
+            httpResult.Should().NotBeNull().And.BeOfType<Created<PlayerResponseModel>>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status201Created);
+            httpResult.Value.Should().BeEquivalentTo(response);
+            httpResult.RouteName.Should().Be("GetById");
+            httpResult.RouteValues.Should().NotBeNull().And.ContainKey("id");
         }
     }
 
@@ -167,9 +166,9 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenGetAsync_WhenServiceRetrieveAsyncReturnsListOfPlayers_ThenResponseShouldBeEquivalentToListOfPlayers()
     {
         // Arrange
-        var players = PlayerFakes.CreateStarting11ResponseModels();
+        var response = PlayerFakes.MakeResponseModelsForRetrieve();
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
-        service.Setup(service => service.RetrieveAsync()).ReturnsAsync(players);
+        service.Setup(service => service.RetrieveAsync()).ReturnsAsync(response);
 
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
@@ -178,12 +177,12 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveAsync(), Times.Once);
-        if (result is Ok<List<PlayerResponseModel>> response)
+        if (result is Ok<List<PlayerResponseModel>> httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<Ok<List<PlayerResponseModel>>>();
-            response.StatusCode.Should().Be(StatusCodes.Status200OK);
-            response.Value.Should().NotBeNull().And.BeOfType<List<PlayerResponseModel>>();
-            response.Value.Should().BeEquivalentTo(players);
+            httpResult.Should().NotBeNull().And.BeOfType<Ok<List<PlayerResponseModel>>>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+            httpResult.Value.Should().NotBeNull().And.BeOfType<List<PlayerResponseModel>>();
+            httpResult.Value.Should().BeEquivalentTo(response);
         }
     }
 
@@ -202,10 +201,10 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveAsync(), Times.Once);
-        if (result is NotFound response)
+        if (result is NotFound httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<NotFound>();
-            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+            httpResult.Should().NotBeNull().And.BeOfType<NotFound>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
         }
     }
 
@@ -214,22 +213,23 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenGetByIdAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
+        var id = 999;
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
-            .Setup(service => service.RetrieveByIdAsync(It.IsAny<long>()))
+            .Setup(service => service.RetrieveByIdAsync(id))
             .ReturnsAsync(null as PlayerResponseModel);
 
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         // Act
-        var result = await controller.GetByIdAsync(It.IsAny<long>());
+        var result = await controller.GetByIdAsync(id);
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
-        if (result is NotFound response)
+        if (result is NotFound httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<NotFound>();
-            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+            httpResult.Should().NotBeNull().And.BeOfType<NotFound>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
         }
     }
 
@@ -239,9 +239,9 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var id = 1;
-        var player = PlayerFakes.CreateResponseModelForOneExistingById(id);
+        var response = PlayerFakes.MakeResponseModelForRetrieve(id);
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
-        service.Setup(service => service.RetrieveByIdAsync(id)).ReturnsAsync(player);
+        service.Setup(service => service.RetrieveByIdAsync(id)).ReturnsAsync(response);
 
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
@@ -250,12 +250,12 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
-        if (result is Ok<PlayerResponseModel> response)
+        if (result is Ok<PlayerResponseModel> httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<Ok<PlayerResponseModel>>();
-            response.StatusCode.Should().Be(StatusCodes.Status200OK);
-            response.Value.Should().NotBeNull().And.BeOfType<PlayerResponseModel>();
-            response.Value.Should().BeEquivalentTo(player);
+            httpResult.Should().NotBeNull().And.BeOfType<Ok<PlayerResponseModel>>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+            httpResult.Value.Should().NotBeNull().And.BeOfType<PlayerResponseModel>();
+            httpResult.Value.Should().BeEquivalentTo(response);
         }
     }
 
@@ -264,7 +264,7 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenGetBySquadNumberAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
-        var squadNumber = 10;
+        var squadNumber = 999;
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
@@ -277,10 +277,10 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
-        if (result is NotFound response)
+        if (result is NotFound httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<NotFound>();
-            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+            httpResult.Should().NotBeNull().And.BeOfType<NotFound>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
         }
     }
 
@@ -290,11 +290,11 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var squadNumber = 10;
-        var player = PlayerFakes.CreateResponseModelForOneExistingById(1);
+        var response = PlayerFakes.MakeResponseModelForRetrieve(1);
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
-            .ReturnsAsync(player);
+            .ReturnsAsync(response);
 
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
@@ -303,12 +303,12 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
-        if (result is Ok<PlayerResponseModel> response)
+        if (result is Ok<PlayerResponseModel> httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<Ok<PlayerResponseModel>>();
-            response.StatusCode.Should().Be(StatusCodes.Status200OK);
-            response.Value.Should().NotBeNull().And.BeOfType<PlayerResponseModel>();
-            response.Value.Should().BeEquivalentTo(player);
+            httpResult.Should().NotBeNull().And.BeOfType<Ok<PlayerResponseModel>>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+            httpResult.Value.Should().NotBeNull().And.BeOfType<PlayerResponseModel>();
+            httpResult.Value.Should().BeEquivalentTo(response);
         }
     }
 
@@ -322,14 +322,14 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var id = 1;
-        var player = PlayerFakes.CreateRequestModelForOneExistingById(id);
-        player.SquadNumber = -99; // Invalid Squad Number
+        var request = PlayerFakes.MakeRequestModelForUpdate(id);
+        request.SquadNumber = -99; // Invalid Squad Number
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
 
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         validator
-            .Setup(v => v.ValidateAsync(player, It.IsAny<CancellationToken>()))
+            .Setup(validator => validator.ValidateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(
                 new ValidationResult(
                     new List<ValidationFailure>
@@ -340,7 +340,7 @@ public class PlayerControllerTests : IDisposable
             );
 
         // Act
-        var result = await controller.PutAsync(id, player);
+        var result = await controller.PutAsync(id, request);
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Never);
@@ -353,10 +353,10 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is BadRequest response)
+        if (result is BadRequest httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<BadRequest>();
-            response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            httpResult.Should().NotBeNull().And.BeOfType<BadRequest>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
         }
     }
 
@@ -365,7 +365,7 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenPutAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
-        var id = 1;
+        var id = 999;
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveByIdAsync(id))
@@ -395,10 +395,10 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is NotFound response)
+        if (result is NotFound httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<NotFound>();
-            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+            httpResult.Should().NotBeNull().And.BeOfType<NotFound>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
         }
     }
 
@@ -408,14 +408,13 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var id = 1;
-        var player = PlayerFakes.CreateRequestModelForOneExistingById(id);
-        player.FirstName = "Emiliano";
-        player.MiddleName = string.Empty;
+        var request = PlayerFakes.MakeRequestModelForUpdate(id);
+        var response = PlayerFakes.MakeResponseModelForUpdate(id);
+        request.FirstName = "Emiliano";
+        request.MiddleName = string.Empty;
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
-        service
-            .Setup(service => service.RetrieveByIdAsync(id))
-            .ReturnsAsync(PlayerFakes.CreateResponseModelForOneExistingById(id));
-        service.Setup(service => service.UpdateAsync(It.IsAny<PlayerRequestModel>()));
+        service.Setup(service => service.RetrieveByIdAsync(id)).ReturnsAsync(response);
+        service.Setup(service => service.UpdateAsync(request));
         validator
             .Setup(validator =>
                 validator.ValidateAsync(
@@ -428,15 +427,15 @@ public class PlayerControllerTests : IDisposable
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         // Act
-        var result = await controller.PutAsync(id, player);
+        var result = await controller.PutAsync(id, request);
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
         service.Verify(service => service.UpdateAsync(It.IsAny<PlayerRequestModel>()), Times.Once);
-        if (result is NoContent response)
+        if (result is NoContent httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<NoContent>();
-            response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+            httpResult.Should().NotBeNull().And.BeOfType<NoContent>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status204NoContent);
         }
     }
 
@@ -449,7 +448,7 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenDeleteAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
-        var id = 2;
+        var id = 999;
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveByIdAsync(id))
@@ -463,10 +462,10 @@ public class PlayerControllerTests : IDisposable
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
         service.Verify(service => service.DeleteAsync(It.IsAny<long>()), Times.Never);
-        if (result is NotFound response)
+        if (result is NotFound httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<NotFound>();
-            response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+            httpResult.Should().NotBeNull().And.BeOfType<NotFound>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
         }
     }
 
@@ -479,7 +478,7 @@ public class PlayerControllerTests : IDisposable
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveByIdAsync(id))
-            .ReturnsAsync(PlayerFakes.CreateResponseModelForOneExistingById(id));
+            .ReturnsAsync(PlayerFakes.MakeResponseModelForUpdate(id));
         service.Setup(service => service.DeleteAsync(id));
 
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
@@ -490,10 +489,10 @@ public class PlayerControllerTests : IDisposable
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
         service.Verify(service => service.DeleteAsync(It.IsAny<long>()), Times.Once);
-        if (result is NoContent response)
+        if (result is NoContent httpResult)
         {
-            response.Should().NotBeNull().And.BeOfType<NoContent>();
-            response.StatusCode.Should().Be(StatusCodes.Status204NoContent);
+            httpResult.Should().NotBeNull().And.BeOfType<NoContent>();
+            httpResult.StatusCode.Should().Be(StatusCodes.Status204NoContent);
         }
     }
 

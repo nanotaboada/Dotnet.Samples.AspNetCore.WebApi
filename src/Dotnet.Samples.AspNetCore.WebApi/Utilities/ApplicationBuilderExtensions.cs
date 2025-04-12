@@ -21,7 +21,7 @@ public static class ApplicationBuilderExtensions
 
             if (!await dbContext.Players.AnyAsync())
             {
-                await dbContext.Players.AddRangeAsync(PlayerData.CreateStarting11());
+                await dbContext.Players.AddRangeAsync(PlayerData.MakeStarting11());
                 await dbContext.SaveChangesAsync();
                 logger.LogInformation("Successfully seeded database with initial data.");
             }

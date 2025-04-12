@@ -6,7 +6,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Data;
 
 public static class PlayerData
 {
-    public static List<Player> CreateStarting11()
+    public static List<Player> MakeStarting11()
     {
         return
         [

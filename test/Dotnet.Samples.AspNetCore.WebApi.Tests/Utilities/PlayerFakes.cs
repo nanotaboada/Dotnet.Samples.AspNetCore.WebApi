@@ -12,7 +12,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities;
 /// </summary>
 public static class PlayerFakes
 {
-    public static List<Player> GetStarting11()
+    public static List<Player> MakeStarting11()
     {
         return
         [
@@ -170,24 +170,16 @@ public static class PlayerFakes
         ];
     }
 
-    public static List<PlayerResponseModel> CreateStarting11ResponseModels() =>
-        [
-            .. GetStarting11()
-                .Select(player => new PlayerResponseModel
-                {
-                    Id = player.Id,
-                    FullName =
-                        $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
-                    Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
-                    Dorsal = player.SquadNumber,
-                    Position = player.Position,
-                    Club = player.Team,
-                    League = player.League,
-                    Starting11 = player.Starting11 ? "Yes" : "No"
-                })
-        ];
+    public static Player MakeFromStarting11ById(long id)
+    {
+        var player =
+            MakeStarting11().SingleOrDefault(player => player.Id == id)
+            ?? throw new ArgumentNullException($"Player with ID {id} not found.");
 
-    public static Player CreateOneNew()
+        return player;
+    }
+
+    public static Player MakeNew()
     {
         return new()
         {
@@ -205,11 +197,15 @@ public static class PlayerFakes
         };
     }
 
-    public static PlayerRequestModel CreateRequestModelForOneNew()
-    {
-        var player = CreateOneNew();
+    /* -------------------------------------------------------------------------
+     * Create
+     * ---------------------------------------------------------------------- */
 
-        return new()
+    public static PlayerRequestModel MakeRequestModelForCreate()
+    {
+        var player = MakeNew();
+
+        return new PlayerRequestModel()
         {
             Id = player.Id,
             FirstName = player.FirstName,
@@ -223,9 +219,9 @@ public static class PlayerFakes
         };
     }
 
-    public static PlayerResponseModel CreateResponseModelForOneNew()
+    public static PlayerResponseModel MakeResponseModelForCreate()
     {
-        var player = CreateOneNew();
+        var player = MakeNew();
 
         return new PlayerResponseModel
         {
@@ -241,19 +237,14 @@ public static class PlayerFakes
         };
     }
 
-    public static Player GetOneExistingById(long id)
+    /* -------------------------------------------------------------------------
+     * Retrieve
+     * ---------------------------------------------------------------------- */
+
+    public static PlayerRequestModel MakeRequestModelForRetrieve(long id)
     {
         var player =
-            GetStarting11().SingleOrDefault(player => player.Id == id)
-            ?? throw new ArgumentNullException($"Player with ID {id} not found.");
-
-        return player;
-    }
-
-    public static PlayerRequestModel CreateRequestModelForOneExistingById(long id)
-    {
-        var player =
-            GetStarting11().SingleOrDefault(player => player.Id == id)
+            MakeStarting11().SingleOrDefault(player => player.Id == id)
             ?? throw new ArgumentNullException($"Player with ID {id} not found.");
 
         return new PlayerRequestModel
@@ -270,10 +261,10 @@ public static class PlayerFakes
         };
     }
 
-    public static PlayerResponseModel CreateResponseModelForOneExistingById(long id)
+    public static PlayerResponseModel MakeResponseModelForRetrieve(long id)
     {
         var player =
-            GetStarting11().SingleOrDefault(player => player.Id == id)
+            MakeStarting11().SingleOrDefault(player => player.Id == id)
             ?? throw new ArgumentNullException($"Player with ID {id} not found.");
 
         return new PlayerResponseModel
@@ -288,5 +279,36 @@ public static class PlayerFakes
             League = player.League,
             Starting11 = player.Starting11 ? "Yes" : "No"
         };
+    }
+
+    public static List<PlayerResponseModel> MakeResponseModelsForRetrieve() =>
+        [
+            .. MakeStarting11()
+                .Select(player => new PlayerResponseModel
+                {
+                    Id = player.Id,
+                    FullName =
+                        $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
+                    Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+                    Dorsal = player.SquadNumber,
+                    Position = player.Position,
+                    Club = player.Team,
+                    League = player.League,
+                    Starting11 = player.Starting11 ? "Yes" : "No"
+                })
+        ];
+
+    /* -------------------------------------------------------------------------
+     * Update
+     * ---------------------------------------------------------------------- */
+
+    public static PlayerRequestModel MakeRequestModelForUpdate(long id)
+    {
+        return MakeRequestModelForRetrieve(id);
+    }
+
+    public static PlayerResponseModel MakeResponseModelForUpdate(long id)
+    {
+        return MakeResponseModelForRetrieve(id);
     }
 }

@@ -35,7 +35,7 @@ public static class DbContextUtils
     {
         if (!await dbContext.Players.AnyAsync(cancellationToken))
         {
-            await dbContext.Players.AddRangeAsync(PlayerData.CreateStarting11(), cancellationToken);
+            await dbContext.Players.AddRangeAsync(PlayerData.MakeStarting11(), cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
