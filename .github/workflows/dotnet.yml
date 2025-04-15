@@ -86,7 +86,7 @@ jobs:
 
       - name: Upload Cobertura coverage report to ${{ matrix.service }}
         if: ${{ matrix.service == 'codecov' }}
-        uses: codecov/codecov-action@v5.4.0
+        uses: codecov/codecov-action@v5.4.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: cobertura.xml
