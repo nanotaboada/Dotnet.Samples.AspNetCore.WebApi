@@ -10,8 +10,6 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Models;
 /// </remarks>
 public class PlayerResponseModel
 {
-    public long Id { get; set; }
-
     public string? FullName { get; set; }
 
     public string? Birth { get; set; }

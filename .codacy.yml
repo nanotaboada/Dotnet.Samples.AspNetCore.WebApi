@@ -30,3 +30,4 @@ exclude_paths:
   - '**/Utilities/**'      # Helper extensions or static classes
   - '**/Validators/**'     # FluentValidation validators
   - 'test/**/*'            # Entire test suite (unit + integration)
+  - 'scripts/**/*'         # Helper shell scripts

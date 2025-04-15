@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Data/players-sqlite3.db">
+    <Content Include="Data/players-sqlite3.db" Condition="Exists('Data/players-sqlite3.db')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>

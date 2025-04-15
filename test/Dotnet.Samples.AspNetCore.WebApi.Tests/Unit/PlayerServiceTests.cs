@@ -128,7 +128,7 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveByIdAsync_WhenRepositoryFindByIdAsyncReturnsNull_TheResultShouldBeNull()
     {
         // Arrange
-        var id = 999;
+        var id = Guid.NewGuid();
         var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
         repository.Setup(repository => repository.FindByIdAsync(id)).ReturnsAsync(null as Player);
 
@@ -143,7 +143,7 @@ public class PlayerServiceTests : IDisposable
         var result = await service.RetrieveByIdAsync(id);
 
         // Assert
-        repository.Verify(repository => repository.FindByIdAsync(It.IsAny<long>()), Times.Once);
+        repository.Verify(repository => repository.FindByIdAsync(It.IsAny<Guid>()), Times.Once);
         mapper.Verify(mapper => mapper.Map<PlayerResponseModel>(It.IsAny<Player>()), Times.Never);
         result.Should().BeNull();
     }
@@ -153,9 +153,10 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveByIdAsync_WhenRepositoryFindByIdAsyncReturnsPlayer_TheResultShouldBePlayer()
     {
         // Arrange
-        var id = 1;
-        var player = PlayerFakes.MakeFromStarting11ById(id);
-        var response = PlayerFakes.MakeResponseModelForRetrieve(id);
+        var id = Guid.NewGuid();
+        var squadNumber = 10;
+        var player = PlayerFakes.MakeFromStarting11(squadNumber);
+        var response = PlayerFakes.MakeResponseModelForRetrieve(squadNumber);
         var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
         repository.Setup(repository => repository.FindByIdAsync(id)).ReturnsAsync(player);
         mapper.Setup(mapper => mapper.Map<PlayerResponseModel>(player)).Returns(response);
@@ -171,7 +172,7 @@ public class PlayerServiceTests : IDisposable
         var result = await service.RetrieveByIdAsync(id);
 
         // Assert
-        repository.Verify(repository => repository.FindByIdAsync(It.IsAny<long>()), Times.Once);
+        repository.Verify(repository => repository.FindByIdAsync(It.IsAny<Guid>()), Times.Once);
         mapper.Verify(mapper => mapper.Map<PlayerResponseModel>(It.IsAny<Player>()), Times.Once);
         result.Should().BeOfType<PlayerResponseModel>();
         result.Should().BeEquivalentTo(response);
@@ -212,10 +213,9 @@ public class PlayerServiceTests : IDisposable
     public async Task GivenRetrieveBySquadNumberAsync_WhenRepositoryFindBySquadNumberAsyncReturnsPlayer_ThenResultShouldBePlayer()
     {
         // Arrange
-        var id = 1;
-        var player = PlayerFakes.MakeFromStarting11ById(id);
-        var squadNumber = player.SquadNumber;
-        var response = PlayerFakes.MakeResponseModelForRetrieve(id);
+        var squadNumber = 10;
+        var player = PlayerFakes.MakeFromStarting11(squadNumber);
+        var response = PlayerFakes.MakeResponseModelForRetrieve(squadNumber);
         var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
         repository
             .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
@@ -248,14 +248,16 @@ public class PlayerServiceTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenUpdateAsync_WhenRepositoryFindByIdAsyncReturnsPlayer_ThenRepositoryUpdateAsyncAndCacheRemove()
+    public async Task GivenUpdateAsync_WhenRepositoryFindBySquadNumberAsyncReturnsPlayer_ThenRepositoryUpdateAsyncAndCacheRemove()
     {
         // Arrange
-        var id = 1;
-        var player = PlayerFakes.MakeFromStarting11ById(id);
-        var request = PlayerFakes.MakeRequestModelForUpdate(id);
+        var squadNumber = 23;
+        var player = PlayerFakes.MakeFromStarting11(squadNumber);
+        var request = PlayerFakes.MakeRequestModelForUpdate(squadNumber);
         var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
-        repository.Setup(repository => repository.FindByIdAsync(id)).ReturnsAsync(player);
+        repository
+            .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
+            .ReturnsAsync(player);
 
         var service = new PlayerService(
             repository.Object,
@@ -268,7 +270,10 @@ public class PlayerServiceTests : IDisposable
         await service.UpdateAsync(request);
 
         // Assert
-        repository.Verify(repository => repository.FindByIdAsync(It.IsAny<long>()), Times.Once);
+        repository.Verify(
+            repository => repository.FindBySquadNumberAsync(It.IsAny<int>()),
+            Times.Once
+        );
         repository.Verify(repository => repository.UpdateAsync(It.IsAny<Player>()), Times.Once);
         memoryCache.Verify(cache => cache.Remove(It.IsAny<object>()), Times.Once);
         mapper.Verify(
@@ -283,14 +288,14 @@ public class PlayerServiceTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenDeleteAsync_WhenRepositoryFindByIdAsyncReturnsPlayer_ThenRepositoryDeleteAsyncAndCacheRemove()
+    public async Task GivenDeleteAsync_WhenRepositoryFindBySquadNumberAsyncReturnsPlayer_ThenRepositoryDeleteAsyncAndCacheRemove()
     {
         // Arrange
-        var id = 2;
-        var player = PlayerFakes.MakeFromStarting11ById(id);
+        var squadNumber = 26;
+        var player = PlayerFakes.MakeFromStarting11(squadNumber);
         var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
         repository
-            .Setup(repository => repository.FindByIdAsync(It.IsAny<long>()))
+            .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
             .ReturnsAsync(player);
 
         var service = new PlayerService(
@@ -301,11 +306,14 @@ public class PlayerServiceTests : IDisposable
         );
 
         // Act
-        await service.DeleteAsync(It.IsAny<long>());
+        await service.DeleteAsync(squadNumber);
 
         // Assert
-        repository.Verify(repository => repository.FindByIdAsync(It.IsAny<long>()), Times.Once);
-        repository.Verify(repository => repository.RemoveAsync(It.IsAny<long>()), Times.Once);
+        repository.Verify(
+            repository => repository.FindBySquadNumberAsync(It.IsAny<int>()),
+            Times.Once
+        );
+        repository.Verify(repository => repository.RemoveAsync(It.IsAny<Guid>()), Times.Once);
         memoryCache.Verify(cache => cache.Remove(It.IsAny<object>()), Times.Once);
     }
 

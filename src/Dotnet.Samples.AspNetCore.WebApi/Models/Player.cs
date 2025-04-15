@@ -10,7 +10,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Models;
 /// </remarks>
 public class Player
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     public string? FirstName { get; set; }
 

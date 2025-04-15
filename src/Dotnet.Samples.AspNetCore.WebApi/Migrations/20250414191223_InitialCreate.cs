@@ -15,16 +15,14 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                 name: "Players",
                 columns: table => new
                 {
-                    Id = table
-                        .Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    FirstName = table.Column<string>(type: "TEXT", nullable: true),
                     MiddleName = table.Column<string>(type: "TEXT", nullable: true),
-                    LastName = table.Column<string>(type: "TEXT", nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "TEXT", nullable: true),
                     SquadNumber = table.Column<int>(type: "INTEGER", nullable: false),
-                    Position = table.Column<string>(type: "TEXT", nullable: false),
-                    AbbrPosition = table.Column<string>(type: "TEXT", nullable: false),
+                    Position = table.Column<string>(type: "TEXT", nullable: true),
+                    AbbrPosition = table.Column<string>(type: "TEXT", nullable: true),
                     Team = table.Column<string>(type: "TEXT", nullable: true),
                     League = table.Column<string>(type: "TEXT", nullable: true),
                     Starting11 = table.Column<bool>(type: "INTEGER", nullable: false)
@@ -32,14 +30,20 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Players", x => x.Id);
-                }
-            );
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_SquadNumber",
+                table: "Players",
+                column: "SquadNumber",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "Players");
+            migrationBuilder.DropTable(
+                name: "Players");
         }
     }
 }

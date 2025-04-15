@@ -46,7 +46,7 @@ public class PlayerControllerTests : IDisposable
         var result = await controller.PostAsync(request);
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Never);
+        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Never);
         service.Verify(service => service.CreateAsync(It.IsAny<PlayerRequestModel>()), Times.Never);
         validator.Verify(
             validator =>
@@ -65,14 +65,14 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPostAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe409Conflict()
+    public async Task GivenPostAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe409Conflict()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
         var response = PlayerFakes.MakeResponseModelForCreate();
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
-            .Setup(service => service.RetrieveByIdAsync(It.IsAny<long>()))
+            .Setup(service => service.RetrieveBySquadNumberAsync(request.SquadNumber))
             .ReturnsAsync(response);
         validator
             .Setup(validator =>
@@ -89,7 +89,7 @@ public class PlayerControllerTests : IDisposable
         var result = await controller.PostAsync(request);
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
+        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
         service.Verify(service => service.CreateAsync(It.IsAny<PlayerRequestModel>()), Times.Never);
         validator.Verify(
             validator =>
@@ -108,15 +108,14 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPostAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe201Created()
+    public async Task GivenPostAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe201Created()
     {
         // Arrange
-        var id = 999;
         var request = PlayerFakes.MakeRequestModelForCreate();
         var response = PlayerFakes.MakeResponseModelForCreate();
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
-            .Setup(service => service.RetrieveByIdAsync(id))
+            .Setup(service => service.RetrieveBySquadNumberAsync(request.SquadNumber))
             .ReturnsAsync(null as PlayerResponseModel);
         service.Setup(service => service.CreateAsync(request)).ReturnsAsync(response);
         validator
@@ -137,7 +136,7 @@ public class PlayerControllerTests : IDisposable
         var result = await controller.PostAsync(request);
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
+        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
         service.Verify(service => service.CreateAsync(It.IsAny<PlayerRequestModel>()), Times.Once);
         validator.Verify(
             validator =>
@@ -213,7 +212,7 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenGetByIdAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
-        var id = 999;
+        var id = Guid.NewGuid();
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveByIdAsync(id))
@@ -225,7 +224,7 @@ public class PlayerControllerTests : IDisposable
         var result = await controller.GetByIdAsync(id);
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
+        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<Guid>()), Times.Once);
         if (result is NotFound httpResult)
         {
             httpResult.Should().NotBeNull().And.BeOfType<NotFound>();
@@ -238,8 +237,8 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenGetByIdAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe200Ok()
     {
         // Arrange
-        var id = 1;
-        var response = PlayerFakes.MakeResponseModelForRetrieve(id);
+        var id = Guid.NewGuid();
+        var response = PlayerFakes.MakeResponseModelForRetrieve(10);
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service.Setup(service => service.RetrieveByIdAsync(id)).ReturnsAsync(response);
 
@@ -249,7 +248,7 @@ public class PlayerControllerTests : IDisposable
         var result = await controller.GetByIdAsync(id);
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
+        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<Guid>()), Times.Once);
         if (result is Ok<PlayerResponseModel> httpResult)
         {
             httpResult.Should().NotBeNull().And.BeOfType<Ok<PlayerResponseModel>>();
@@ -290,7 +289,7 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var squadNumber = 10;
-        var response = PlayerFakes.MakeResponseModelForRetrieve(1);
+        var response = PlayerFakes.MakeResponseModelForRetrieve(squadNumber);
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
@@ -321,9 +320,9 @@ public class PlayerControllerTests : IDisposable
     public async Task GivenPutAsync_WhenValidatorReturnsErrors_ThenResponseStatusCodeShouldBe400BadRequest()
     {
         // Arrange
-        var id = 1;
-        var request = PlayerFakes.MakeRequestModelForUpdate(id);
-        request.SquadNumber = -99; // Invalid Squad Number
+        var squadNumber = 20;
+        var request = PlayerFakes.MakeRequestModelForUpdate(squadNumber);
+        request.SquadNumber = -999; // Invalid Squad Number
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
 
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
@@ -340,10 +339,10 @@ public class PlayerControllerTests : IDisposable
             );
 
         // Act
-        var result = await controller.PutAsync(id, request);
+        var result = await controller.PutAsync(squadNumber, request);
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Never);
+        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Never);
         service.Verify(service => service.UpdateAsync(It.IsAny<PlayerRequestModel>()), Times.Never);
         validator.Verify(
             validator =>
@@ -362,13 +361,13 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPutAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
+    public async Task GivenPutAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
-        var id = 999;
+        var squadNumber = 999;
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
-            .Setup(service => service.RetrieveByIdAsync(id))
+            .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
             .ReturnsAsync(null as PlayerResponseModel);
         validator
             .Setup(validator =>
@@ -382,10 +381,10 @@ public class PlayerControllerTests : IDisposable
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         // Act
-        var result = await controller.PutAsync(id, It.IsAny<PlayerRequestModel>());
+        var result = await controller.PutAsync(squadNumber, It.IsAny<PlayerRequestModel>());
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
+        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
         service.Verify(service => service.UpdateAsync(It.IsAny<PlayerRequestModel>()), Times.Never);
         validator.Verify(
             validator =>
@@ -404,16 +403,18 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPutAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe204NoContent()
+    public async Task GivenPutAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe204NoContent()
     {
         // Arrange
-        var id = 1;
-        var request = PlayerFakes.MakeRequestModelForUpdate(id);
-        var response = PlayerFakes.MakeResponseModelForUpdate(id);
+        var squadNumber = 23;
+        var request = PlayerFakes.MakeRequestModelForUpdate(squadNumber);
+        var response = PlayerFakes.MakeResponseModelForUpdate(squadNumber);
         request.FirstName = "Emiliano";
         request.MiddleName = string.Empty;
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
-        service.Setup(service => service.RetrieveByIdAsync(id)).ReturnsAsync(response);
+        service
+            .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
+            .ReturnsAsync(response);
         service.Setup(service => service.UpdateAsync(request));
         validator
             .Setup(validator =>
@@ -427,10 +428,10 @@ public class PlayerControllerTests : IDisposable
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         // Act
-        var result = await controller.PutAsync(id, request);
+        var result = await controller.PutAsync(squadNumber, request);
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
+        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
         service.Verify(service => service.UpdateAsync(It.IsAny<PlayerRequestModel>()), Times.Once);
         if (result is NoContent httpResult)
         {
@@ -445,23 +446,23 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenDeleteAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
+    public async Task GivenDeleteAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
     {
         // Arrange
-        var id = 999;
+        var squadNumber = 999;
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
-            .Setup(service => service.RetrieveByIdAsync(id))
+            .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
             .ReturnsAsync(null as PlayerResponseModel);
 
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         // Act
-        var result = await controller.DeleteAsync(id);
+        var result = await controller.DeleteAsync(squadNumber);
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
-        service.Verify(service => service.DeleteAsync(It.IsAny<long>()), Times.Never);
+        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
+        service.Verify(service => service.DeleteAsync(It.IsAny<int>()), Times.Never);
         if (result is NotFound httpResult)
         {
             httpResult.Should().NotBeNull().And.BeOfType<NotFound>();
@@ -471,24 +472,25 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenDeleteAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe204NoContent()
+    public async Task GivenDeleteAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe204NoContent()
     {
         // Arrange
-        var id = 2;
+        var squadNumber = 26;
+        var response = PlayerFakes.MakeResponseModelForUpdate(squadNumber);
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
-            .Setup(service => service.RetrieveByIdAsync(id))
-            .ReturnsAsync(PlayerFakes.MakeResponseModelForUpdate(id));
-        service.Setup(service => service.DeleteAsync(id));
+            .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
+            .ReturnsAsync(response);
+        service.Setup(service => service.DeleteAsync(squadNumber));
 
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         // Act
-        var result = await controller.DeleteAsync(id);
+        var result = await controller.DeleteAsync(squadNumber);
 
         // Assert
-        service.Verify(service => service.RetrieveByIdAsync(It.IsAny<long>()), Times.Once);
-        service.Verify(service => service.DeleteAsync(It.IsAny<long>()), Times.Once);
+        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
+        service.Verify(service => service.DeleteAsync(It.IsAny<int>()), Times.Once);
         if (result is NoContent httpResult)
         {
             httpResult.Should().NotBeNull().And.BeOfType<NoContent>();

@@ -30,7 +30,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Services
         /// A Task representing the asynchronous operation, containing the Player if found,
         /// or null if not.
         /// </returns>
-        public Task<PlayerResponseModel?> RetrieveByIdAsync(long id);
+        public Task<PlayerResponseModel?> RetrieveByIdAsync(Guid id);
 
         /// <summary>
         /// Retrieves a Player from the repository by its Squad Number.
@@ -52,8 +52,8 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Services
         /// <summary>
         /// Removes an existing Player from the repository.
         /// </summary>
-        /// <param name="id">The ID of the Player to delete.</param>
+        /// <param name="squadNumber">The Squad Number of the Player to delete.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
-        public Task DeleteAsync(long id);
+        public Task DeleteAsync(int squadNumber);
     }
 }
