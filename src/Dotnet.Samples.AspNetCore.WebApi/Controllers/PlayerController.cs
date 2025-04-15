@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dotnet.Samples.AspNetCore.WebApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("players")]
 [Produces("application/json")]
 public class PlayerController(
     IPlayerService playerService,
@@ -94,13 +94,12 @@ public class PlayerController(
     }
 
     /// <summary>
-    /// Retrieves a Player by its ID
+    /// Retrieves a Player by its internal Id (GUID)
     /// </summary>
-    /// <param name="id">The ID of the Player</param>
+    /// <param name="id">The internal Id (GUID) of the Player</param>
     /// <response code="200">OK</response>
     /// <response code="404">Not Found</response>
-    [Authorize(Roles = "Admin")]
-    [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize]
     [HttpGet("{id:Guid}", Name = "RetrieveById")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -125,7 +124,7 @@ public class PlayerController(
     /// <param name="squadNumber">The Squad Number of the Player</param>
     /// <response code="200">OK</response>
     /// <response code="404">Not Found</response>
-    [HttpGet("squadNumber/{squadNumber:int}", Name = "RetrieveBySquadNumber")]
+    [HttpGet("{squadNumber:int}", Name = "RetrieveBySquadNumber")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetBySquadNumberAsync([FromRoute] int squadNumber)
