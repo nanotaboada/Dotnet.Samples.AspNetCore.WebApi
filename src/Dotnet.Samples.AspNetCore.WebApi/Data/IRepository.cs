@@ -29,7 +29,7 @@ public interface IRepository<T>
     /// A ValueTask representing the asynchronous operation, containing the entity if found,
     /// or null if no entity with the specified ID exists.
     /// </returns>
-    ValueTask<T?> FindByIdAsync(long id);
+    ValueTask<T?> FindByIdAsync(Guid id);
 
     /// <summary>
     /// Updates an existing entity in the repository.
@@ -43,5 +43,5 @@ public interface IRepository<T>
     /// </summary>
     /// <param name="id">The unique identifier of the entity to remove.</param>
     /// <returns>A Task representing the asynchronous operation.</returns>
-    Task RemoveAsync(long id);
+    Task RemoveAsync(Guid id);
 }

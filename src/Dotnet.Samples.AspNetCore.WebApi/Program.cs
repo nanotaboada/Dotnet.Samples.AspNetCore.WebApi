@@ -3,7 +3,6 @@ using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Mappings;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
-using Dotnet.Samples.AspNetCore.WebApi.Utilities;
 using Dotnet.Samples.AspNetCore.WebApi.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +29,7 @@ builder.Host.UseSerilog();
  * Services
  * -------------------------------------------------------------------------- */
 builder.Services.AddControllers();
+
 builder.Services.AddDbContextPool<PlayerDbContext>(options =>
 {
     var dataSource = Path.Combine(AppContext.BaseDirectory, "Data", "players-sqlite3.db");
@@ -38,8 +38,6 @@ builder.Services.AddDbContextPool<PlayerDbContext>(options =>
     {
         options.EnableSensitiveDataLogging();
         options.LogTo(Log.Logger.Information, LogLevel.Information);
-        // https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-9.0/whatsnew#improved-data-seeding
-        options.UseAsyncSeeding(DbContextUtils.SeedAsync);
     }
 });
 

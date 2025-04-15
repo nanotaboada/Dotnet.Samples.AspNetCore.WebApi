@@ -50,6 +50,7 @@ ignore:
   - '**/*.md'
 
   - .*\/test\/.*
+  - .*\/scripts\/.*
   - .*\/Program\.cs
   - '**/LICENSE'
   - '**/README.md'

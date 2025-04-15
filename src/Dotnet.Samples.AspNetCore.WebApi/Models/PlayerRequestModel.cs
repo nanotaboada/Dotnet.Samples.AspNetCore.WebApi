@@ -12,8 +12,6 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Models;
 /// </remarks>
 public class PlayerRequestModel
 {
-    public long Id { get; set; }
-
     public string? FirstName { get; set; }
 
     public string? MiddleName { get; set; }
