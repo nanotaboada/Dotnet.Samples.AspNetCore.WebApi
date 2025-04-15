@@ -21,6 +21,7 @@ exclude_paths:
   - '**/*Program.cs'       # Main entry point, often not useful for static analysis
 
   # Ignore specific folders across any depth in the project
+  - '**/Configurations/**' # Swagger options, etc
   - '**/Data/**'           # Repositories, DbContext, database file, etc.
   - '**/Enums/**'          # Enumeration types
   - '**/Mappings/**'       # AutoMapper profiles

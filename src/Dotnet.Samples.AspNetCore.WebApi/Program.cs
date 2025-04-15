@@ -1,4 +1,4 @@
-using System.Reflection;
+using Dotnet.Samples.AspNetCore.WebApi.Configurations;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Mappings;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
@@ -23,6 +23,8 @@ builder
  * Logging
  * -------------------------------------------------------------------------- */
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
+
+/* Serilog ------------------------------------------------------------------ */
 builder.Host.UseSerilog();
 
 /* -----------------------------------------------------------------------------
@@ -30,6 +32,7 @@ builder.Host.UseSerilog();
  * -------------------------------------------------------------------------- */
 builder.Services.AddControllers();
 
+/* Entity Framework Core ---------------------------------------------------- */
 builder.Services.AddDbContextPool<PlayerDbContext>(options =>
 {
     var dataSource = Path.Combine(AppContext.BaseDirectory, "Data", "players-sqlite3.db");
@@ -44,20 +47,23 @@ builder.Services.AddDbContextPool<PlayerDbContext>(options =>
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddMemoryCache();
+
+/* AutoMapper --------------------------------------------------------------- */
 builder.Services.AddAutoMapper(typeof(PlayerMappingProfile));
+
+/* FluentValidation --------------------------------------------------------- */
 builder.Services.AddScoped<IValidator<PlayerRequestModel>, PlayerRequestModelValidator>();
 
 if (builder.Environment.IsDevelopment())
 {
+    /* Swagger UI ----------------------------------------------------------- */
+    // https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle
     builder.Services.AddSwaggerGen(options =>
     {
         options.SwaggerDoc("v1", builder.Configuration.GetSection("SwaggerDoc").Get<OpenApiInfo>());
-        options.IncludeXmlComments(
-            Path.Combine(
-                AppContext.BaseDirectory,
-                $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"
-            )
-        );
+        options.IncludeXmlComments(SwaggerGenDefaults.ConfigureXmlCommentsFilePath());
+        options.AddSecurityDefinition("Bearer", SwaggerGenDefaults.ConfigureSecurityDefinition());
+        options.OperationFilter<AuthorizeCheckOperationFilter>();
     });
 }
 
@@ -67,15 +73,13 @@ var app = builder.Build();
  * Middlewares
  * https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware
  * -------------------------------------------------------------------------- */
+app.UseSerilogRequestLogging();
+
 if (app.Environment.IsDevelopment())
 {
-    // https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-// https://github.com/serilog/serilog-aspnetcore
-app.UseSerilogRequestLogging();
 
 // https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl
 app.UseHttpsRedirection();
