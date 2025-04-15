@@ -2,7 +2,7 @@
 using Dotnet.Samples.AspNetCore.WebApi.Enums;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 
-namespace Dotnet.Samples.AspNetCore.WebApi.Data;
+namespace Dotnet.Samples.AspNetCore.WebApi.Utilities;
 
 public static class PlayerData
 {
@@ -317,7 +317,7 @@ public static class PlayerData
     /// https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/deserialization
     /// </summary>
     /// <returns>A list of Players.</returns>
-    public static List<Player> CreateFromDeserializedJson()
+    public static List<Player> MakeStarting11FromDeserializedJson()
     {
         var players = new List<Player>();
 

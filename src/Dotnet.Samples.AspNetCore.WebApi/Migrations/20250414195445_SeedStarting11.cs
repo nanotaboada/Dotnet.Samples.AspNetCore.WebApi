@@ -1,4 +1,4 @@
-﻿using Dotnet.Samples.AspNetCore.WebApi.Data;
+﻿using Dotnet.Samples.AspNetCore.WebApi.Utilities;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
