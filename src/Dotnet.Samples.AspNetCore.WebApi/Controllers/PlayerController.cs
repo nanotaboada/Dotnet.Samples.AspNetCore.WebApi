@@ -27,7 +27,7 @@ public class PlayerController(
     /// <response code="201">Created</response>
     /// <response code="400">Bad Request</response>
     /// <response code="409">Conflict</response>
-    [HttpPost]
+    [HttpPost(Name = "Create")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -59,7 +59,7 @@ public class PlayerController(
 
         logger.LogInformation("POST /players created: {@Player}", result);
         return TypedResults.CreatedAtRoute(
-            routeName: "GetBySquadNumber",
+            routeName: "RetrieveBySquadNumber",
             routeValues: new { squadNumber = result.Dorsal },
             value: result
         );
@@ -74,7 +74,7 @@ public class PlayerController(
     /// </summary>
     /// <response code="200">OK</response>
     /// <response code="404">Not Found</response>
-    [HttpGet]
+    [HttpGet(Name = "Retrieve")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetAsync()
@@ -101,7 +101,7 @@ public class PlayerController(
     /// <response code="404">Not Found</response>
     [Authorize(Roles = "Admin")]
     [ApiExplorerSettings(IgnoreApi = true)]
-    [HttpGet("{id:Guid}", Name = "GetById")]
+    [HttpGet("{id:Guid}", Name = "RetrieveById")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetByIdAsync([FromRoute] Guid id)
@@ -125,7 +125,7 @@ public class PlayerController(
     /// <param name="squadNumber">The Squad Number of the Player</param>
     /// <response code="200">OK</response>
     /// <response code="404">Not Found</response>
-    [HttpGet("squad/{squadNumber:int}")]
+    [HttpGet("squadNumber/{squadNumber:int}", Name = "RetrieveBySquadNumber")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetBySquadNumberAsync([FromRoute] int squadNumber)
@@ -160,7 +160,7 @@ public class PlayerController(
     /// <response code="204">No Content</response>
     /// <response code="400">Bad Request</response>
     /// <response code="404">Not Found</response>
-    [HttpPut("{squadNumber:int}")]
+    [HttpPut("{squadNumber:int}", Name = "Update")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -204,7 +204,7 @@ public class PlayerController(
     /// <param name="squadNumber">The Squad Number of the Player</param>
     /// <response code="204">No Content</response>
     /// <response code="404">Not Found</response>
-    [HttpDelete("{squadNumber:int}")]
+    [HttpDelete("{squadNumber:int}", Name = "Delete")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> DeleteAsync([FromRoute] int squadNumber)
