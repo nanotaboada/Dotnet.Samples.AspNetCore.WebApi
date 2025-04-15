@@ -90,7 +90,7 @@ public class PlayerService(
         }
     }
 
-    public async Task<PlayerResponseModel?> RetrieveByIdAsync(long id)
+    public async Task<PlayerResponseModel?> RetrieveByIdAsync(Guid id)
     {
         var player = await playerRepository.FindByIdAsync(id);
         return player is not null ? mapper.Map<PlayerResponseModel>(player) : null;
@@ -108,7 +108,10 @@ public class PlayerService(
 
     public async Task UpdateAsync(PlayerRequestModel playerRequestModel)
     {
-        if (await playerRepository.FindByIdAsync(playerRequestModel.Id) is Player player)
+        if (
+            await playerRepository.FindBySquadNumberAsync(playerRequestModel.SquadNumber)
+            is Player player
+        )
         {
             mapper.Map(playerRequestModel, player);
             await playerRepository.UpdateAsync(player);
@@ -125,12 +128,15 @@ public class PlayerService(
      * Delete
      * ---------------------------------------------------------------------- */
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(int squadNumber)
     {
-        if (await playerRepository.FindByIdAsync(id) is not null)
+        if (await playerRepository.FindBySquadNumberAsync(squadNumber) is Player player)
         {
-            await playerRepository.RemoveAsync(id);
-            logger.LogInformation("Player with Id {Id} removed from Repository", id);
+            await playerRepository.RemoveAsync(player.Id);
+            logger.LogInformation(
+                "Player with Id {SquadNumber} removed from Repository",
+                squadNumber
+            );
             memoryCache.Remove(CacheKey_RetrieveAsync);
             logger.LogInformation(
                 "Removed objects from Cache with Key: {Key}",

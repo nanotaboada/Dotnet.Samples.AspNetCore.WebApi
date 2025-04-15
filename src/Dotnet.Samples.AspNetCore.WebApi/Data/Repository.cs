@@ -15,7 +15,7 @@ public class Repository<T>(DbContext dbContext) : IRepository<T>
 
     public async Task<List<T>> GetAllAsync() => await _dbSet.AsNoTracking().ToListAsync();
 
-    public async ValueTask<T?> FindByIdAsync(long id) => await _dbSet.FindAsync(id);
+    public async ValueTask<T?> FindByIdAsync(Guid id) => await _dbSet.FindAsync(id);
 
     public async Task UpdateAsync(T entity)
     {
@@ -23,7 +23,7 @@ public class Repository<T>(DbContext dbContext) : IRepository<T>
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task RemoveAsync(long id)
+    public async Task RemoveAsync(Guid id)
     {
         var entity = await _dbSet.FindAsync(id);
         if (entity != null)

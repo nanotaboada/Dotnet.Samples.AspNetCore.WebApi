@@ -18,7 +18,7 @@ public static class PlayerFakes
         [
             new()
             {
-                Id = 1,
+                Id = Guid.NewGuid(),
                 FirstName = "Damián",
                 MiddleName = "Emiliano",
                 LastName = "Martínez",
@@ -32,7 +32,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 2,
+                Id = Guid.NewGuid(),
                 FirstName = "Nahuel",
                 LastName = "Molina",
                 DateOfBirth = new DateTime(1998, 4, 5, 0, 0, 0, DateTimeKind.Utc),
@@ -45,7 +45,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 3,
+                Id = Guid.NewGuid(),
                 FirstName = "Cristian",
                 MiddleName = "Gabriel",
                 LastName = "Romero",
@@ -59,7 +59,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 4,
+                Id = Guid.NewGuid(),
                 FirstName = "Nicolás",
                 MiddleName = "Hernán Gonzalo",
                 LastName = "Otamendi",
@@ -73,7 +73,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 5,
+                Id = Guid.NewGuid(),
                 FirstName = "Nicolás",
                 MiddleName = "Alejandro",
                 LastName = "Tagliafico",
@@ -87,7 +87,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 6,
+                Id = Guid.NewGuid(),
                 FirstName = "Ángel",
                 MiddleName = "Fabián",
                 LastName = "Di María",
@@ -101,7 +101,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 7,
+                Id = Guid.NewGuid(),
                 FirstName = "Rodrigo",
                 MiddleName = "Javier",
                 LastName = "de Paul",
@@ -115,7 +115,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 8,
+                Id = Guid.NewGuid(),
                 FirstName = "Enzo",
                 MiddleName = "Jeremías",
                 LastName = "Fernández",
@@ -129,7 +129,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 9,
+                Id = Guid.NewGuid(),
                 FirstName = "Alexis",
                 LastName = "Mac Allister",
                 DateOfBirth = new DateTime(1998, 12, 23, 0, 0, 0, DateTimeKind.Utc),
@@ -142,7 +142,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 10,
+                Id = Guid.NewGuid(),
                 FirstName = "Lionel",
                 MiddleName = "Andrés",
                 LastName = "Messi",
@@ -156,7 +156,7 @@ public static class PlayerFakes
             },
             new()
             {
-                Id = 11,
+                Id = Guid.NewGuid(),
                 FirstName = "Julián",
                 LastName = "Álvarez",
                 DateOfBirth = new DateTime(2000, 1, 30, 0, 0, 0, DateTimeKind.Utc),
@@ -170,11 +170,13 @@ public static class PlayerFakes
         ];
     }
 
-    public static Player MakeFromStarting11ById(long id)
+    public static Player MakeFromStarting11(int squadNumber)
     {
         var player =
-            MakeStarting11().SingleOrDefault(player => player.Id == id)
-            ?? throw new ArgumentNullException($"Player with ID {id} not found.");
+            MakeStarting11().SingleOrDefault(player => player.SquadNumber == squadNumber)
+            ?? throw new ArgumentNullException(
+                $"Player with Squad Number {squadNumber} not found."
+            );
 
         return player;
     }
@@ -183,7 +185,6 @@ public static class PlayerFakes
     {
         return new()
         {
-            Id = 12,
             FirstName = "Leandro",
             MiddleName = "Daniel",
             LastName = "Paredes",
@@ -207,7 +208,6 @@ public static class PlayerFakes
 
         return new PlayerRequestModel()
         {
-            Id = player.Id,
             FirstName = player.FirstName,
             MiddleName = player.MiddleName,
             LastName = player.LastName,
@@ -225,7 +225,6 @@ public static class PlayerFakes
 
         return new PlayerResponseModel
         {
-            Id = player.Id,
             FullName =
                 $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
             Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
@@ -241,15 +240,16 @@ public static class PlayerFakes
      * Retrieve
      * ---------------------------------------------------------------------- */
 
-    public static PlayerRequestModel MakeRequestModelForRetrieve(long id)
+    public static PlayerRequestModel MakeRequestModelForRetrieve(int squadNumber)
     {
         var player =
-            MakeStarting11().SingleOrDefault(player => player.Id == id)
-            ?? throw new ArgumentNullException($"Player with ID {id} not found.");
+            MakeStarting11().SingleOrDefault(player => player.SquadNumber == squadNumber)
+            ?? throw new ArgumentNullException(
+                $"Player with Squad Number {squadNumber} not found."
+            );
 
         return new PlayerRequestModel
         {
-            Id = player.Id,
             FirstName = player.FirstName,
             MiddleName = player.MiddleName,
             LastName = player.LastName,
@@ -261,15 +261,16 @@ public static class PlayerFakes
         };
     }
 
-    public static PlayerResponseModel MakeResponseModelForRetrieve(long id)
+    public static PlayerResponseModel MakeResponseModelForRetrieve(int squadNumber)
     {
         var player =
-            MakeStarting11().SingleOrDefault(player => player.Id == id)
-            ?? throw new ArgumentNullException($"Player with ID {id} not found.");
+            MakeStarting11().SingleOrDefault(player => player.SquadNumber == squadNumber)
+            ?? throw new ArgumentNullException(
+                $"Player with Squad Number {squadNumber} not found."
+            );
 
         return new PlayerResponseModel
         {
-            Id = player.Id,
             FullName =
                 $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
             Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
@@ -286,7 +287,6 @@ public static class PlayerFakes
             .. MakeStarting11()
                 .Select(player => new PlayerResponseModel
                 {
-                    Id = player.Id,
                     FullName =
                         $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
                     Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
@@ -302,13 +302,13 @@ public static class PlayerFakes
      * Update
      * ---------------------------------------------------------------------- */
 
-    public static PlayerRequestModel MakeRequestModelForUpdate(long id)
+    public static PlayerRequestModel MakeRequestModelForUpdate(int squadNumber)
     {
-        return MakeRequestModelForRetrieve(id);
+        return MakeRequestModelForRetrieve(squadNumber);
     }
 
-    public static PlayerResponseModel MakeResponseModelForUpdate(long id)
+    public static PlayerResponseModel MakeResponseModelForUpdate(int squadNumber)
     {
-        return MakeResponseModelForRetrieve(id);
+        return MakeResponseModelForRetrieve(squadNumber);
     }
 }

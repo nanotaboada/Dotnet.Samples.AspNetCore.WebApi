@@ -14,8 +14,8 @@ public interface IPlayerRepository : IRepository<Player>
     /// </summary>
     /// <param name="squadNumber">The Squad Number of the Player to retrieve.</param>
     /// <returns>
-    /// A ValueTask representing the asynchronous operation, containing the Player if found,
-    /// or null if no Player with the specified Squad Number exists.
+    ///  A Task representing the asynchronous operation,containing the Player
+    ///  if found, or null if no Player with the specified Squad Number exists.
     /// </returns>
-    ValueTask<Player?> FindBySquadNumberAsync(int squadNumber);
+    Task<Player?> FindBySquadNumberAsync(int squadNumber);
 }

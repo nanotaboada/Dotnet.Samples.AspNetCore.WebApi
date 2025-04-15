@@ -1,38 +1,45 @@
 ﻿using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dotnet.Samples.AspNetCore.WebApi.Utilities;
-
-public static class ApplicationBuilderExtensions
+namespace Dotnet.Samples.AspNetCore.WebApi.Utilities
 {
     /// <summary>
-    /// Async extension method to populate the database with initial data
+    /// Provides extension methods for <see cref="IApplicationBuilder"/> to
+    /// simplify database seeding operations.
     /// </summary>
-    public static async Task SeedDbContextAsync(this IApplicationBuilder app)
+    public static class ApplicationBuilderExtensions
     {
-        using var scope = app.ApplicationServices.CreateScope();
-        var services = scope.ServiceProvider;
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        var dbContext = services.GetRequiredService<PlayerDbContext>();
-
-        try
+        /// <summary>
+        /// Ensures the SQLite database file exists and contains tables.
+        /// If the database is newly created, it seeds it with initial data.
+        /// Does not apply or validate migrations.
+        /// </summary>
+        /// <param name="app">The <see cref="IApplicationBuilder"/> instance.</param>
+        public static async Task InitData(this IApplicationBuilder app)
         {
-            await dbContext.Database.EnsureCreatedAsync();
-
-            if (!await dbContext.Players.AnyAsync())
+            using var scope = app.ApplicationServices.CreateScope();
+            var services = scope.ServiceProvider;
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            var dbContext = services.GetRequiredService<PlayerDbContext>();
+            try
             {
-                await dbContext.Players.AddRangeAsync(PlayerData.MakeStarting11());
-                await dbContext.SaveChangesAsync();
-                logger.LogInformation("Successfully seeded database with initial data.");
+                await dbContext.Database.MigrateAsync();
+                logger.LogInformation("Database successfully migrated.");
+
+                if (!await dbContext.Players.AnyAsync())
+                {
+                    DbContextUtils.Seed(dbContext);
+                    logger.LogInformation("DbContext successfully seeded.");
+                }
             }
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "An error occurred while seeding the database");
-            throw new InvalidOperationException(
-                "An error occurred while seeding the database",
-                exception
-            );
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "An error occurred while initializing the database.");
+                throw new InvalidOperationException(
+                    "Failed to initialize the database.",
+                    exception
+                );
+            }
         }
     }
 }

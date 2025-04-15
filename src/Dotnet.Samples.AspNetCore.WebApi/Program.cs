@@ -30,6 +30,7 @@ builder.Host.UseSerilog();
  * Services
  * -------------------------------------------------------------------------- */
 builder.Services.AddControllers();
+
 builder.Services.AddDbContextPool<PlayerDbContext>(options =>
 {
     var dataSource = Path.Combine(AppContext.BaseDirectory, "Data", "players-sqlite3.db");
@@ -38,8 +39,6 @@ builder.Services.AddDbContextPool<PlayerDbContext>(options =>
     {
         options.EnableSensitiveDataLogging();
         options.LogTo(Log.Logger.Information, LogLevel.Information);
-        // https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-9.0/whatsnew#improved-data-seeding
-        options.UseAsyncSeeding(DbContextUtils.SeedAsync);
     }
 });
 
@@ -87,5 +86,7 @@ app.UseCors();
 
 // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#endpoints
 app.MapControllers();
+
+await app.InitData();
 
 await app.RunAsync();

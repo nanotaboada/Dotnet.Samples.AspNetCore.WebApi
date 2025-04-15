@@ -1,3 +1,4 @@
+using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Enums;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using FluentValidation;
@@ -15,8 +16,12 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Validators;
 /// </remarks>
 public class PlayerRequestModelValidator : AbstractValidator<PlayerRequestModel>
 {
-    public PlayerRequestModelValidator()
+    private readonly IPlayerRepository _playerRepository;
+
+    public PlayerRequestModelValidator(IPlayerRepository playerRepository)
     {
+        _playerRepository = playerRepository;
+
         RuleFor(player => player.FirstName).NotEmpty().WithMessage("FirstName is required.");
 
         RuleFor(player => player.LastName).NotEmpty().WithMessage("LastName is required.");
@@ -25,7 +30,10 @@ public class PlayerRequestModelValidator : AbstractValidator<PlayerRequestModel>
             .NotEmpty()
             .WithMessage("SquadNumber is required.")
             .GreaterThan(0)
-            .WithMessage("SquadNumber must be greater than 0.");
+            .WithMessage("SquadNumber must be greater than 0.")
+            .MustAsync(BeUniqueSquadNumber)
+            .WithMessage("SquadNumber must be unique.");
+        ;
 
         RuleFor(player => player.AbbrPosition)
             .NotEmpty()
@@ -33,4 +41,9 @@ public class PlayerRequestModelValidator : AbstractValidator<PlayerRequestModel>
             .Must(Position.IsValidAbbr)
             .WithMessage("AbbrPosition is invalid.");
     }
+
+    private async Task<bool> BeUniqueSquadNumber(
+        int squadNumber,
+        CancellationToken cancellationToken
+    ) => (await _playerRepository.FindBySquadNumberAsync(squadNumber)) is null;
 }

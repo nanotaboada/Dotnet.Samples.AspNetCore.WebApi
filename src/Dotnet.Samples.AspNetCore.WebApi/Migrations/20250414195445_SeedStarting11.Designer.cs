@@ -11,34 +11,31 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
 {
     [DbContext(typeof(PlayerDbContext))]
-    [Migration("20240515182115_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250414195445_SeedStarting11")]
+    partial class SeedStarting11
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
 
             modelBuilder.Entity("Dotnet.Samples.AspNetCore.WebApi.Models.Player", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AbbrPosition")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("League")
@@ -48,7 +45,6 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Position")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SquadNumber")
@@ -61,6 +57,9 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SquadNumber")
+                        .IsUnique();
 
                     b.ToTable("Players");
                 });
