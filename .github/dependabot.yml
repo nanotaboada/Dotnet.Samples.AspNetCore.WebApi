@@ -3,19 +3,22 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    directory: "/"
+    directory: "/src/Dotnet.Samples.AspNetCore.WebApi"
     schedule:
       interval: "daily"
     groups:
       efcore:
         patterns:
-        - "Microsoft.EntityFrameworkCore*"
-      xunit:
+          - "Microsoft.EntityFrameworkCore*"
+      serilog:
         patterns:
-        - "xunit*"
-      coverlet:
-        patterns:
-        - "coverlet*"
+          - "Serilog*"
+
+  - package-ecosystem: "nuget"
+    directory: "/test/Dotnet.Samples.AspNetCore.WebApi.Tests"
+    schedule:
+      interval: "daily"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
