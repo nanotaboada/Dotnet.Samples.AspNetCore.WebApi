@@ -133,7 +133,7 @@ public class PlayerController(
         if (player != null)
         {
             logger.LogInformation(
-                "GET /players/squad/{SquadNumber} retrieved: {@Player}",
+                "GET /players/{SquadNumber} retrieved: {@Player}",
                 squadNumber,
                 player
             );
@@ -141,7 +141,7 @@ public class PlayerController(
         }
         else
         {
-            logger.LogWarning("GET /players/squad/{SquadNumber} not found", squadNumber);
+            logger.LogWarning("GET /players/{SquadNumber} not found", squadNumber);
             return TypedResults.NotFound();
         }
     }
