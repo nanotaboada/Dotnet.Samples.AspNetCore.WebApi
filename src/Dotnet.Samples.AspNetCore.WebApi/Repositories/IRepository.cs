@@ -1,4 +1,4 @@
-namespace Dotnet.Samples.AspNetCore.WebApi.Data;
+namespace Dotnet.Samples.AspNetCore.WebApi.Repositories;
 
 /// <summary>
 /// Provides generic repository operations for entities of type <typeparamref name="T"/>.

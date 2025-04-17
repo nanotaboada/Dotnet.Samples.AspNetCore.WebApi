@@ -62,5 +62,6 @@ ignore:
   - .*\/Migrations\/.*
   - .*\/Models\/.*
   - .*\/Properties\/.*
+  - .*\/Repositories\/.*
   - .*\/Utilities\/.*
   - .*\/Validators\/.*

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace Dotnet.Samples.AspNetCore.WebApi.Data;
+namespace Dotnet.Samples.AspNetCore.WebApi.Repositories;
 
 public class Repository<T>(DbContext dbContext) : IRepository<T>
     where T : class

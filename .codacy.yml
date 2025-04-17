@@ -5,30 +5,31 @@
 exclude_paths:
 
   # Ignore all root-level metadata and documentation
-  - '.gitignore'           # root Git ignore file
-  - '.runsettings'         # root runsettings file
-  - 'LICENSE'              # root license file
-  - 'README.md'            # root readme
+  - '.gitignore'
+  - '.runsettings'
+  - 'LICENSE'
+  - 'README.md'
 
   # Ignore all file types that shouldn't be analyzed
-  - '**.yml'               # YAML files anywhere (build, config, pipelines)
-  - '**.json'              # JSON files (settings, config)
-  - '**.png'               # Images, e.g., Swagger diagram
-  - '**.sln'               # Solution files
-  - '**.csproj'            # C# project files
+  - '**.yml'
+  - '**.json'
+  - '**.png'
+  - '**.sln'
+  - '**.csproj'
 
   # Ignore generated or infrastructure files
-  - '**/*Program.cs'       # Main entry point, often not useful for static analysis
+  - '**/*Program.cs'
 
   # Ignore specific folders across any depth in the project
-  - '**/Configurations/**' # Swagger options, etc
-  - '**/Data/**'           # Repositories, DbContext, database file, etc.
-  - '**/Enums/**'          # Enumeration types
-  - '**/Mappings/**'       # AutoMapper profiles
-  - '**/Migrations/**'     # EF Core migration snapshots
-  - '**/Models/**'         # Domain and DTO models
-  - '**/Properties/**'     # launchSettings.json or AssemblyInfo.cs
-  - '**/Utilities/**'      # Helper extensions or static classes
-  - '**/Validators/**'     # FluentValidation validators
-  - 'test/**/*'            # Entire test suite (unit + integration)
-  - 'scripts/**/*'         # Helper shell scripts
+  - '**/Configurations/**'
+  - '**/Data/**'
+  - '**/Enums/**'
+  - '**/Mappings/**'
+  - '**/Migrations/**'
+  - '**/Models/**'
+  - '**/Properties/**'
+  - '**/Repositories/**'
+  - '**/Utilities/**'
+  - '**/Validators/**'
+  - 'test/**/*'
+  - 'scripts/**/*'
