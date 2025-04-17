@@ -37,7 +37,7 @@ public class PlayerMappingProfile : Profile
             )
             .ForMember(
                 destination => destination.Birth,
-                options => options.MapFrom(source => $"{source.DateOfBirth:MMMM d, yyyy}")
+                options => options.MapFrom(source =>source.DateOfBirth.HasValue? $"{source.DateOfBirth:MMMM d, yyyy}":string.Empty)
             )
             .ForMember(
                 destination => destination.Dorsal,
