@@ -1,7 +1,8 @@
+using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dotnet.Samples.AspNetCore.WebApi.Data;
+namespace Dotnet.Samples.AspNetCore.WebApi.Repositories;
 
 public sealed class PlayerRepository(PlayerDbContext dbContext)
     : Repository<Player>(dbContext),

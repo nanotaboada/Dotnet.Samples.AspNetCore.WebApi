@@ -2,7 +2,7 @@
 
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 
-namespace Dotnet.Samples.AspNetCore.WebApi.Data;
+namespace Dotnet.Samples.AspNetCore.WebApi.Repositories;
 
 /// <summary>
 /// Provides specialized repository operations for Player entities.

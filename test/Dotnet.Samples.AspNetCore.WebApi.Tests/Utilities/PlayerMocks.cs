@@ -1,7 +1,7 @@
 using AutoMapper;
 using Dotnet.Samples.AspNetCore.WebApi.Controllers;
-using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Repositories;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;

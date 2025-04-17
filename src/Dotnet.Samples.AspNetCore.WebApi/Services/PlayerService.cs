@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Services;

@@ -2,6 +2,7 @@ using Dotnet.Samples.AspNetCore.WebApi.Configurations;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Mappings;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Repositories;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Dotnet.Samples.AspNetCore.WebApi.Validators;
 using FluentValidation;

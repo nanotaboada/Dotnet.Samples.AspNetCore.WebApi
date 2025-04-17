@@ -1,6 +1,6 @@
-using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Enums;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Repositories;
 using FluentValidation;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Validators;
