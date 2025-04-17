@@ -24,18 +24,6 @@
         "/consoleloggerparameters:NoSummary;ForceNoAlign"
       ],
       "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "watch",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "watch",
-        "run",
-        "--project",
-        "${workspaceFolder}/Dotnet.Samples.AspNetCore.WebApi.sln"
-      ],
-      "problemMatcher": "$msCompile"
     }
   ]
 }
