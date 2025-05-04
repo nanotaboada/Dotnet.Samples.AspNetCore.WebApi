@@ -26,13 +26,28 @@ _Figure: Simplified, conceptual project structure and main application flow. Not
 dotnet watch run --project src/Dotnet.Samples.AspNetCore.WebApi/Dotnet.Samples.AspNetCore.WebApi.csproj
 ```
 
-## Documentation
+## Documentation (Development-only)
 
 ```console
 https://localhost:9000/swagger/index.html
 ```
 
 ![API Documentation](/assets/images/Swagger.png)
+
+## Container
+
+This project includes a multi-stage `Dockerfile` for local development and production builds.
+
+### Build the image
+
+```bash
+docker build -t aspnetcore-app .
+```
+
+### Run the container
+
+```bash
+docker run -p 9000:9000 aspnetcore-app
 
 ## Credits
 
