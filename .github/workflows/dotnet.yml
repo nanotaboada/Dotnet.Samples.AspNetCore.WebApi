@@ -14,6 +14,7 @@ on:
 
 env:
   DOTNET_VERSION: 8.0.x
+  PACKAGE_NAME: nanotaboada/dotnet-samples-aspnetcore-webapi
 
 jobs:
   build:
@@ -133,6 +134,6 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:main
-            ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
+            ghcr.io/${{ env.PACKAGE_NAME }}:latest
+            ghcr.io/${{ env.PACKAGE_NAME }}:main
+            ghcr.io/${{ env.PACKAGE_NAME }}:sha-${{ github.sha }}
