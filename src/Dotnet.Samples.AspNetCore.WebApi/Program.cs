@@ -36,8 +36,10 @@ builder.Services.AddControllers();
 /* Entity Framework Core ---------------------------------------------------- */
 builder.Services.AddDbContextPool<PlayerDbContext>(options =>
 {
-    var dataSource = Path.Combine(AppContext.BaseDirectory, "Data", "players-sqlite3.db");
+    var dataSource = Path.Combine(AppContext.BaseDirectory, "storage", "players-sqlite3.db");
+
     options.UseSqlite($"Data Source={dataSource}");
+
     if (builder.Environment.IsDevelopment())
     {
         options.EnableSensitiveDataLogging();
@@ -48,6 +50,7 @@ builder.Services.AddDbContextPool<PlayerDbContext>(options =>
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddMemoryCache();
+builder.Services.AddHealthChecks();
 
 /* AutoMapper --------------------------------------------------------------- */
 builder.Services.AddAutoMapper(typeof(PlayerMappingProfile));
@@ -90,5 +93,8 @@ app.UseCors();
 
 // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#endpoints
 app.MapControllers();
+
+// https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks
+app.MapHealthChecks("/health");
 
 await app.RunAsync();
