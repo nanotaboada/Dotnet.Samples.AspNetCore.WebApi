@@ -1,0 +1,17 @@
+services:
+  api:
+    image: dotnet-samples-aspnetcore-webapi
+    container_name: aspnetcore-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - storage:/storage/
+    environment:
+      - STORAGE_PATH=/storage/players-sqlite3.db
+    restart: unless-stopped
+
+volumes:
+  storage:
