@@ -6,6 +6,9 @@ updates:
     directory: "/src/Dotnet.Samples.AspNetCore.WebApi"
     schedule:
       interval: "daily"
+    commit-message:
+      include: scope
+      prefix: "chore(deps): bump "
     groups:
       efcore:
         patterns:
@@ -18,8 +21,14 @@ updates:
     directory: "/test/Dotnet.Samples.AspNetCore.WebApi.Tests"
     schedule:
       interval: "daily"
+    commit-message:
+      include: scope
+      prefix: "chore(deps): bump "
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      include: scope
+      prefix: "chore(deps): bump "
