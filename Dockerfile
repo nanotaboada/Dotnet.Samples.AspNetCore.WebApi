@@ -57,10 +57,10 @@ COPY --chmod=555        scripts/healthcheck.sh      ./healthcheck.sh
 # Copy pre-seeded SQLite database as init bundle
 COPY --from=builder /src/Dotnet.Samples.AspNetCore.WebApi/storage/players-sqlite3.db ./docker-compose/players-sqlite3.db
 
-# Create non-root user and make volume mount point writable
-RUN adduser --disabled-password --gecos '' aspnetcore && \
+# Add non-root user and make volume mount point writable
+RUN adduser --system --disabled-password --group aspnetcore && \
     mkdir -p /storage && \
-    chown -R aspnetcore:aspnetcore /storage
+    chown aspnetcore:aspnetcore /storage
 
 USER aspnetcore
 
