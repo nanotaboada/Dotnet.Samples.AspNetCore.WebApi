@@ -7,11 +7,11 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
 WORKDIR /src
 
 # Restore dependencies
-COPY src/Dotnet.Samples.AspNetCore.WebApi/*.csproj ./Dotnet.Samples.AspNetCore.WebApi/
+COPY src/Dotnet.Samples.AspNetCore.WebApi/*.csproj  ./Dotnet.Samples.AspNetCore.WebApi/
 RUN dotnet restore ./Dotnet.Samples.AspNetCore.WebApi
 
 # Copy source code and pre-seeded SQLite database
-COPY src/Dotnet.Samples.AspNetCore.WebApi ./Dotnet.Samples.AspNetCore.WebApi
+COPY src/Dotnet.Samples.AspNetCore.WebApi/          ./Dotnet.Samples.AspNetCore.WebApi/
 
 WORKDIR /src/Dotnet.Samples.AspNetCore.WebApi
 
@@ -41,26 +41,26 @@ ENV ASPNETCORE_URLS=http://+:9000
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Copy published app from builder
-COPY --from=builder     /app/publish                .
+COPY --from=builder     /app/publish/               .
 
 # Copy metadata docs for container registries (e.g.: GitHub Container Registry)
 COPY --chmod=444        README.md                   ./
-COPY --chmod=555        assets                      ./assets
+COPY --chmod=555        assets/                     ./assets/
 
 # https://rules.sonarsource.com/docker/RSPEC-6504/
 
 # Copy entrypoint and healthcheck scripts
 COPY --chmod=555        scripts/entrypoint.sh       ./entrypoint.sh
 COPY --chmod=555        scripts/healthcheck.sh      ./healthcheck.sh
+# The 'hold' is our storage compartment within the image. Here, we copy a
+# pre-seeded SQLite database file, which Compose will mount as a persistent
+# 'storage' volume when the container starts up.
+COPY --from=builder /src/Dotnet.Samples.AspNetCore.WebApi/storage/players-sqlite3.db ./hold/players-sqlite3.db
 
-
-# Copy pre-seeded SQLite database as init bundle
-COPY --from=builder /src/Dotnet.Samples.AspNetCore.WebApi/storage/players-sqlite3.db ./docker-compose/players-sqlite3.db
-
-# Create non-root user and make volume mount point writable
-RUN adduser --disabled-password --gecos '' aspnetcore && \
+# Add non-root user and make volume mount point writable
+RUN adduser --system --disabled-password --group aspnetcore && \
     mkdir -p /storage && \
-    chown -R aspnetcore:aspnetcore /storage
+    chown aspnetcore:aspnetcore /storage
 
 USER aspnetcore
 
