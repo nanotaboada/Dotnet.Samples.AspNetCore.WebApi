@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "ms-dotnettools.csdevkit",
+    "codezombiech.gitignore",
+    "conventionalcommits.extension",
+    "foxundermoon.shell-format",
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
+    "ms-azuretools.vscode-containers",
+    "redhat.vscode-yaml",
+    "sonarsource.sonarlint-vscode",
+    "yy0931.vscode-sqlite3-editor"
+  ]
+}

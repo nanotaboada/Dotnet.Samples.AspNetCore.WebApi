@@ -1,3 +1,5 @@
+name: dotnet-samples-aspnetcore-webapi
+
 services:
   api:
     image: dotnet-samples-aspnetcore-webapi
