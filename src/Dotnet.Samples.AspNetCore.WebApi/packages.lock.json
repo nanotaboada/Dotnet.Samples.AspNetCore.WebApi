@@ -176,14 +176,14 @@
       },
       "Swashbuckle.AspNetCore": {
         "type": "Direct",
-        "requested": "[8.1.2, )",
-        "resolved": "8.1.2",
-        "contentHash": "GcfwU8slhnC7ZKOGVkGheuyGgwIpqeLI11mtSO5P6cm1ej7U3LF83Okt9Jp76ar2zI7herN2yLcvIgzP63wgPQ==",
+        "requested": "[8.1.3, )",
+        "resolved": "8.1.3",
+        "contentHash": "fP1fzom+3AxECrVx/ecVeOCY+twn7O45kqS1S91sR5aggSo8CaSP/WSNIS6Fd9t+h/bGZGhagPXXTLLFwapivQ==",
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "6.0.5",
-          "Swashbuckle.AspNetCore.Swagger": "8.1.2",
-          "Swashbuckle.AspNetCore.SwaggerGen": "8.1.2",
-          "Swashbuckle.AspNetCore.SwaggerUI": "8.1.2"
+          "Swashbuckle.AspNetCore.Swagger": "8.1.3",
+          "Swashbuckle.AspNetCore.SwaggerGen": "8.1.3",
+          "Swashbuckle.AspNetCore.SwaggerUI": "8.1.3"
         }
       },
       "Azure.Core": {
@@ -1494,24 +1494,24 @@
       },
       "Swashbuckle.AspNetCore.Swagger": {
         "type": "Transitive",
-        "resolved": "8.1.2",
-        "contentHash": "5GTvC2Lbv3LnEHllm4N3LxpRSrDkVSBjUPlPHg3oIN7VJhxxuysYuTXzS2hExf3tuCPsTa5/TaDoCzfBlI05SQ==",
+        "resolved": "8.1.3",
+        "contentHash": "XUM49lx48d8Og4fY6RgwKjvnBdAyidThoeNSjAX/dsSoApS/KKoBCzCzwpMJWIzUz4dUlxwgyGu2twBpX41WWw==",
         "dependencies": {
           "Microsoft.OpenApi": "1.6.23"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerGen": {
         "type": "Transitive",
-        "resolved": "8.1.2",
-        "contentHash": "R91Wt4NpBJAgkx924Scv22WC80NmZH1VMgUNbmvqNfXE3H07noA4Q8wUMkBwJehQiRJr3Ts519JoScKazbLcww==",
+        "resolved": "8.1.3",
+        "contentHash": "1LFStKfnWtsKfbtggW9IwSVr36a1Q6pga3JtrMfvrX5FA0jXBCevdx00VJkOB7CDfbpDq/ocFdqvjEn4Gjaiuw==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "8.1.2"
+          "Swashbuckle.AspNetCore.Swagger": "8.1.3"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerUI": {
         "type": "Transitive",
-        "resolved": "8.1.2",
-        "contentHash": "qsGf333N+sa2XmxqU287HZEP/W1OrPwk2DpXHb0fL2PhXj5fatUv50ExePJb7yiA6kpKLVpGReJD0tj2Kai1CA=="
+        "resolved": "8.1.3",
+        "contentHash": "MYHiti47WBQ8Xx12/mBNGsQjbOt3ADtI5mxeRSYhQXC0GeFadUh053hBb/AlrzKt+I/5aeuW7oqsWev7XMMGUg=="
       },
       "System.ClientModel": {
         "type": "Transitive",
