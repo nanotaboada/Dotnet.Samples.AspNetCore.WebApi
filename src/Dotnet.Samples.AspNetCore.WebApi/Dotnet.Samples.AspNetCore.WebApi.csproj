@@ -7,24 +7,26 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="14.0.0" />
-    <PackageReference Include="FluentValidation" Version="12.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+  <ItemGroup Label="Development dependencies">
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Label="Runtime dependencies">
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4" />
   </ItemGroup>
 
   <ItemGroup>

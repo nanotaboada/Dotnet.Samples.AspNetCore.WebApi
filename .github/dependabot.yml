@@ -6,10 +6,10 @@ updates:
     directory: "/src/Dotnet.Samples.AspNetCore.WebApi"
     schedule:
       interval: "daily"
+    commit-message:
+      include: scope
+      prefix: "chore(deps): "
     groups:
-      efcore:
-        patterns:
-          - "Microsoft.EntityFrameworkCore*"
       serilog:
         patterns:
           - "Serilog*"
@@ -18,6 +18,13 @@ updates:
     directory: "/test/Dotnet.Samples.AspNetCore.WebApi.Tests"
     schedule:
       interval: "daily"
+    commit-message:
+      include: scope
+      prefix: "chore(deps): "
+    groups:
+      xunit:
+        patterns:
+          - "xunit*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
