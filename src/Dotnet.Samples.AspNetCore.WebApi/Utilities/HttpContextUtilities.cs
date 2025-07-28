@@ -42,6 +42,6 @@ public static class HttpContextUtilities
             return ipAddress.ToString();
         }
 
-        return httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown-{Guid.NewGuid()}";
+        return httpContext.Connection.RemoteIpAddress?.ToString() ?? $"unknown-{Guid.NewGuid()}";
     }
 }
