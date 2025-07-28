@@ -1,13 +1,13 @@
 using System.Reflection;
 using Microsoft.OpenApi.Models;
 
-namespace Dotnet.Samples.AspNetCore.WebApi.Configurations;
+namespace Dotnet.Samples.AspNetCore.WebApi.Utilities;
 
 /// <summary>
-/// Provides centralized configuration methods for Swagger/OpenAPI docs.
-/// Includes XML comments path resolution and security (JWT Bearer) setup.
+/// Utility methods for Swagger/OpenAPI configuration.
+/// Contains reusable helper methods that create OpenAPI objects.
 /// </summary>
-public static class SwaggerGenDefaults
+public static class SwaggerUtilities
 {
     /// <summary>
     /// Resolves the path to the XML comments file generated from code
@@ -17,10 +17,16 @@ public static class SwaggerGenDefaults
     /// <returns>Full file path to the XML documentation file.</returns>
     public static string ConfigureXmlCommentsFilePath()
     {
-        return Path.Combine(
+        var path = Path.Combine(
             AppContext.BaseDirectory,
             $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"
         );
+
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("XML comments file not found.", path);
+        }
+        return path;
     }
 
     /// <summary>

@@ -24,6 +24,7 @@ exclude_paths:
   - '**/Configurations/**'
   - '**/Data/**'
   - '**/Enums/**'
+  - '**/Extensions/**'
   - '**/Mappings/**'
   - '**/Migrations/**'
   - '**/Models/**'

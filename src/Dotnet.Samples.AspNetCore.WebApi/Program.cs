@@ -1,75 +1,50 @@
-using Dotnet.Samples.AspNetCore.WebApi.Configurations;
-using Dotnet.Samples.AspNetCore.WebApi.Data;
-using Dotnet.Samples.AspNetCore.WebApi.Mappings;
-using Dotnet.Samples.AspNetCore.WebApi.Models;
-using Dotnet.Samples.AspNetCore.WebApi.Repositories;
-using Dotnet.Samples.AspNetCore.WebApi.Services;
-using Dotnet.Samples.AspNetCore.WebApi.Validators;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Extensions;
 using Serilog;
+
+/* -----------------------------------------------------------------------------
+ * Web Application
+ * https://learn.microsoft.com/en-us/aspnet/core/fundamentals/startup
+ * -------------------------------------------------------------------------- */
 
 var builder = WebApplication.CreateBuilder(args);
 
-/* -----------------------------------------------------------------------------
- * Configuration
- * -------------------------------------------------------------------------- */
+/* Configurations ----------------------------------------------------------- */
+
 builder
     .Configuration.SetBasePath(AppContext.BaseDirectory)
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
-/* -----------------------------------------------------------------------------
- * Logging
- * -------------------------------------------------------------------------- */
-Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
+/* Logging ------------------------------------------------------------------ */
 
-/* Serilog ------------------------------------------------------------------ */
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Host.UseSerilog();
 
-/* -----------------------------------------------------------------------------
- * Services
- * -------------------------------------------------------------------------- */
+/* Controllers -------------------------------------------------------------- */
+
 builder.Services.AddControllers();
-
-/* Entity Framework Core ---------------------------------------------------- */
-builder.Services.AddDbContextPool<PlayerDbContext>(options =>
-{
-    var dataSource = Path.Combine(AppContext.BaseDirectory, "storage", "players-sqlite3.db");
-
-    options.UseSqlite($"Data Source={dataSource}");
-
-    if (builder.Environment.IsDevelopment())
-    {
-        options.EnableSensitiveDataLogging();
-        options.LogTo(Log.Logger.Information, LogLevel.Information);
-    }
-});
-
-builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
-builder.Services.AddScoped<IPlayerService, PlayerService>();
-builder.Services.AddMemoryCache();
+builder.Services.AddCorsDefaultPolicy();
 builder.Services.AddHealthChecks();
-
-/* AutoMapper --------------------------------------------------------------- */
-builder.Services.AddAutoMapper(typeof(PlayerMappingProfile));
-
-/* FluentValidation --------------------------------------------------------- */
-builder.Services.AddScoped<IValidator<PlayerRequestModel>, PlayerRequestModelValidator>();
+builder.Services.AddValidators();
 
 if (builder.Environment.IsDevelopment())
 {
-    /* Swagger UI ----------------------------------------------------------- */
-    // https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle
-    builder.Services.AddSwaggerGen(options =>
-    {
-        options.SwaggerDoc("v1", builder.Configuration.GetSection("SwaggerDoc").Get<OpenApiInfo>());
-        options.IncludeXmlComments(SwaggerGenDefaults.ConfigureXmlCommentsFilePath());
-        options.AddSecurityDefinition("Bearer", SwaggerGenDefaults.ConfigureSecurityDefinition());
-        options.OperationFilter<AuthorizeCheckOperationFilter>();
-    });
+    builder.Services.AddSwaggerConfiguration(builder.Configuration);
 }
+
+/* Services ----------------------------------------------------------------- */
+
+builder.Services.RegisterPlayerService();
+builder.Services.AddMemoryCache();
+builder.Services.AddMappings();
+
+/* Repositories ------------------------------------------------------------- */
+
+builder.Services.RegisterPlayerRepository();
+
+/* Data --------------------------------------------------------------------- */
+
+builder.Services.AddDbContextPoolWithSqlite(builder.Environment);
 
 var app = builder.Build();
 
@@ -77,6 +52,7 @@ var app = builder.Build();
  * Middlewares
  * https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware
  * -------------------------------------------------------------------------- */
+
 app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
@@ -85,16 +61,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl
 app.UseHttpsRedirection();
-
-// https://learn.microsoft.com/en-us/aspnet/core/security/cors
 app.UseCors();
-
-// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing#endpoints
-app.MapControllers();
-
-// https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks
+app.UseRateLimiter();
 app.MapHealthChecks("/health");
+app.MapControllers();
 
 await app.RunAsync();
