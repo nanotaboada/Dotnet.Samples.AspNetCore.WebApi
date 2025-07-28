@@ -26,7 +26,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddControllers();
 builder.Services.AddValidators();
 builder.Services.AddCorsDefaultPolicy(builder.Environment);
-builder.Services.AddFixedWindowRateLimiter();
+builder.Services.AddFixedWindowRateLimiter(builder.Configuration);
 
 if (builder.Environment.IsDevelopment())
 {

@@ -105,7 +105,9 @@ public static partial class ServiceCollectionExtensions
     {
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", configuration.GetSection("OpenApiInfo").Get<OpenApiInfo>());
+            var openApiInfo = configuration.GetSection("OpenApiInfo").Get<OpenApiInfo>();
+
+            options.SwaggerDoc("v1", openApiInfo);
             options.IncludeXmlComments(SwaggerUtilities.ConfigureXmlCommentsFilePath());
             options.AddSecurityDefinition("Bearer", SwaggerUtilities.ConfigureSecurityDefinition());
             options.OperationFilter<AuthorizeCheckOperationFilter>();
@@ -159,9 +161,17 @@ public static partial class ServiceCollectionExtensions
     /// <see href="https://learn.microsoft.com/en-us/aspnet/core/performance/rate-limit"/>
     /// </summary>
     /// <param name="services">The IServiceCollection instance.</param>
+    /// <param name="configuration">The application configuration instance.</param>
     /// <returns>The IServiceCollection for method chaining.</returns>
-    public static IServiceCollection AddFixedWindowRateLimiter(this IServiceCollection services)
+    public static IServiceCollection AddFixedWindowRateLimiter(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
+        var settings =
+            configuration.GetSection("RateLimiter").Get<RateLimiterConfiguration>()
+            ?? new RateLimiterConfiguration();
+
         services.AddRateLimiter(options =>
         {
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
@@ -173,10 +183,10 @@ public static partial class ServiceCollectionExtensions
                         partitionKey: partitionKey,
                         factory: _ => new FixedWindowRateLimiterOptions
                         {
-                            PermitLimit = 60,
-                            Window = TimeSpan.FromSeconds(60),
+                            PermitLimit = settings.PermitLimit,
+                            Window = TimeSpan.FromSeconds(settings.WindowSeconds),
                             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                            QueueLimit = 0
+                            QueueLimit = settings.QueueLimit
                         }
                     );
                 }
