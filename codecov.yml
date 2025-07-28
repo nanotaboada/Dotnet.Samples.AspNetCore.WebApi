@@ -58,6 +58,7 @@ ignore:
   - .*\/Configurations\/.*
   - .*\/Data\/.*
   - .*\/Enums\/.*
+  - .*\/Extensions\/.*
   - .*\/Mappings\/.*
   - .*\/Migrations\/.*
   - .*\/Models\/.*
