@@ -22,10 +22,11 @@ builder.Host.UseSerilog();
 
 /* Controllers -------------------------------------------------------------- */
 
-builder.Services.AddControllers();
-builder.Services.AddCorsDefaultPolicy();
 builder.Services.AddHealthChecks();
+builder.Services.AddControllers();
 builder.Services.AddValidators();
+builder.Services.AddCorsDefaultPolicy(builder.Environment);
+builder.Services.AddFixedWindowRateLimiter();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -54,17 +55,16 @@ var app = builder.Build();
  * -------------------------------------------------------------------------- */
 
 app.UseSerilogRequestLogging();
+app.UseHttpsRedirection();
+app.MapHealthChecks("/health");
+app.UseRateLimiter();
+app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-app.UseCors();
-app.UseRateLimiter();
-app.MapHealthChecks("/health");
-app.MapControllers();
 
 await app.RunAsync();
