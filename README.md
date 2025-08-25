@@ -8,7 +8,6 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ac7b7e22f1cd4d9d9233b36982b0d6a9)](https://app.codacy.com/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![codecov](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/graph/badge.svg?token=hgJc1rStJ9)](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/badge)](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
-[![codebeat badge](https://codebeat.co/badges/6292db95-5021-4154-8438-be27d15c14c0)](https://codebeat.co/projects/github-com-nanotaboada-dotnet-samples-aspnetcore-webapi-master)
 
 ## About
 
