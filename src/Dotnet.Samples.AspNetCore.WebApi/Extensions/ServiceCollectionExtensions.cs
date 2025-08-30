@@ -14,9 +14,9 @@ using Serilog;
 namespace Dotnet.Samples.AspNetCore.WebApi.Extensions;
 
 /// <summary>
-/// Extension methods for WebApplicationBuilder to encapsulate service configuration.
+/// Extension methods for IServiceCollection to encapsulate service configuration.
 /// </summary>
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
     /// <summary>
     /// Adds DbContextPool with SQLite configuration for PlayerDbContext.
@@ -54,16 +54,25 @@ public static class ServiceCollectionExtensions
     /// <see href="https://learn.microsoft.com/en-us/aspnet/core/security/cors"/>
     /// </summary>
     /// <param name="services">The IServiceCollection instance.</param>
+    /// <param name="environment">The web host environment.</param>
     /// <returns>The IServiceCollection for method chaining.</returns>
-    public static IServiceCollection AddCorsDefaultPolicy(this IServiceCollection services)
+    public static IServiceCollection AddCorsDefaultPolicy(
+        this IServiceCollection services,
+        IWebHostEnvironment environment
+    )
     {
-        services.AddCors(options =>
+        if (environment.IsDevelopment())
         {
-            options.AddDefaultPolicy(corsBuilder =>
+            services.AddCors(options =>
             {
-                corsBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                options.AddDefaultPolicy(corsBuilder =>
+                {
+                    corsBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
             });
-        });
+        }
+
+        // No CORS configured in Production or other environments
 
         return services;
     }
@@ -96,7 +105,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", configuration.GetSection("OpenApiInfo").Get<OpenApiInfo>());
+            var openApiInfo = configuration.GetSection("OpenApiInfo").Get<OpenApiInfo>();
+
+            options.SwaggerDoc("v1", openApiInfo);
             options.IncludeXmlComments(SwaggerUtilities.ConfigureXmlCommentsFilePath());
             options.AddSecurityDefinition("Bearer", SwaggerUtilities.ConfigureSecurityDefinition());
             options.OperationFilter<AuthorizeCheckOperationFilter>();
@@ -141,6 +152,49 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection RegisterPlayerRepository(this IServiceCollection services)
     {
         services.AddScoped<IPlayerRepository, PlayerRepository>();
+        return services;
+    }
+
+    /// <summary>
+    /// Adds rate limiting configuration with IP-based partitioning.
+    /// <br />
+    /// <see href="https://learn.microsoft.com/en-us/aspnet/core/performance/rate-limit"/>
+    /// </summary>
+    /// <param name="services">The IServiceCollection instance.</param>
+    /// <param name="configuration">The application configuration instance.</param>
+    /// <returns>The IServiceCollection for method chaining.</returns>
+    public static IServiceCollection AddFixedWindowRateLimiter(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        var settings =
+            configuration.GetSection("RateLimiter").Get<RateLimiterConfiguration>()
+            ?? new RateLimiterConfiguration();
+
+        services.AddRateLimiter(options =>
+        {
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
+                httpContext =>
+                {
+                    var partitionKey = HttpContextUtilities.ExtractIpAddress(httpContext);
+
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: partitionKey,
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = settings.PermitLimit,
+                            Window = TimeSpan.FromSeconds(settings.WindowSeconds),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = settings.QueueLimit
+                        }
+                    );
+                }
+            );
+
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+        });
+
         return services;
     }
 }
