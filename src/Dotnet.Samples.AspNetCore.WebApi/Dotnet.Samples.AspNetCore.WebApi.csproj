@@ -9,7 +9,7 @@
 
   <ItemGroup Label="Development dependencies">
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup Label="Runtime dependencies">
