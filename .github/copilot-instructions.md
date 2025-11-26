@@ -250,11 +250,119 @@ return player; // Let caller handle null
 - Use route parameters for resource identification
 - Apply validation before processing requests
 
+## 🛠️ Essential Commands & Workflows
+
+### Build & Run
+```bash
+# Build the solution
+dotnet build
+
+# Run the API (hot reload enabled)
+dotnet watch run --project src/Dotnet.Samples.AspNetCore.WebApi/Dotnet.Samples.AspNetCore.WebApi.csproj
+
+# Access Swagger UI (Development only)
+# https://localhost:9000/swagger/index.html
+
+# Health check endpoint
+# https://localhost:9000/health
+```
+
+### Testing
+```bash
+# Run all tests
+dotnet test
+
+# Run tests with coverage
+dotnet test --results-directory "coverage" --collect:"XPlat Code Coverage" --settings .runsettings
+
+# Run specific test category
+dotnet test --filter "Category=Unit"
+```
+
+### Database Migrations
+```bash
+# Create a new migration
+dotnet ef migrations add <MigrationName> --project src/Dotnet.Samples.AspNetCore.WebApi
+
+# Apply migrations
+dotnet ef database update --project src/Dotnet.Samples.AspNetCore.WebApi
+
+# Regenerate database with seed data
+./scripts/run-migrations-and-copy-database.sh
+```
+
+**Important**: The `run-migrations-and-copy-database.sh` script:
+- Resets the placeholder database file
+- Runs all migrations
+- Copies the generated database from `bin/Debug/net8.0/Data/` to `Data/`
+- Requires `dotnet ef` CLI tool installed globally
+
+### Docker Operations
+```bash
+# Build the image
+docker compose build
+
+# Start the app (with persistent volume)
+docker compose up
+
+# Stop the app (preserve data)
+docker compose down
+
+# Reset database (removes volume)
+docker compose down -v
+```
+
+**Important**: The SQLite database is stored in a Docker volume for persistence. First run copies a pre-seeded database from the image to the volume.
+
+### Rate Limiting
+- Configured via `RateLimiter` section in `appsettings.json`
+- Default: 60 requests per 60 seconds (fixed window)
+- Queue limit: 0 (immediate rejection when limit reached)
+
+## 🚨 Common Issues & Workarounds
+
+### Database Path Issues
+- **SQLite database location**: `storage/players-sqlite3.db` relative to binary output
+- **Container storage**: `/storage/players-sqlite3.db` (mounted volume)
+- **Environment variable**: `STORAGE_PATH` can override the default path in containers
+
+### Validation Patterns
+- **FluentValidation** runs in the validator class for input format/structure
+- **Business rule validation** (e.g., unique squad number check) happens in the service layer
+- This separation is intentional to keep validators focused on data structure, not business logic
+
+### Locking & Caching
+- **DbContextPool** is used for performance - don't manually dispose DbContext
+- **IMemoryCache** is cleared on data modifications using `Remove(CacheKey_RetrieveAsync)`
+- Cache keys use `nameof()` for type safety
+
+### Test Configuration
+- Test coverage excludes test projects via `.runsettings` configuration
+- Coverage reports merge multiple Cobertura files into one
+- `FluentAssertions` and `Moq` are standard testing libraries
+
+## 📝 Commit Message Conventions
+
+Follow **Conventional Commits** (<https://www.conventionalcommits.org/>):
+- `feat:` - New features
+- `fix:` - Bug fixes
+- `chore:` - Maintenance tasks
+- `docs:` - Documentation changes
+- `test:` - Test additions or modifications
+- `refactor:` - Code restructuring without behavior change
+
+**Constraints**:
+- Header max length: 80 characters
+- Body max line length: 80 characters
+- Enforced via `commitlint.config.mjs` in CI/CD
+
 ## 🚀 Future Evolution Considerations
 
-- **Database Migration**: SQLite → PostgreSQL transition path
-- **Authentication**: JWT Bearer token implementation ready
-- **API Versioning**: URL-based versioning strategy
-- **OpenAPI**: Comprehensive Swagger documentation
-- **Monitoring**: Health checks and metrics endpoints
-- **Containerization**: Docker multi-stage builds optimized
+See open issues on GitHub for planned enhancements:
+- **Clean Architecture Refactoring** ([#266](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/266)) - Migrate to Clean Architecture-inspired structure
+- **PostgreSQL Support** ([#249](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/249)) - Add PostgreSQL to Docker Compose setup
+- **.NET Aspire Integration** ([#256](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/256)) - Evaluate Aspire for dev-time orchestration and observability
+- **JWT Authentication** ([#105](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/105)) - Implement Client Credentials Flow for protected routes
+- **Global Exception Handling** ([#184](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/184)) - Add middleware with RFC 7807 Problem Details
+- **Optimistic Concurrency** ([#65](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/65)) - Handle conflicts with application-managed tokens
+- **Database Normalization** ([#125](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/125)) - Extract Position, Team, League into separate tables
