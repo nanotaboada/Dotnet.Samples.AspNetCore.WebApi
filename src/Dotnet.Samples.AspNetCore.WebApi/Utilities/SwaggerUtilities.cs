@@ -1,5 +1,5 @@
 using System.Reflection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Utilities;
 
@@ -58,17 +58,7 @@ public static class SwaggerUtilities
     {
         return new OpenApiSecurityRequirement
         {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Id = "Bearer",
-                        Type = ReferenceType.SecurityScheme
-                    }
-                },
-                Array.Empty<string>()
-            }
+            { new OpenApiSecuritySchemeReference("Bearer", null), new List<string>() }
         };
     }
 }
