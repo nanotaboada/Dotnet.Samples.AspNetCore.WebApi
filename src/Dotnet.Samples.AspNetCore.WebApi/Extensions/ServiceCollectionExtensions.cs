@@ -8,7 +8,7 @@ using Dotnet.Samples.AspNetCore.WebApi.Utilities;
 using Dotnet.Samples.AspNetCore.WebApi.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Serilog;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Extensions;

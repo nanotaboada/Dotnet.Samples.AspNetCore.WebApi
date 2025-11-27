@@ -1,6 +1,6 @@
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Configurations
@@ -25,23 +25,17 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Configurations
                 return;
 
             // Add security requirement (shows the lock icon)
-            operation.Security ??= new List<OpenApiSecurityRequirement>();
-            operation.Security.Add(
-                new OpenApiSecurityRequirement
-                {
+            // In Microsoft.OpenApi 2.x, use OpenApiSecuritySchemeReference instead of OpenApiSecurityScheme with nested Reference
+            if (operation is OpenApiOperation openApiOperation)
+            {
+                openApiOperation.Security ??= new List<OpenApiSecurityRequirement>();
+                openApiOperation.Security.Add(
+                    new OpenApiSecurityRequirement
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Id = "Bearer",
-                                Type = ReferenceType.SecurityScheme
-                            }
-                        },
-                        Array.Empty<string>()
+                        { new OpenApiSecuritySchemeReference("Bearer", null), new List<string>() }
                     }
-                }
-            );
+                );
+            }
         }
     }
 }
