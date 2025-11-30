@@ -45,7 +45,6 @@ COPY --from=builder     /app/publish/               .
 
 # Copy metadata docs for container registries (e.g.: GitHub Container Registry)
 COPY --chmod=444        README.md                   ./
-COPY --chmod=555        assets/                     ./assets/
 
 # https://rules.sonarsource.com/docker/RSPEC-6504/
 

@@ -58,7 +58,7 @@ Proof of Concept for a RESTful API built with .NET 8 (LTS) and ASP.NET Core. Man
 
 ## Project Structure
 
-```
+```text
 src/Dotnet.Samples.AspNetCore.WebApi/
 ├── Program.cs                  # Entry point: DI setup, middleware pipeline
 ├── Controllers/                # HTTP handlers (request/response logic)
@@ -95,36 +95,90 @@ test/Dotnet.Samples.AspNetCore.WebApi.Tests/
 
 ## Architecture
 
-Dependencies flow from data layer through repositories and services to controllers. External dependencies (AutoMapper, FluentValidation, Serilog) integrate at their respective layers.
+Dependencies flow from data layer through repositories and services to controllers. External dependencies (AutoMapper, FluentValidation, Serilog, Swashbuckle) integrate at their respective layers.
 
 ```mermaid
-%%{init: {'theme':'base'}}%%
-graph TD
-    Data[Data]:::core --> Models[Models]:::core
-    Models --> Repositories[Repositories]:::core
-    Repositories --> Services[Services]:::core
-    Services --> Controllers[Controllers]:::core
-    Controllers --> Program[Program]:::core
+%%{init: {
+  "theme": "default",
+  "themeVariables": {
+    "fontFamily": "Fira Code, Consolas, monospace",
+    "textColor": "#555",
+    "lineColor": "#555",
+    "clusterBkg": "#f5f5f5",
+    "clusterBorder": "#ddd"
+  }
+}}%%
+graph LR
+    %% Layer 1: Data
+    Data[Data]
 
-    Validators[Validators]:::core --> Controllers
-    Mappings[Mappings]:::core --> Services
+    %% Layer 2: Models
+    Models[Models]
 
-    AutoMapper[AutoMapper]:::external --> Mappings
-    FluentValidation[FluentValidation]:::external --> Validators
-    Serilog[Serilog]:::external --> Program
+    %% Layer 3: Repositories
+    Repositories[Repositories]
 
-    Configurations[Configurations]:::infrastructure --> Program
-    SwaggerUI[SwaggerUI]:::infrastructure --> Controllers
-    MemoryCache[MemoryCache]:::infrastructure --> Services
-    Migrations[Migrations]:::infrastructure --> Repositories
+    %% Layer 4: Services
+    subgraph Layer4[" "]
+        Services[Services]
+        Mappings[Mappings]
+        AutoMapper[AutoMapper]
+        MemoryCache[MemoryCache]
+    end
 
-    Controllers --> Tests[Tests]:::testing
-    Services --> Tests
+    %% Layer 5: Controllers
+    subgraph Layer5[" "]
+        Controllers[Controllers]
+        Validators[Validators]
+        FluentValidation[FluentValidation]
+        Swashbuckle[Swashbuckle]
+    end
 
-    classDef core fill:#cfe4ff,stroke:#333333,stroke-width:2px,color:#000
-    classDef external fill:#ffd9d9,stroke:#333333,stroke-width:2px,color:#000
-    classDef infrastructure fill:#fcfcca,stroke:#333333,stroke-width:2px,color:#000
-    classDef testing fill:#c3f7c8,stroke:#333333,stroke-width:2px,color:#000
+    %% Layer 6: Program
+    subgraph Layer6[" "]
+        Program[Program]
+        Configurations[Configurations]
+        Serilog[Serilog]
+    end
+
+    %% Tests (separate)
+    Tests[Tests]
+
+    %% Main Application Flow
+    Data --> Models
+    Models --> Repositories
+    Repositories --> Services
+    Services --> Controllers
+    Controllers --> Program
+
+    %% Layer connections
+    Validators --> Controllers
+    Mappings --> Services
+
+    %% External Dependencies connections
+    AutoMapper --> Mappings
+    FluentValidation --> Validators
+    Serilog --> Program
+    Swashbuckle --> Controllers
+
+    %% Supporting Features connections
+    Configurations --> Program
+    MemoryCache --> Services
+
+    %% Tests connections
+    Controllers -.-> Tests
+    Services -.-> Tests
+
+    %% Node styling with stroke-width
+    classDef core fill:#b3d9ff,stroke:#6db1ff,stroke-width:2px,color:#555,font-family:monospace;
+    classDef deps fill:#ffcccc,stroke:#ff8f8f,stroke-width:2px,color:#555,font-family:monospace;
+    classDef test fill:#ccffcc,stroke:#53c45e,stroke-width:2px,color:#555,font-family:monospace;
+    classDef feat fill:#ffffcc,stroke:#fdce15,stroke-width:2px,color:#555,font-family:monospace;
+
+    class Data,Models,Repositories,Services,Controllers,Program,Validators,Mappings core;
+    class AutoMapper,FluentValidation,Serilog,Swashbuckle deps;
+    class Tests test;
+    class Configurations,MemoryCache feat;
 ```
 
 *Layered architecture: Core application flow (blue), supporting features (yellow), external dependencies (red), and test coverage (green). Not all dependencies are shown.*
