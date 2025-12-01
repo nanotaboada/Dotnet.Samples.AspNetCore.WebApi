@@ -108,7 +108,7 @@ Dependencies flow from data layer through repositories and services to controlle
     "clusterBorder": "#ddd"
   }
 }}%%
-graph LR
+graph TB
     %% Layer 1: Data
     Data[Data]
 
@@ -152,6 +152,7 @@ graph LR
     Controllers --> Program
 
     %% Layer connections
+    Models --> Mappings
     Validators --> Controllers
     Mappings --> Services
 
@@ -351,4 +352,4 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 
 ## Legal
 
-This is a proof-of-concept project intended for educational and demonstration purposes. All trademarks, registered trademarks, service marks, product names, company names, or logos mentioned are the property of their respective owners and are used for identification purposes only.
+This project is provided for educational and demonstration purposes and may be used in production environments at your discretion. All referenced trademarks, service marks, product names, company names, and logos are the property of their respective owners and are used solely for identification or illustrative purposes.
