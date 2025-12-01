@@ -1,44 +1,76 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# ASP.NET Core 8.0
+# Build and test ASP.NET Core projects targeting .NET 8 on Linux.
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core
 
+# Trigger pipeline on commits to master and pull requests (equivalent to GitHub Actions 'on: [push, pull_request]')
 trigger:
-- master
+  - master
+  - feature/*
 
+pr:
+  - master
+
+# Agent pool configuration (equivalent to GitHub Actions 'runs-on: ubuntu-latest')
 pool:
-  vmImage: 'windows-latest'
+  vmImage: "ubuntu-latest"
 
+# Environment variables (equivalent to GitHub Actions 'env:')
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  buildConfiguration: "Release"
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1 # Skip .NET welcome message
+  DOTNET_NOLOGO: true # Suppress .NET logo in output
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
+# Pipeline steps (equivalent to GitHub Actions 'steps:')
 steps:
-- task: NuGetToolInstaller@1
+  # Checkout repository (equivalent to actions/checkout@v6)
+  # Azure Pipelines does this implicitly, but making it explicit for clarity
+  - checkout: self
+    displayName: "Checkout repository"
 
-- task: Cache@2
-  inputs:
-    key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
-    restoreKeys: |
-      nuget | "$(Agent.OS)"
-    path: '$(NUGET_PACKAGES)'
-    cacheHitVar: 'CACHE_RESTORED'
+  # Cache NuGet packages (equivalent to actions/setup-dotnet cache feature)
+  # Uses packages.lock.json hash as cache key for faster restores
+  - task: Cache@2
+    displayName: "Cache NuGet packages"
+    inputs:
+      key: 'nuget | "$(Agent.OS)" | **/packages.lock.json'
+      restoreKeys: |
+        nuget | "$(Agent.OS)"
+      path: $(NUGET_PACKAGES)
 
-- task: NuGetCommand@2
-  condition: ne(variables.CACHE_RESTORED, true)
-  inputs:
-    restoreSolution: '$(solution)'
+  # Install .NET 8 SDK (equivalent to actions/setup-dotnet@v5)
+  # performMultiLevelLookup: allows finding other SDK versions if needed
+  - task: UseDotNet@2
+    displayName: "Set up .NET 8"
+    inputs:
+      version: "8.x"
+      performMultiLevelLookup: true
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/t:Restore /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  # Restore NuGet packages (equivalent to 'dotnet restore')
+  # feedsToUse: 'select' uses feeds from NuGet.config
+  - task: DotNetCoreCLI@2
+    displayName: "Restore dependencies"
+    inputs:
+      command: "restore"
+      projects: "**/*.csproj"
+      feedsToUse: "select"
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  # Build the solution (equivalent to 'dotnet build')
+  # --no-restore: skip restore since we just did it (faster build)
+  - task: DotNetCoreCLI@2
+    displayName: "Build projects"
+    inputs:
+      command: "build"
+      projects: "**/*.sln"
+      arguments: "--configuration $(buildConfiguration) --no-restore"
+
+  # Run unit tests (equivalent to 'dotnet test')
+  # --no-build: use already-built assemblies (faster)
+  # publishTestResults: automatically publish test results to Azure DevOps (built-in feature)
+  - task: DotNetCoreCLI@2
+    displayName: "Run tests"
+    inputs:
+      command: "test"
+      projects: "**/*Tests/*.csproj"
+      arguments: "--configuration $(buildConfiguration) --no-build"
+      publishTestResults: true
