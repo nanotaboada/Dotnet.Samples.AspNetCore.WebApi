@@ -11,8 +11,8 @@ public static class MiddlewareExtensions
     /// Adds global exception handling middleware to the application pipeline.
     /// This middleware catches unhandled exceptions and returns RFC 7807 compliant error responses.
     /// </summary>
-    /// <param name="app">The web application builder.</param>
-    /// <returns>The web application builder for method chaining.</returns>
+    /// <param name="app">The web application used to configure the HTTP pipeline, and routes.</param>
+    /// <returns>The WebApplication object for method chaining.</returns>
     public static WebApplication UseExceptionHandling(this WebApplication app)
     {
         app.UseMiddleware<ExceptionMiddleware>();

@@ -35,13 +35,13 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvir
     /// </summary>
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var (statusCode, title) = MapExceptionToStatusCode(exception);
+        var (status, title) = MapExceptionToStatusCode(exception);
 
         var problemDetails = new ProblemDetails
         {
-            Type = $"https://httpstatuses.com/{statusCode}",
+            Type = $"https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/{status}",
             Title = title,
-            Status = statusCode,
+            Status = status,
             Detail = GetExceptionDetail(exception),
             Instance = context.Request.Path
         };
@@ -55,13 +55,26 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvir
             "Unhandled exception occurred. TraceId: {TraceId}, Path: {Path}, StatusCode: {StatusCode}",
             context.TraceIdentifier,
             context.Request.Path,
-            statusCode
+            status
         );
 
-        context.Response.StatusCode = statusCode;
-        context.Response.ContentType = ProblemDetailsContentType;
+        // Only modify response if headers haven't been sent yet
+        if (!context.Response.HasStarted)
+        {
+            context.Response.StatusCode = status;
+            context.Response.ContentType = ProblemDetailsContentType;
 
-        await context.Response.WriteAsync(JsonSerializer.Serialize(problemDetails, JsonOptions));
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(problemDetails, JsonOptions)
+            );
+        }
+        else
+        {
+            logger.LogWarning(
+                "Unable to write error response for TraceId: {TraceId}. Response has already started.",
+                context.TraceIdentifier
+            );
+        }
     }
 
     /// <summary>
