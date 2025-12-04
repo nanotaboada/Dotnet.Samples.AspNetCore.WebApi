@@ -3,34 +3,34 @@
 # Uses Java glob syntax: https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
 
 exclude_paths:
-
   # Ignore all root-level metadata and documentation
-  - '.gitignore'
-  - '.runsettings'
-  - 'LICENSE'
-  - 'README.md'
+  - ".gitignore"
+  - ".runsettings"
+  - "LICENSE"
+  - "README.md"
 
   # Ignore all file types that shouldn't be analyzed
-  - '**.yml'
-  - '**.json'
-  - '**.png'
-  - '**.sln'
-  - '**.csproj'
+  - "**.yml"
+  - "**.json"
+  - "**.png"
+  - "**.sln"
+  - "**.csproj"
 
   # Ignore generated or infrastructure files
-  - '**/*Program.cs'
+  - "**/*Program.cs"
 
   # Ignore specific folders across any depth in the project
-  - '**/Configurations/**'
-  - '**/Data/**'
-  - '**/Enums/**'
-  - '**/Extensions/**'
-  - '**/Mappings/**'
-  - '**/Migrations/**'
-  - '**/Models/**'
-  - '**/Properties/**'
-  - '**/Repositories/**'
-  - '**/Utilities/**'
-  - '**/Validators/**'
-  - 'test/**/*'
-  - 'scripts/**/*'
+  - "**/Configurations/**"
+  - "**/Data/**"
+  - "**/Enums/**"
+  - "**/Extensions/**"
+  - "**/Mappings/**"
+  - "**/Middlewares/**"
+  - "**/Migrations/**"
+  - "**/Models/**"
+  - "**/Properties/**"
+  - "**/Repositories/**"
+  - "**/Utilities/**"
+  - "**/Validators/**"
+  - "test/**/*"
+  - "scripts/**/*"

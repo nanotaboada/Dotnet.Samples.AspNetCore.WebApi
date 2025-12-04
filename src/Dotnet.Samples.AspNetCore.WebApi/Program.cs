@@ -55,6 +55,7 @@ var app = builder.Build();
  * -------------------------------------------------------------------------- */
 
 app.UseSerilogRequestLogging();
+app.UseExceptionHandling();
 app.UseHttpsRedirection();
 app.MapHealthChecks("/health");
 app.UseRateLimiter();
