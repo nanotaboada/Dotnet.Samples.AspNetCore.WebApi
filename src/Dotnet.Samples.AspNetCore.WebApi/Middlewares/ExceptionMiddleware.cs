@@ -49,7 +49,7 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvir
         // Add trace ID for request correlation
         problemDetails.Extensions["traceId"] = context.TraceIdentifier;
 
-        // Log the exception with structured logging
+        // codeql[cs/log-forging] Serilog structured logging automatically escapes control characters
         logger.LogError(
             exception,
             "Unhandled exception occurred. TraceId: {TraceId}, Path: {Path}, StatusCode: {StatusCode}",
