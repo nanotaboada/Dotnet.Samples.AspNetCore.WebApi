@@ -1,9 +1,8 @@
-
 # Codecov Repository YAML
 # https://docs.codecov.com/docs/codecov-yaml
 
 coverage:
-# https://docs.codecov.com/docs/commit-status
+  # https://docs.codecov.com/docs/commit-status
   status:
     project:
       default:
@@ -29,11 +28,11 @@ component_management:
     - component_id: controllers
       name: Controllers
       paths:
-        - 'src/Dotnet.Samples.AspNetCore.WebApi/Controllers/'
+        - "src/Dotnet.Samples.AspNetCore.WebApi/Controllers/"
     - component_id: services
       name: Services
       paths:
-        - 'src/Dotnet.Samples.AspNetCore.WebApi/Services/'
+        - "src/Dotnet.Samples.AspNetCore.WebApi/Services/"
 
 comment:
   layout: "header, diff, flags, components"
@@ -47,19 +46,20 @@ ignore:
   - .*\.json
   - .*\.yml
   - .*\.png
-  - '**/*.md'
+  - "**/*.md"
 
   - .*\/test\/.*
   - .*\/scripts\/.*
   - .*\/Program\.cs
-  - '**/LICENSE'
-  - '**/README.md'
+  - "**/LICENSE"
+  - "**/README.md"
 
   - .*\/Configurations\/.*
   - .*\/Data\/.*
   - .*\/Enums\/.*
   - .*\/Extensions\/.*
   - .*\/Mappings\/.*
+  - .*\/Middlewares\/.*
   - .*\/Migrations\/.*
   - .*\/Models\/.*
   - .*\/Properties\/.*
