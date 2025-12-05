@@ -2,8 +2,6 @@
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Repositories;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Hosting;
-
 namespace Dotnet.Samples.AspNetCore.WebApi.Services;
 
 public class PlayerService(
