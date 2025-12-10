@@ -5,7 +5,7 @@
     "csharpier.csharpier-vscode", // CSharpier - Opinionated C# code formatter
 
     // Infrastructure & Workflow
-    "ms-azuretools.vscode-docker", // Docker - Container management and debugging
+    "ms-azuretools.vscode-containers", // Container Tools - Docker and container management
     "yy0931.vscode-sqlite3-editor", // SQLite3 Editor - Database viewer
     "sonarsource.sonarlint-vscode", // SonarLint - Code quality and security analysis
     "github.copilot-chat", // GitHub Copilot Chat - AI coding assistant
@@ -17,8 +17,7 @@
     "codezombiech.gitignore" // Gitignore - .gitignore file support
   ],
   "unwantedRecommendations": [
-    "ms-azuretools.vscode-containers", // Container Tools - Deprecated, use vscode-docker
     "github.copilot", // Copilot (base) - Unified into copilot-chat
-    "docker.docker" // Docker DX - Use official ms-azuretools.vscode-docker
+    "docker.docker" // Docker DX - Use ms-azuretools.vscode-containers instead
   ]
 }
