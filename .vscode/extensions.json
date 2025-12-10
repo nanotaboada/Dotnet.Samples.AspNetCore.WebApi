@@ -1,14 +1,24 @@
 {
   "recommendations": [
-    "ms-dotnettools.csdevkit",
-    "codezombiech.gitignore",
-    "conventionalcommits.extension",
-    "foxundermoon.shell-format",
-    "github.vscode-github-actions",
-    "github.vscode-pull-request-github",
-    "ms-azuretools.vscode-containers",
-    "redhat.vscode-yaml",
-    "sonarsource.sonarlint-vscode",
-    "yy0931.vscode-sqlite3-editor"
+    // C# Development
+    "ms-dotnettools.csdevkit", // C# Dev Kit - Official Microsoft C# tooling
+    "csharpier.csharpier-vscode", // CSharpier - Opinionated C# code formatter
+
+    // Infrastructure & Workflow
+    "ms-azuretools.vscode-docker", // Docker - Container management and debugging
+    "yy0931.vscode-sqlite3-editor", // SQLite3 Editor - Database viewer
+    "sonarsource.sonarlint-vscode", // SonarLint - Code quality and security analysis
+    "github.copilot-chat", // GitHub Copilot Chat - AI coding assistant
+    "github.vscode-pull-request-github", // GitHub Pull Requests and Issues - PR management
+    "github.vscode-github-actions", // GitHub Actions - CI/CD workflow support
+    "redhat.vscode-yaml", // YAML - Language support for YAML files
+    "foxundermoon.shell-format", // Shell Format - Shell script formatter
+    "davidanson.vscode-markdownlint", // MarkdownLint - Markdown linting
+    "codezombiech.gitignore" // Gitignore - .gitignore file support
+  ],
+  "unwantedRecommendations": [
+    "ms-azuretools.vscode-containers", // Container Tools - Deprecated, use vscode-docker
+    "github.copilot", // Copilot (base) - Unified into copilot-chat
+    "docker.docker" // Docker DX - Use official ms-azuretools.vscode-docker
   ]
 }
