@@ -1,15 +1,15 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Repositories;
 using Microsoft.Extensions.Caching.Memory;
-
 namespace Dotnet.Samples.AspNetCore.WebApi.Services;
 
 public class PlayerService(
     IPlayerRepository playerRepository,
     ILogger<PlayerService> logger,
     IMemoryCache memoryCache,
-    IMapper mapper
+    IMapper mapper,
+    IHostEnvironment hostEnvironment
 ) : IPlayerService
 {
     /// <summary>
@@ -26,20 +26,6 @@ public class PlayerService(
     /// The key used to store the list of Players in the cache.
     /// </summary>
     private static readonly string CacheKey_RetrieveAsync = nameof(RetrieveAsync);
-
-    /// <summary>
-    /// The key used to store the environment variable for ASP.NET Core.
-    /// <br/>
-    /// <see href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-8.0">
-    /// Use multiple environments in ASP.NET Core
-    /// </see>
-    /// </summary>
-    private static readonly string AspNetCore_Environment = "ASPNETCORE_ENVIRONMENT";
-
-    /// <summary>
-    /// The value used to check if the environment is Development.
-    /// </summary>
-    private static readonly string Development = "Development";
 
     /* -------------------------------------------------------------------------
      * Create
@@ -68,7 +54,7 @@ public class PlayerService(
         }
         else
         {
-            if (Environment.GetEnvironmentVariable(AspNetCore_Environment) == Development)
+            if (hostEnvironment.IsDevelopment())
             {
                 await SimulateRepositoryDelayAsync();
             }
