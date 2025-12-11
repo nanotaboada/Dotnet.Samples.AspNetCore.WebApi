@@ -1,0 +1,296 @@
+# CodeRabbit Configuration
+# Optimized for .NET 8 / ASP.NET Core Web API project
+
+language: en-US
+early_access: true
+enable_free_tier: true
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_placeholder: "@coderabbitai summary"
+  review_status: true
+  commit_status: true
+  fail_commit_status: false
+  collapse_walkthrough: false
+  changed_files_summary: true
+  sequence_diagrams: true
+  estimate_code_review_effort: true
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
+  suggested_labels: true
+  auto_apply_labels: false
+  suggested_reviewers: false
+  auto_assign_reviewers: false
+  in_progress_fortune: true
+  poem: false
+  abort_on_close: true
+
+  # Path-based review instructions for this .NET project
+  path_instructions:
+    - path: "**/*.cs"
+      instructions: |
+        - Follow C# naming conventions: PascalCase for classes/methods/properties, camelCase for local variables
+        - Ensure nullable reference types are handled properly
+        - Verify async/await patterns are used consistently
+        - Check for proper dependency injection usage
+        - Validate that var is used appropriately for obvious types
+        - Ensure ILogger<T> is used for logging, not Console.WriteLine
+        - Code should follow CSharpier formatting standards
+
+    - path: "src/**/Controllers/**/*.cs"
+      instructions: |
+        - Controllers should be thin - delegate to services
+        - Verify proper HTTP status codes (200, 201, 400, 404, 409, 500)
+        - Check that [ApiController] and route attributes are present
+        - Ensure validation happens before processing
+        - Confirm async controller actions return appropriate Result types
+
+    - path: "src/**/Services/**/*.cs"
+      instructions: |
+        - Services should contain business logic and orchestration
+        - Verify proper use of IMemoryCache for read operations
+        - Check that AutoMapper is used for object transformations
+        - Ensure structured logging with ILogger<T>
+        - Validate cache invalidation on data modifications
+
+    - path: "src/**/Repositories/**/*.cs"
+      instructions: |
+        - Repositories should abstract data access
+        - Verify AsNoTracking() is used for read-only queries
+        - Check that all database operations are async
+        - Ensure proper null handling for not-found scenarios
+        - Validate LINQ queries for performance
+
+    - path: "src/**/Models/**/*.cs"
+      instructions: |
+        - Models should be clean POCOs
+        - Check for proper use of nullable reference types
+        - Verify navigation properties are virtual (if using lazy loading)
+        - Ensure DTOs are separate from domain entities
+
+    - path: "src/**/Validators/**/*.cs"
+      instructions: |
+        - Validators should use FluentValidation
+        - Check validation rules are for data structure, not business logic
+        - Ensure error messages are descriptive
+        - Verify validators are registered in DI container
+
+    - path: "test/**/*.cs"
+      instructions: |
+        - Tests should use xUnit, Moq, and FluentAssertions
+        - Verify test naming follows Given_When_Then pattern
+        - Check that mocks are properly configured
+        - Ensure async tests use Task return type
+        - Validate test data uses faker patterns
+        - Tests should use [Fact] and [Theory] attributes with [Trait("Category", "Unit")]
+
+    - path: "**/Dockerfile"
+      instructions: |
+        - Verify multi-stage builds are used
+        - Check that .NET 8 SDK and runtime versions match
+        - Ensure non-root user is used for security
+        - Validate HEALTHCHECK instruction is present
+
+    - path: "**/appsettings*.json"
+      instructions: |
+        - Verify no sensitive data is committed
+        - Check configuration structure matches usage in code
+        - Ensure Development and Production configs are appropriate
+
+    - path: "**/*.csproj"
+      instructions: |
+        - Verify .NET 8 (net8.0) target framework
+        - Check that nullable reference types are enabled
+        - Ensure package versions are up to date
+        - Validate that ImplicitUsings is enabled
+
+  # Ignore patterns for this project
+  path_filters:
+    - "!**/bin/**"
+    - "!**/obj/**"
+    - "!**/logs/**"
+    - "!**/storage/**"
+    - "!**/*.db"
+    - "!**/*.db-shm"
+    - "!**/*.db-wal"
+    - "!**/packages.lock.json"
+    - "!**/Migrations/**"
+    - "!**/*.Designer.cs"
+    - "!**/ModelSnapshot.cs"
+
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT REVIEW"
+      - "wip"
+    drafts: false
+    base_branches:
+      - master
+      - main
+
+  finishing_touches:
+    docstrings:
+      enabled: true
+    unit_tests:
+      enabled: true
+
+  pre_merge_checks:
+    docstrings:
+      mode: warning
+      threshold: 75
+    title:
+      mode: warning
+      requirements: |
+        - Use Conventional Commits format (feat:, fix:, chore:, docs:, test:, refactor:)
+        - Keep under 80 characters
+        - Be descriptive and specific
+    description:
+      mode: warning
+    issue_assessment:
+      mode: warning
+
+  tools:
+    # Relevant tools for .NET/C# projects
+    gitleaks:
+      enabled: true
+    checkov:
+      enabled: true
+    hadolint:
+      enabled: true
+    yamllint:
+      enabled: true
+    actionlint:
+      enabled: true
+    semgrep:
+      enabled: true
+    markdownlint:
+      enabled: true
+    github-checks:
+      enabled: true
+      timeout_ms: 120000
+    dotenvLint:
+      enabled: true
+    checkmake:
+      enabled: true
+    osvScanner:
+      enabled: true
+
+    # Disable irrelevant tools for this .NET project
+    shellcheck:
+      enabled: false
+    ruff:
+      enabled: false
+    biome:
+      enabled: false
+    swiftlint:
+      enabled: false
+    phpstan:
+      enabled: false
+    phpmd:
+      enabled: false
+    phpcs:
+      enabled: false
+    golangci-lint:
+      enabled: false
+    detekt:
+      enabled: false
+    eslint:
+      enabled: false
+    flake8:
+      enabled: false
+    rubocop:
+      enabled: false
+    buf:
+      enabled: false
+    regal:
+      enabled: false
+    pmd:
+      enabled: false
+    clang:
+      enabled: false
+    cppcheck:
+      enabled: false
+    clippy:
+      enabled: false
+    sqlfluff:
+      enabled: false
+    prismaLint:
+      enabled: false
+    pylint:
+      enabled: false
+    oxc:
+      enabled: false
+    shopifyThemeCheck:
+      enabled: false
+    luacheck:
+      enabled: false
+    brakeman:
+      enabled: false
+    htmlhint:
+      enabled: false
+    languagetool:
+      enabled: false
+    circleci:
+      enabled: false
+
+chat:
+  art: true
+  auto_reply: true
+
+knowledge_base:
+  opt_out: false
+  web_search:
+    enabled: true
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "**/*.cs"
+      - "**/*.csproj"
+      - "**/Dockerfile"
+      - "**/*.{yml,yaml}"
+      - "**/appsettings*.json"
+      - "src/**/*.json"
+  learnings:
+    scope: auto
+  issues:
+    scope: auto
+  pull_requests:
+    scope: auto
+  mcp:
+    usage: auto
+
+code_generation:
+  docstrings:
+    language: en-US
+    path_instructions:
+      - path: "**/*.cs"
+        instructions: |
+          - Use XML documentation comments (///) for public APIs
+          - Include <summary>, <param>, and <returns> tags
+          - Keep documentation concise and meaningful
+          - Don't state the obvious - add value
+  unit_tests:
+    path_instructions:
+      - path: "test/**/*.cs"
+        instructions: |
+          - Use xUnit framework with [Fact] and [Theory] attributes
+          - Follow Given_When_Then naming pattern for test methods
+          - Use [Trait("Category", "Unit")] attribute for all unit tests
+          - Use Moq for mocking dependencies
+          - Use FluentAssertions for readable assertions
+          - Ensure async tests return Task
+          - Structure tests with Arrange, Act, Assert comments
+
+issue_enrichment:
+  auto_enrich:
+    enabled: true
+  planning:
+    enabled: true
+  labeling:
+    auto_apply_labels: false
+    labeling_instructions: []

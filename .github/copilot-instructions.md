@@ -77,10 +77,13 @@ This project follows a **layered architecture** with clear separation of concern
 
 ## 🧪 Testing
 
-- Use **xUnit**
+- Use **xUnit** with `[Fact]` and `[Theory]` attributes
 - Use **Moq** for mocking
 - Prefer testing **service logic** and **controller behavior**
 - Place unit tests under `test/` following structure already present (e.g., `Unit/PlayerServiceTests.cs`)
+- **Test Naming**: Follow `Given_When_Then` pattern (e.g., `GivenCreateAsync_WhenRepositoryAddAsync_ThenAddsPlayerToRepositoryAndRemovesCache`)
+- **Test Structure**: Use Arrange, Act, Assert comments to organize test code
+- **Test Attributes**: Add `[Trait("Category", "Unit")]` to all unit tests
 - **Test Data**: Use faker patterns for consistent test data generation
 - **Assertions**: FluentAssertions for readable test assertions
 
