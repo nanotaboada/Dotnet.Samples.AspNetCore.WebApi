@@ -297,7 +297,7 @@ dotnet ef database update --project src/Dotnet.Samples.AspNetCore.WebApi
 **Important**: The `run-migrations-and-copy-database.sh` script:
 - Resets the placeholder database file
 - Runs all migrations
-- Copies the generated database from `bin/Debug/net8.0/Data/` to `Data/`
+- Copies the generated database from `bin/Debug/net8.0/storage/` to `storage/`
 - Requires `dotnet ef` CLI tool installed globally
 
 ### Docker Operations
@@ -325,9 +325,9 @@ docker compose down -v
 ## 🚨 Common Issues & Workarounds
 
 ### Database Path Issues
-- **SQLite database location**: `storage/players-sqlite3.db` relative to binary output
-- **Container storage**: `/storage/players-sqlite3.db` (mounted volume)
-- **Environment variable**: `STORAGE_PATH` can override the default path in containers
+- **Development**: `storage/players-sqlite3.db` (source, copied to `bin/Debug/net8.0/storage/` during build)
+- **Container**: Pre-seeded database copied from image `/app/hold/` to volume `/storage/` on first run
+- **Runtime**: Application uses `AppContext.BaseDirectory/storage/players-sqlite3.db`
 
 ### Validation Patterns
 - **FluentValidation** runs in the validator class for input format/structure
