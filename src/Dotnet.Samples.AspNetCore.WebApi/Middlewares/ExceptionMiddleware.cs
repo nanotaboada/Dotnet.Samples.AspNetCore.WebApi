@@ -8,7 +8,11 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Middlewares;
 /// <summary>
 /// Middleware for global exception handling with RFC 7807 Problem Details format.
 /// </summary>
-public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvironment environment)
+public class ExceptionMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionMiddleware> logger,
+    IHostEnvironment environment
+)
 {
     private const string ProblemDetailsContentType = "application/problem+json";
 
@@ -18,7 +22,7 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvir
     /// <summary>
     /// Invokes the middleware to handle exceptions globally.
     /// </summary>
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
