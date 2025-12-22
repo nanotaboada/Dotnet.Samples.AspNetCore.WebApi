@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Dotnet.Samples.AspNetCore.WebApi.Enums;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 
@@ -153,6 +153,10 @@ public static class PlayerData
         ];
     }
 
+    /// <summary>
+    /// Create a predefined starting eleven of players where each player has a fixed GUID identifier and full profile data.
+    /// </summary>
+    /// <returns>A list of 11 Player instances representing the starting lineup; each entry includes a predefined Id (Guid) and populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to true.</returns>
     public static List<Player> MakeStarting11WithId()
     {
         return
@@ -311,6 +315,10 @@ public static class PlayerData
         ];
     }
 
+    /// <summary>
+    /// Create a predefined list of 15 substitute players with full profile data but without Id values.
+    /// </summary>
+    /// <returns>A list of 15 Player instances representing substitute players; each entry includes populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to false. Id values are not assigned.</returns>
     public static List<Player> GetSubstitutes()
     {
         return
@@ -349,7 +357,7 @@ public static class PlayerData
                 SquadNumber = 2,
                 Position = Position.RightBack.Text,
                 AbbrPosition = Position.RightBack.Abbr,
-                Team = "Villareal",
+                Team = "Villarreal",
                 League = "La Liga",
                 Starting11 = false,
             },
@@ -362,7 +370,7 @@ public static class PlayerData
                 SquadNumber = 4,
                 Position = Position.RightBack.Text,
                 AbbrPosition = Position.RightBack.Abbr,
-                Team = "Nottingham Forrest",
+                Team = "Nottingham Forest",
                 League = "Premier League",
                 Starting11 = false,
             },
@@ -510,6 +518,10 @@ public static class PlayerData
         ];
     }
 
+    /// <summary>
+    /// Create a predefined list of 15 substitute players where each player has a fixed GUID identifier and full profile data.
+    /// </summary>
+    /// <returns>A list of 15 Player instances representing substitute players; each entry includes a predefined Id (Guid) and populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to false.</returns>
     public static List<Player> GetSubstitutesWithId()
     {
         return
@@ -551,7 +563,7 @@ public static class PlayerData
                 SquadNumber = 2,
                 Position = Position.RightBack.Text,
                 AbbrPosition = Position.RightBack.Abbr,
-                Team = "Villareal",
+                Team = "Villarreal",
                 League = "La Liga",
                 Starting11 = false,
             },
@@ -565,7 +577,7 @@ public static class PlayerData
                 SquadNumber = 4,
                 Position = Position.RightBack.Text,
                 AbbrPosition = Position.RightBack.Abbr,
-                Team = "Nottingham Forrest",
+                Team = "Nottingham Forest",
                 League = "Premier League",
                 Starting11 = false,
             },

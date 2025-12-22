@@ -8,6 +8,8 @@ PROJECT_BASE_PATH="$PROJECT_ROOT_PATH/bin/Debug/net8.0"
 SOURCE_FILE_PATH="$PROJECT_BASE_PATH/storage/$DATA_FILE"
 TARGET_FILE_PATH="$PROJECT_ROOT_PATH/storage/$DATA_FILE"
 
+# log prints a formatted log message prefixed by an emoji and timestamp, followed by the log level and message.
+# Parameters: emoji — emoji or symbol to prefix the entry; level — severity or level label; message — the log text.
 log() {
     local emoji=$1
     local level=$2
