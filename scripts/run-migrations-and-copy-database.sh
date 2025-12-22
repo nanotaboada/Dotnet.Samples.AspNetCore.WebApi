@@ -5,9 +5,11 @@ DATA_FILE="players-sqlite3.db"
 PROJECT_ROOT_PATH="src/Dotnet.Samples.AspNetCore.WebApi"
 PROJECT_BASE_PATH="$PROJECT_ROOT_PATH/bin/Debug/net8.0"
 
-SOURCE_FILE_PATH="$PROJECT_BASE_PATH/Data/$DATA_FILE"
-TARGET_FILE_PATH="$PROJECT_ROOT_PATH/Data/$DATA_FILE"
+SOURCE_FILE_PATH="$PROJECT_BASE_PATH/storage/$DATA_FILE"
+TARGET_FILE_PATH="$PROJECT_ROOT_PATH/storage/$DATA_FILE"
 
+# log prints a formatted log message prefixed by an emoji and timestamp, followed by the log level and message.
+# Parameters: emoji — emoji or symbol to prefix the entry; level — severity or level label; message — the log text.
 log() {
     local emoji=$1
     local level=$2
@@ -15,6 +17,7 @@ log() {
     local timestamp
     timestamp=$(date +"%Y-%m-%d %H:%M:%S")
     echo "$emoji [$timestamp] [$level] $message"
+    return 0
 }
 
 # Check if the EF Core CLI tool is installed
@@ -31,18 +34,18 @@ touch "$TARGET_FILE_PATH"
 # Run the database migration
 log "✅" "INFO" "Running EF Core database migration for project at '$PROJECT_ROOT_PATH'..."
 dotnet ef database update --project "$PROJECT_ROOT_PATH"
-if [ $? -ne 0 ]; then
+if [[ $? -ne 0 ]]; then
     log "❌" "ERROR" "Migration failed. See error above."
     exit 1
 fi
 
 # Check and copy database
-if [ -f "$SOURCE_FILE_PATH" ]; then
+if [[ -f "$SOURCE_FILE_PATH" ]]; then
     log "✅" "INFO" "Found database at '$SOURCE_FILE_PATH'"
     log "✅" "INFO" "Copying to '$TARGET_FILE_PATH'..."
     cp -f "$SOURCE_FILE_PATH" "$TARGET_FILE_PATH"
 
-    if [ $? -eq 0 ]; then
+    if [[ $? -eq 0 ]]; then
         log "✅" "INFO" "Database successfully copied to '$TARGET_FILE_PATH'"
     else
         log "❌" "ERROR" "Failed to copy the database file."
@@ -55,7 +58,7 @@ else
 fi
 
 # Confirm destination file exists
-if [ -f "$TARGET_FILE_PATH" ]; then
+if [[ -f "$TARGET_FILE_PATH" ]]; then
     log "✅" "INFO" "Done. The database is now available at '$TARGET_FILE_PATH'"
 else
     log "⚠️" "WARNING" "Something went wrong. The destination file was not found."

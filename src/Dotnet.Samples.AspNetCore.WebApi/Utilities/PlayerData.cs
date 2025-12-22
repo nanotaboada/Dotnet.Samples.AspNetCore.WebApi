@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Dotnet.Samples.AspNetCore.WebApi.Enums;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 
@@ -153,6 +153,10 @@ public static class PlayerData
         ];
     }
 
+    /// <summary>
+    /// Create a predefined starting eleven of players where each player has a fixed GUID identifier and full profile data.
+    /// </summary>
+    /// <returns>A list of 11 Player instances representing the starting lineup; each entry includes a predefined Id (Guid) and populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to true.</returns>
     public static List<Player> MakeStarting11WithId()
     {
         return
@@ -307,6 +311,427 @@ public static class PlayerData
                 Team = "Manchester City",
                 League = "Premier League",
                 Starting11 = true,
+            }
+        ];
+    }
+
+    /// <summary>
+    /// Create a predefined list of 15 substitute players with full profile data but without Id values.
+    /// </summary>
+    /// <returns>A list of 15 Player instances representing substitute players; each entry includes populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to false. Id values are not assigned.</returns>
+    public static List<Player> GetSubstitutes()
+    {
+        return
+        [
+            new()
+            {
+                FirstName = "Franco",
+                MiddleName = "Daniel",
+                LastName = "Armani",
+                DateOfBirth = new DateTime(1986, 10, 16, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 1,
+                Position = Position.Goalkeeper.Text,
+                AbbrPosition = Position.Goalkeeper.Abbr,
+                Team = "River Plate",
+                League = "Copa de la Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Gerónimo",
+                LastName = "Rulli",
+                DateOfBirth = new DateTime(1992, 5, 20, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 12,
+                Position = Position.Goalkeeper.Text,
+                AbbrPosition = Position.Goalkeeper.Abbr,
+                Team = "Ajax Amsterdam",
+                League = "Eredivisie",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Juan",
+                MiddleName = "Marcos",
+                LastName = "Foyth",
+                DateOfBirth = new DateTime(1998, 1, 12, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 2,
+                Position = Position.RightBack.Text,
+                AbbrPosition = Position.RightBack.Abbr,
+                Team = "Villarreal",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Gonzalo",
+                MiddleName = "Ariel",
+                LastName = "Montiel",
+                DateOfBirth = new DateTime(1997, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 4,
+                Position = Position.RightBack.Text,
+                AbbrPosition = Position.RightBack.Abbr,
+                Team = "Nottingham Forest",
+                League = "Premier League",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Germán",
+                MiddleName = "Alejo",
+                LastName = "Pezzella",
+                DateOfBirth = new DateTime(1991, 6, 27, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 6,
+                Position = Position.CentreBack.Text,
+                AbbrPosition = Position.CentreBack.Abbr,
+                Team = "Real Betis Balompié",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Marcos",
+                MiddleName = "Javier",
+                LastName = "Acuña",
+                DateOfBirth = new DateTime(1991, 10, 28, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 8,
+                Position = Position.LeftBack.Text,
+                AbbrPosition = Position.LeftBack.Abbr,
+                Team = "Sevilla FC",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Lisandro",
+                LastName = "Martínez",
+                DateOfBirth = new DateTime(1998, 1, 18, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 25,
+                Position = Position.CentreBack.Text,
+                AbbrPosition = Position.CentreBack.Abbr,
+                Team = "Manchester United",
+                League = "Premier League",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Leandro",
+                MiddleName = "Daniel",
+                LastName = "Paredes",
+                DateOfBirth = new DateTime(1994, 6, 29, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 5,
+                Position = Position.DefensiveMidfield.Text,
+                AbbrPosition = Position.DefensiveMidfield.Abbr,
+                Team = "AS Roma",
+                League = "Serie A",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Exequiel",
+                MiddleName = "Alejandro",
+                LastName = "Palacios",
+                DateOfBirth = new DateTime(1998, 10, 5, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 14,
+                Position = Position.CentralMidfield.Text,
+                AbbrPosition = Position.CentralMidfield.Abbr,
+                Team = "Bayer 04 Leverkusen",
+                League = "Bundesliga",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Alejandro",
+                MiddleName = "Darío",
+                LastName = "Gómez",
+                DateOfBirth = new DateTime(1988, 2, 15, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 17,
+                Position = Position.LeftWinger.Text,
+                AbbrPosition = Position.LeftWinger.Abbr,
+                Team = "AC Monza",
+                League = "Serie A",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Guido",
+                LastName = "Rodríguez",
+                DateOfBirth = new DateTime(1994, 4, 12, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 18,
+                Position = Position.DefensiveMidfield.Text,
+                AbbrPosition = Position.DefensiveMidfield.Abbr,
+                Team = "Real Betis Balompié",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Ángel",
+                MiddleName = "Martín",
+                LastName = "Correa",
+                DateOfBirth = new DateTime(1995, 3, 9, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 15,
+                Position = Position.RightWinger.Text,
+                AbbrPosition = Position.RightWinger.Abbr,
+                Team = "Atlético Madrid",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Thiago",
+                MiddleName = "Ezequiel",
+                LastName = "Almada",
+                DateOfBirth = new DateTime(2001, 4, 26, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 16,
+                Position = Position.AttackingMidfield.Text,
+                AbbrPosition = Position.AttackingMidfield.Abbr,
+                Team = "Atlanta United FC",
+                League = "Major League Soccer",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Paulo",
+                MiddleName = "Exequiel",
+                LastName = "Dybala",
+                DateOfBirth = new DateTime(1993, 11, 15, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 21,
+                Position = Position.SecondStriker.Text,
+                AbbrPosition = Position.SecondStriker.Abbr,
+                Team = "AS Roma",
+                League = "Serie A",
+                Starting11 = false,
+            },
+            new()
+            {
+                FirstName = "Lautaro",
+                MiddleName = "Javier",
+                LastName = "Martínez",
+                DateOfBirth = new DateTime(1997, 8, 22, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 22,
+                Position = Position.CentreForward.Text,
+                AbbrPosition = Position.CentreForward.Abbr,
+                Team = "Inter Milan",
+                League = "Serie A",
+                Starting11 = false,
+            }
+        ];
+    }
+
+    /// <summary>
+    /// Create a predefined list of 15 substitute players where each player has a fixed GUID identifier and full profile data.
+    /// </summary>
+    /// <returns>A list of 15 Player instances representing substitute players; each entry includes a predefined Id (Guid) and populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to false.</returns>
+    public static List<Player> GetSubstitutesWithId()
+    {
+        return
+        [
+            new()
+            {
+                Id = Guid.Parse("b1f8a5d3-2c4e-4a6b-8d9f-1e3c5a7b9d2f"),
+                FirstName = "Franco",
+                MiddleName = "Daniel",
+                LastName = "Armani",
+                DateOfBirth = new DateTime(1986, 10, 16, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 1,
+                Position = Position.Goalkeeper.Text,
+                AbbrPosition = Position.Goalkeeper.Abbr,
+                Team = "River Plate",
+                League = "Copa de la Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("c2e9b6f4-3d5f-4b7c-9e0a-2f4d6b8c0e3a"),
+                FirstName = "Gerónimo",
+                LastName = "Rulli",
+                DateOfBirth = new DateTime(1992, 5, 20, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 12,
+                Position = Position.Goalkeeper.Text,
+                AbbrPosition = Position.Goalkeeper.Abbr,
+                Team = "Ajax Amsterdam",
+                League = "Eredivisie",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("d3f0c7e5-4e6a-5c8d-0f1b-3a5e7c9d1f4b"),
+                FirstName = "Juan",
+                MiddleName = "Marcos",
+                LastName = "Foyth",
+                DateOfBirth = new DateTime(1998, 1, 12, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 2,
+                Position = Position.RightBack.Text,
+                AbbrPosition = Position.RightBack.Abbr,
+                Team = "Villarreal",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("e4a1d8f6-5f7b-6d9e-1a2c-4b6d8e0a2c5d"),
+                FirstName = "Gonzalo",
+                MiddleName = "Ariel",
+                LastName = "Montiel",
+                DateOfBirth = new DateTime(1997, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 4,
+                Position = Position.RightBack.Text,
+                AbbrPosition = Position.RightBack.Abbr,
+                Team = "Nottingham Forest",
+                League = "Premier League",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("f5b2e9a7-6a8c-7e0f-2b3d-5c7e9a1b3d6e"),
+                FirstName = "Germán",
+                MiddleName = "Alejo",
+                LastName = "Pezzella",
+                DateOfBirth = new DateTime(1991, 6, 27, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 6,
+                Position = Position.CentreBack.Text,
+                AbbrPosition = Position.CentreBack.Abbr,
+                Team = "Real Betis Balompié",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("a6c3f0b8-7b9d-8f1a-3c4e-6d8f0b2c4e7f"),
+                FirstName = "Marcos",
+                MiddleName = "Javier",
+                LastName = "Acuña",
+                DateOfBirth = new DateTime(1991, 10, 28, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 8,
+                Position = Position.LeftBack.Text,
+                AbbrPosition = Position.LeftBack.Abbr,
+                Team = "Sevilla FC",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("b7d4a1c9-8c0e-9a2b-4d5f-7e9a1c3d5f8a"),
+                FirstName = "Lisandro",
+                LastName = "Martínez",
+                DateOfBirth = new DateTime(1998, 1, 18, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 25,
+                Position = Position.CentreBack.Text,
+                AbbrPosition = Position.CentreBack.Abbr,
+                Team = "Manchester United",
+                League = "Premier League",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("c8e5b2d0-9d1f-0b3c-5e6a-8f0b2d4e6a9b"),
+                FirstName = "Leandro",
+                MiddleName = "Daniel",
+                LastName = "Paredes",
+                DateOfBirth = new DateTime(1994, 6, 29, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 5,
+                Position = Position.DefensiveMidfield.Text,
+                AbbrPosition = Position.DefensiveMidfield.Abbr,
+                Team = "AS Roma",
+                League = "Serie A",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("d9f6c3e1-0e2a-1c4d-6f7b-9a1c3e5f7b0c"),
+                FirstName = "Exequiel",
+                MiddleName = "Alejandro",
+                LastName = "Palacios",
+                DateOfBirth = new DateTime(1998, 10, 5, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 14,
+                Position = Position.CentralMidfield.Text,
+                AbbrPosition = Position.CentralMidfield.Abbr,
+                Team = "Bayer 04 Leverkusen",
+                League = "Bundesliga",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("e0a7d4f2-1f3b-2d5e-7a8c-0b2d4f6a8c1d"),
+                FirstName = "Alejandro",
+                MiddleName = "Darío",
+                LastName = "Gómez",
+                DateOfBirth = new DateTime(1988, 2, 15, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 17,
+                Position = Position.LeftWinger.Text,
+                AbbrPosition = Position.LeftWinger.Abbr,
+                Team = "AC Monza",
+                League = "Serie A",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("f1b8e5a3-2a4c-3e6f-8b9d-1c3e5a7b9d2e"),
+                FirstName = "Guido",
+                LastName = "Rodríguez",
+                DateOfBirth = new DateTime(1994, 4, 12, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 18,
+                Position = Position.DefensiveMidfield.Text,
+                AbbrPosition = Position.DefensiveMidfield.Abbr,
+                Team = "Real Betis Balompié",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("a2c9f6b4-3b5d-4f7a-9c0e-2d4f6b8c0e3f"),
+                FirstName = "Ángel",
+                MiddleName = "Martín",
+                LastName = "Correa",
+                DateOfBirth = new DateTime(1995, 3, 9, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 15,
+                Position = Position.RightWinger.Text,
+                AbbrPosition = Position.RightWinger.Abbr,
+                Team = "Atlético Madrid",
+                League = "La Liga",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("b3d0a7c5-4c6e-5a8b-0d1f-3e5a7c9d1f4a"),
+                FirstName = "Thiago",
+                MiddleName = "Ezequiel",
+                LastName = "Almada",
+                DateOfBirth = new DateTime(2001, 4, 26, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 16,
+                Position = Position.AttackingMidfield.Text,
+                AbbrPosition = Position.AttackingMidfield.Abbr,
+                Team = "Atlanta United FC",
+                League = "Major League Soccer",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("c4e1b8d6-5d7f-6b9c-1e2a-4f6d8e0a2c5b"),
+                FirstName = "Paulo",
+                MiddleName = "Exequiel",
+                LastName = "Dybala",
+                DateOfBirth = new DateTime(1993, 11, 15, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 21,
+                Position = Position.SecondStriker.Text,
+                AbbrPosition = Position.SecondStriker.Abbr,
+                Team = "AS Roma",
+                League = "Serie A",
+                Starting11 = false,
+            },
+            new()
+            {
+                Id = Guid.Parse("d5f2c9e7-6e8a-7c0d-2f3b-5a7e9a1b3d6c"),
+                FirstName = "Lautaro",
+                MiddleName = "Javier",
+                LastName = "Martínez",
+                DateOfBirth = new DateTime(1997, 8, 22, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 22,
+                Position = Position.CentreForward.Text,
+                AbbrPosition = Position.CentreForward.Abbr,
+                Team = "Inter Milan",
+                League = "Serie A",
+                Starting11 = false,
             }
         ];
     }

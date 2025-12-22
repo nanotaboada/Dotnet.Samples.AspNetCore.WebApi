@@ -20,7 +20,7 @@ public class PlayerRequestModel
 
     public DateTime? DateOfBirth { get; set; }
 
-    public int SquadNumber { get; set; }
+    public required int SquadNumber { get; set; }
 
     public string? AbbrPosition { get; set; }
 
