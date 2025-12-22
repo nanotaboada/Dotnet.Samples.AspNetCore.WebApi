@@ -75,7 +75,7 @@ src/Dotnet.Samples.AspNetCore.WebApi/
 │   ├── Player.cs
 │   ├── PlayerRequestModel.cs
 │   └── PlayerResponseModel.cs
-├── Data/                       # EF Core DbContext
+├── Data/                       # EF Core DbContext and migrations
 │   └── PlayerDbContext.cs
 ├── Mappings/                   # AutoMapper profiles
 │   └── PlayerMappingProfile.cs

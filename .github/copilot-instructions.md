@@ -294,11 +294,26 @@ dotnet ef database update --project src/Dotnet.Samples.AspNetCore.WebApi
 ./scripts/run-migrations-and-copy-database.sh
 ```
 
-**Important**: The `run-migrations-and-copy-database.sh` script:
-- Resets the placeholder database file
-- Runs all migrations
-- Copies the generated database from `bin/Debug/net8.0/Data/` to `Data/`
-- Requires `dotnet ef` CLI tool installed globally
+**Database Workflow Explained:**
+
+The project maintains a **pre-seeded database** at `storage/players-sqlite3.db` to support three use cases:
+1. **Clone & Run** - Developers can clone the repo and run immediately without manual DB setup
+2. **Recreate from Scratch** - Use the script to rebuild the database with all migrations
+3. **Docker** - Container gets a copy of the pre-seeded database on first startup
+
+**How `run-migrations-and-copy-database.sh` works:**
+1. **Creates empty file** at `storage/players-sqlite3.db` (version-controlled source location)
+2. **Runs migrations** via `dotnet ef database update`
+   - EF Core uses `AppContext.BaseDirectory/storage/players-sqlite3.db`
+   - During migration, `AppContext.BaseDirectory` = `bin/Debug/net8.0/`
+   - EF Core creates/updates database at `bin/Debug/net8.0/storage/players-sqlite3.db`
+   - Applies all migrations: creates schema, seeds 26 players (11 starting + 15 substitutes)
+3. **Copies migration-applied database** from `bin/Debug/net8.0/storage/` back to `storage/`
+   - Updates the version-controlled database with latest schema + seed data
+   - This file is included in git and copied to build output via `.csproj` configuration
+
+**Requirements:**
+- `dotnet ef` CLI tool installed globally (`dotnet tool install --global dotnet-ef`)
 
 ### Docker Operations
 ```bash
@@ -325,9 +340,9 @@ docker compose down -v
 ## 🚨 Common Issues & Workarounds
 
 ### Database Path Issues
-- **SQLite database location**: `storage/players-sqlite3.db` relative to binary output
-- **Container storage**: `/storage/players-sqlite3.db` (mounted volume)
-- **Environment variable**: `STORAGE_PATH` can override the default path in containers
+- **Development**: `storage/players-sqlite3.db` (source, copied to `bin/Debug/net8.0/storage/` during build)
+- **Container**: Pre-seeded database copied from image `/app/hold/` to volume `/storage/` on first run
+- **Runtime**: Application uses `AppContext.BaseDirectory/storage/players-sqlite3.db`
 
 ### Validation Patterns
 - **FluentValidation** runs in the validator class for input format/structure
