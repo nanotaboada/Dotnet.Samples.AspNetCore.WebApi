@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Dotnet.Samples.AspNetCore.WebApi.Enums;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 
@@ -153,6 +153,10 @@ public static class PlayerData
         ];
     }
 
+    /// <summary>
+    /// Create a predefined starting eleven of players where each player has a fixed GUID identifier and full profile data.
+    /// </summary>
+    /// <returns>A list of 11 Player instances representing the starting lineup; each entry includes a predefined Id (Guid) and populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to true.</returns>
     public static List<Player> MakeStarting11WithId()
     {
         return
@@ -311,6 +315,10 @@ public static class PlayerData
         ];
     }
 
+    /// <summary>
+    /// Creates a predefined list of substitute Player objects with their properties populated and Starting11 set to false.
+    /// </summary>
+    /// <returns>A List&lt;Player&gt; containing sample substitute players. Each entry is populated with player details but does not include an Id value.</returns>
     public static List<Player> GetSubstitutes()
     {
         return
@@ -510,6 +518,10 @@ public static class PlayerData
         ];
     }
 
+    /// <summary>
+    /// Creates a predefined list of substitute players, each populated with a specific GUID Id and player metadata.
+    /// </summary>
+    /// <returns>A List&lt;Player&gt; containing substitute players with Starting11 set to false and explicit Id values.</returns>
     public static List<Player> GetSubstitutesWithId()
     {
         return
