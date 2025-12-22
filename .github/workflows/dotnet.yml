@@ -3,9 +3,6 @@
 
 name: .NET CI
 
-permissions:
-  contents: read
-
 on:
   push:
     branches: [ "master" ]
@@ -19,6 +16,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.1
@@ -45,6 +44,8 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.1
@@ -79,6 +80,8 @@ jobs:
   coverage:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         service: [codecov, codacy]
