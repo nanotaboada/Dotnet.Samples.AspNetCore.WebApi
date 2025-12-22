@@ -177,7 +177,7 @@ public class PlayerController(
                 .ToArray();
 
             logger.LogWarning(
-                "PUT /players/{squadNumber} validation failed: {@Errors}",
+                "PUT /players/{SquadNumber} validation failed: {@Errors}",
                 squadNumber,
                 errors
             );
