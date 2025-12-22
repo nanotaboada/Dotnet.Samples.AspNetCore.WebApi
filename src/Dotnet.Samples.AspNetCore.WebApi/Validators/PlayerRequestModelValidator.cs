@@ -33,7 +33,6 @@ public class PlayerRequestModelValidator : AbstractValidator<PlayerRequestModel>
             .WithMessage("SquadNumber must be greater than 0.")
             .MustAsync(BeUniqueSquadNumber)
             .WithMessage("SquadNumber must be unique.");
-        ;
 
         RuleFor(player => player.AbbrPosition)
             .NotEmpty()
