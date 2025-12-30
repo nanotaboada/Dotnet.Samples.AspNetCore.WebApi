@@ -2,102 +2,120 @@
 
 These instructions guide GitHub Copilot on how to assist meaningfully within this repository.
 
-## 🎯 Project Overview
+## 🔭 Project Overview
 
-This project is a proof-of-concept Web API built using:
+This project is a proof-of-concept RESTful Web API built using:
 - **.NET 8 (LTS)**
-- **ASP.NET Core**
-- **EF Core** with a **SQLite** database for simplicity
-- **Docker Compose** for basic containerization
+- **ASP.NET Core 8.0**
+- **EF Core 9.0** with **SQLite 3** database
+- **Docker Compose** for containerization
 
 ### Key Characteristics
 - **Purpose**: Learning-focused PoC demonstrating modern ASP.NET Core patterns
 - **Complexity**: Simple CRUD operations with a single `Player` entity
-- **Focus**: Clean architecture, best practices, and maintainable code
-- **Database**: SQLite for development; PostgreSQL may be introduced later
+- **Focus**: Layered architecture, best practices, and maintainable code
+- **Database**: SQLite (dev); PostgreSQL planned for later
+- **Pattern**: Repository Pattern + Service Layer + AutoMapper + FluentValidation
 
-## ✅ Coding Conventions
+## 📐 Coding Conventions
 
 Follow standard C# conventions:
-- Use `PascalCase` for class names, methods, and public properties
-- Use `camelCase` for local variables and private fields
-- Use `async/await` consistently for asynchronous code
-- Prefer `var` for local variable declarations where the type is obvious
-- Nullable reference types are **enabled**
-- Use `CSharpier` formatting standards (opinionated)
+- **PascalCase**: Class names, methods, public properties
+- **camelCase**: Local variables, private fields
+- **Primary constructors**: Used throughout (controllers, services, repositories, middleware)
+- **async/await**: All I/O operations are asynchronous
+- **var**: Preferred for local variables when type is obvious
+- **Nullable reference types**: Enabled project-wide
+- **CSharpier**: Code formatter (opinionated style)
+- **XML docs**: Enabled for API documentation (NoWarn 1591 suppresses warnings)
 
 ## 🏗️ Architectural Patterns
 
 This project follows a **layered architecture** with clear separation of concerns:
 
 ### Layer Structure
-- **Controllers** (`/Controllers`) - Handle HTTP requests and responses
-- **Services** (`/Services`) - Contain business logic and orchestration
-- **Repositories** (`/Repositories`) - Abstract data access layer
+- **Controllers** (`/Controllers`) - Handle HTTP requests/responses, route to services
+- **Services** (`/Services`) - Business logic, caching, orchestration
+- **Repositories** (`/Repositories`) - Data access abstraction (generic base + specific)
 - **Models** (`/Models`) - Domain entities and DTOs
   - `Player` - Core domain entity
-  - `PlayerRequestModel` - Input validation model
-  - `PlayerResponseModel` - API response model
+  - `PlayerRequestModel` - Input validation model (used by FluentValidation)
+  - `PlayerResponseModel` - API response model (mapped by AutoMapper)
 - **Validators** (`/Validators`) - FluentValidation rules
-- **Mappings** (`/Mappings`) - AutoMapper configurations
-- **Data** (`/Data`) - EF Core DbContext and database concerns
+- **Mappings** (`/Mappings`) - AutoMapper profiles
+- **Data** (`/Data`) - EF Core DbContext and database configuration
+- **Middlewares** (`/Middlewares`) - Custom middleware (exception handling)
+- **Extensions** (`/Extensions`) - Service registration and middleware extension methods
+- **Configurations** (`/Configurations`) - Swagger and rate limiter configurations
 
 ### Design Principles
-- **Dependency Injection** for all services and repositories
-- **Repository Pattern** for data access abstraction
-- **Service Layer** for business logic encapsulation
-- **AutoMapper** for clean object transformations
-- **FluentValidation** for robust input validation
-- **Async/Await** throughout the application stack
+- **Dependency Injection**: All services, repositories, validators registered in DI container
+- **Repository Pattern**: Generic base `Repository<T>` + specific `PlayerRepository` with custom queries
+- **Service Layer**: Business logic, caching, and orchestration (separated from controllers)
+- **AutoMapper**: Request/Response model transformations (bidirectional mapping)
+- **FluentValidation**: Input validation (structure/format in validators, business rules in services)
+- **Async/Await**: All I/O operations use async patterns (database, cache)
+- **Extension Methods**: Service registration grouped in `ServiceCollectionExtensions` by concern
+- **Global Exception Handling**: `ExceptionMiddleware` with RFC 7807 Problem Details format
 
 ## ✅ Copilot Should Focus On
 
-- Generating idiomatic ASP.NET Core controller actions
-- Writing EF Core queries using LINQ
-- Following async programming practices
-- Producing unit tests using **xUnit**
-- Suggesting dependency-injected services
+- Generating idiomatic ASP.NET Core controller actions with minimal logic
+- Writing EF Core queries using LINQ with `AsNoTracking()` for read operations
+- Following async programming practices consistently
+- Producing unit tests using **xUnit** with **Moq** and **FluentAssertions**
+- Suggesting dependency-injected services using primary constructors
 - Adhering to RESTful naming and HTTP status codes
-- Using `ILogger<T>` for logging
-- Working with Docker-friendly patterns
-- Implementing proper error handling and validation
-- Using appropriate HTTP status codes (200, 201, 400, 404, 409, etc.)
+- Using `ILogger<T>` for structured logging with meaningful context
+- Working with Docker-friendly patterns (volume persistence, health checks)
+- Implementing proper error handling with RFC 7807 Problem Details
+- Using appropriate HTTP status codes (200, 201, 400, 404, 409, 500)
 - Following the existing caching patterns with `IMemoryCache`
+- Using extension methods to organize service registration by domain area
+- Implementing validation with FluentValidation for structure, service layer for business rules
 
 ## 🚫 Copilot Should Avoid
 
 - Generating raw SQL unless explicitly required
 - Using EF Core synchronous APIs (e.g., `FirstOrDefault` over `FirstOrDefaultAsync`)
 - Suggesting static service or repository classes
-- Including XML comments or doc stubs unless requested
+- Including verbose XML comments or doc stubs unless requested
 - Suggesting patterns that conflict with DI (e.g., `new Service()` instead of constructor injection)
-- Using `ConfigureAwait(false)` in ASP.NET Core contexts
+- Using `ConfigureAwait(false)` in ASP.NET Core contexts (not needed)
 - Implementing complex inheritance hierarchies when composition is simpler
 - Adding unnecessary middleware or filters without clear purpose
+- Creating controller logic that belongs in services (fat controllers)
+- Mixing async and sync code patterns inconsistently
 
 ## 🧪 Testing
 
 - Use **xUnit** with `[Fact]` and `[Theory]` attributes
-- Use **Moq** for mocking
+- Use **Moq** for mocking dependencies
+- Use **FluentAssertions** for readable test assertions
 - Prefer testing **service logic** and **controller behavior**
 - Place unit tests under `test/` following structure already present (e.g., `Unit/PlayerServiceTests.cs`)
 - **Test Naming**: Follow `Given_When_Then` pattern (e.g., `GivenCreateAsync_WhenRepositoryAddAsync_ThenAddsPlayerToRepositoryAndRemovesCache`)
 - **Test Structure**: Use Arrange, Act, Assert comments to organize test code
 - **Test Attributes**: Add `[Trait("Category", "Unit")]` to all unit tests
-- **Test Data**: Use faker patterns for consistent test data generation
-- **Assertions**: FluentAssertions for readable test assertions
+- **Test Data**: Use faker patterns for consistent test data generation (see `PlayerFakes` utility)
+- **Mocking Setup**: Use `PlayerMocks.InitServiceMocks()` pattern for consistent mock initialization
+- **Verify Calls**: Always verify repository/service interactions with `Times.Once` or appropriate multiplicity
 
 ## ⚡ Performance & Best Practices
 
-- Use `AsNoTracking()` for read-only EF Core queries
+- Use `AsNoTracking()` for read-only EF Core queries (already implemented in Repository base class)
 - Implement caching patterns with `IMemoryCache` for frequently accessed data
-- Use `DbContextPool` for better performance (already configured)
-- Follow async/await patterns consistently
+  - Cache TTL: Sliding expiration (10 min) + absolute expiration (1 hour)
+  - Cache invalidation: Remove cache on data modifications
+- Use `AddDbContextPool<T>()` for better performance (already configured)
+- Follow async/await patterns consistently throughout the stack
 - Validate input using **FluentValidation** before processing
-- Use AutoMapper for object transformations
-- Implement proper logging with structured logging patterns
+- Use AutoMapper for object transformations (avoid manual mapping)
+- Implement proper logging with structured logging patterns using Serilog
+- Use primary constructors for DI to reduce boilerplate
+- Group service registration in extension methods by domain area (see `ServiceCollectionExtensions`)
 
-## 🔧 Tooling & Environment
+## 🛠 Tooling & Environment
 
 - Format code with **CSharpier**
 - SQLite is used in development; **PostgreSQL** may be introduced in production later
@@ -105,7 +123,7 @@ This project follows a **layered architecture** with clear separation of concern
 - .NET 8 SDK is required
 - All configurations live in `appsettings.*.json` files
 
-## 🏷️ Technology Stack Deep Dive
+## 📚 Technology Stack Deep Dive
 
 ### Entity Framework Core
 - **DbContext**: `PlayerDbContext` with SQLite provider
@@ -117,26 +135,27 @@ This project follows a **layered architecture** with clear separation of concern
 ### AutoMapper
 - **Profile**: `PlayerMappingProfile` handles all object mappings
 - **Bidirectional**: Maps between request/response models and entities
-- **Integration**: Registered in DI container
+- **Integration**: Registered in DI container via `AddMappings()` extension
 
 ### FluentValidation
 - **Validators**: `PlayerRequestModelValidator` for input validation
 - **Integration**: Automatic validation in controllers before processing
-- **Error Messages**: Descriptive validation messages
+- **Error Messages**: Descriptive validation messages with property names
 
 ### Caching Strategy
 - **IMemoryCache**: Service-level caching for read operations
-- **Cache Keys**: Consistent naming with `nameof()` pattern
-- **Invalidation**: Cache cleared on data modifications
+- **Cache Keys**: Consistent naming with `nameof()` pattern (e.g., `nameof(RetrieveAsync)`)
+- **Invalidation**: Cache cleared on data modifications via `Remove(CacheKey)`
 - **TTL**: Sliding expiration (10 min) + absolute expiration (1 hour)
 
 ### Logging with Serilog
-- **Structured Logging**: Consistent log message templates
+- **Structured Logging**: Consistent log message templates with `{@Property}` for object serialization
 - **Log Levels**: Appropriate use of Information, Warning, Error
-- **Context**: Include relevant data in log messages
-- **Configuration**: File and console sinks configured
+- **Context**: Include relevant data in log messages (e.g., player IDs, squad numbers)
+- **Configuration**: File and console sinks configured in `appsettings.json`
+- **Output**: Logs to `logs/log-<date>.log` and console with custom templates
 
-## 🧩 Folder Conventions
+## 🗂 Folder Conventions
 
 - `Controllers` for Web API endpoints
 - `Services` for business logic
@@ -150,7 +169,7 @@ This project follows a **layered architecture** with clear separation of concern
 
 Keep things **simple, clear, and idiomatic**. This is a learning-focused PoC — clarity and maintainability win over overengineering.
 
-## 📋 Common Patterns in This Codebase
+## 🧭 Common Patterns in This Codebase
 
 ### Repository Pattern
 ```csharp
@@ -173,7 +192,7 @@ public class PlayerRepository : Repository<Player>, IPlayerRepository
 ```csharp
 public class PlayerService : IPlayerService
 {
-    // Dependencies injected via constructor
+    // Dependencies injected via primary constructor
     // Business logic with caching
     // AutoMapper for transformations
     // Logging for observability
@@ -193,7 +212,19 @@ public class PlayerController : ControllerBase
 }
 ```
 
-## 🎯 Domain Knowledge
+### Exception Middleware Pattern
+```csharp
+// Global exception handling with RFC 7807 Problem Details
+public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment environment)
+{
+    // Maps exceptions to appropriate HTTP status codes
+    // Returns standardized problem details JSON
+    // Includes stack traces in development only
+}
+```
+
+
+## 💡 Domain Knowledge
 
 ### Player Entity Context
 - **Squad Numbers**: Must be unique (1-99 typically)
@@ -231,7 +262,7 @@ return player; // Let caller handle null
 3. **Caching**: Service layer implements `IMemoryCache` for read operations
 4. **Logging**: Structured logging at each layer for observability
 
-## 🎯 When to Use Different Approaches
+## 🤔 When to Use Different Approaches
 
 ### Choose EF Core When:
 - Simple CRUD operations (current use case)
@@ -253,7 +284,7 @@ return player; // Let caller handle null
 - Use route parameters for resource identification
 - Apply validation before processing requests
 
-## 🛠️ Essential Commands & Workflows
+## ⌨️ Essential Commands & Workflows
 
 ### Build & Run
 ```bash
@@ -337,7 +368,7 @@ docker compose down -v
 - Default: 60 requests per 60 seconds (fixed window)
 - Queue limit: 0 (immediate rejection when limit reached)
 
-## 🚨 Common Issues & Workarounds
+## 🔧 Common Issues & Workarounds
 
 ### Database Path Issues
 - **Development**: `storage/players-sqlite3.db` (source, copied to `bin/Debug/net8.0/storage/` during build)
@@ -381,6 +412,5 @@ See open issues on GitHub for planned enhancements:
 - **PostgreSQL Support** ([#249](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/249)) - Add PostgreSQL to Docker Compose setup
 - **.NET Aspire Integration** ([#256](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/256)) - Evaluate Aspire for dev-time orchestration and observability
 - **JWT Authentication** ([#105](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/105)) - Implement Client Credentials Flow for protected routes
-- **Global Exception Handling** ([#184](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/184)) - Add middleware with RFC 7807 Problem Details
 - **Optimistic Concurrency** ([#65](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/65)) - Handle conflicts with application-managed tokens
 - **Database Normalization** ([#125](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/issues/125)) - Extract Position, Team, League into separate tables
