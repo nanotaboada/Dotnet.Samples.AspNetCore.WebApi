@@ -291,6 +291,10 @@ issue_enrichment:
     enabled: true
   planning:
     enabled: true
+    auto_planning:
+      enabled: true
+      labels:
+        - planning
   labeling:
-    auto_apply_labels: false
     labeling_instructions: []
+    auto_apply_labels: false
