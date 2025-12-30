@@ -1,23 +1,26 @@
 {
   "recommendations": [
     // C# Development
-    "ms-dotnettools.csdevkit", // C# Dev Kit - Official Microsoft C# tooling
-    "csharpier.csharpier-vscode", // CSharpier - Opinionated C# code formatter
+    "ms-dotnettools.csdevkit",           // C# Dev Kit - Official Microsoft C# tooling
+    "csharpier.csharpier-vscode",        // CSharpier - Opinionated C# code formatter
 
     // Infrastructure & Workflow
-    "ms-azuretools.vscode-containers", // Container Tools - Docker and container management
-    "yy0931.vscode-sqlite3-editor", // SQLite3 Editor - Database viewer
-    "sonarsource.sonarlint-vscode", // SonarLint - Code quality and security analysis
-    "github.copilot-chat", // GitHub Copilot Chat - AI coding assistant
+    "ms-azuretools.vscode-containers",   // Container Tools - Docker and container management
+    "github.copilot-chat",               // GitHub Copilot Chat - AI coding assistant
     "github.vscode-pull-request-github", // GitHub Pull Requests and Issues - PR management
-    "github.vscode-github-actions", // GitHub Actions - CI/CD workflow support
-    "redhat.vscode-yaml", // YAML - Language support for YAML files
-    "foxundermoon.shell-format", // Shell Format - Shell script formatter
-    "davidanson.vscode-markdownlint", // MarkdownLint - Markdown linting
-    "codezombiech.gitignore" // Gitignore - .gitignore file support
+    "github.vscode-github-actions",      // GitHub Actions - CI/CD workflow support
+    "redhat.vscode-yaml",                // YAML - Language support for YAML files
+    "foxundermoon.shell-format",         // Shell Format - Shell script formatter
+    "codezombiech.gitignore",            // Gitignore - .gitignore file support
+    "sonarsource.sonarlint-vscode",      // SonarLint - Code quality and security analysis
+    "davidanson.vscode-markdownlint",    // MarkdownLint - Markdown linting
+    "ryanluker.vscode-coverage-gutters", // Coverage Gutters - Test coverage visualization
+    "yy0931.vscode-sqlite3-editor",      // SQLite3 Editor - Database viewer
   ],
+
   "unwantedRecommendations": [
-    "github.copilot", // Copilot (base) - Unified into copilot-chat
-    "docker.docker" // Docker DX - Use ms-azuretools.vscode-containers instead
+    "ms-azuretools.vscode-docker",       // Docker (legacy) - Use vscode-containers instead
+    "docker.docker",                     // Docker DX - Use ms-azuretools.vscode-containers
+    "github.copilot"                     // Copilot (base) - Unified into copilot-chat
   ]
 }
