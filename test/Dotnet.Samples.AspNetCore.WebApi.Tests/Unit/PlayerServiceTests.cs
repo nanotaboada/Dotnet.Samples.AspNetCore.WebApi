@@ -7,15 +7,8 @@ using Moq;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Unit;
 
-public class PlayerServiceTests : IDisposable
+public class PlayerServiceTests
 {
-    private bool _disposed;
-
-    public PlayerServiceTests()
-    {
-        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
-    }
-
     /* -------------------------------------------------------------------------
      * Create
      * ---------------------------------------------------------------------- */
@@ -27,14 +20,15 @@ public class PlayerServiceTests : IDisposable
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
         var response = PlayerFakes.MakeResponseModelForCreate();
-        var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
         mapper.Setup(mapper => mapper.Map<PlayerResponseModel>(request)).Returns(response);
 
         var service = new PlayerService(
             repository.Object,
             logger.Object,
             memoryCache.Object,
-            mapper.Object
+            mapper.Object,
+            environment.Object
         );
 
         // Act
@@ -61,7 +55,7 @@ public class PlayerServiceTests : IDisposable
         var value = It.IsAny<object>();
         var players = PlayerFakes.MakeStarting11();
         var response = PlayerFakes.MakeResponseModelsForRetrieve();
-        var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
         repository.Setup(repository => repository.GetAllAsync()).ReturnsAsync(players);
         mapper.Setup(mapper => mapper.Map<List<PlayerResponseModel>>(players)).Returns(response);
 
@@ -69,7 +63,8 @@ public class PlayerServiceTests : IDisposable
             repository.Object,
             logger.Object,
             memoryCache.Object,
-            mapper.Object
+            mapper.Object,
+            environment.Object
         );
 
         // Act
@@ -94,7 +89,7 @@ public class PlayerServiceTests : IDisposable
         var value = It.IsAny<object>();
         var players = PlayerFakes.MakeStarting11();
         var response = PlayerFakes.MakeResponseModelsForRetrieve();
-        var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
         repository.Setup(repository => repository.GetAllAsync()).ReturnsAsync(players);
         mapper.Setup(mapper => mapper.Map<List<PlayerResponseModel>>(players)).Returns(response);
 
@@ -102,7 +97,8 @@ public class PlayerServiceTests : IDisposable
             repository.Object,
             logger.Object,
             memoryCache.Object,
-            mapper.Object
+            mapper.Object,
+            environment.Object
         );
 
         // Act
@@ -129,14 +125,15 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var id = Guid.NewGuid();
-        var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
         repository.Setup(repository => repository.FindByIdAsync(id)).ReturnsAsync(null as Player);
 
         var service = new PlayerService(
             repository.Object,
             logger.Object,
             memoryCache.Object,
-            mapper.Object
+            mapper.Object,
+            environment.Object
         );
 
         // Act
@@ -157,7 +154,7 @@ public class PlayerServiceTests : IDisposable
         var squadNumber = 10;
         var player = PlayerFakes.MakeFromStarting11(squadNumber);
         var response = PlayerFakes.MakeResponseModelForRetrieve(squadNumber);
-        var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
         repository.Setup(repository => repository.FindByIdAsync(id)).ReturnsAsync(player);
         mapper.Setup(mapper => mapper.Map<PlayerResponseModel>(player)).Returns(response);
 
@@ -165,7 +162,8 @@ public class PlayerServiceTests : IDisposable
             repository.Object,
             logger.Object,
             memoryCache.Object,
-            mapper.Object
+            mapper.Object,
+            environment.Object
         );
 
         // Act
@@ -184,7 +182,7 @@ public class PlayerServiceTests : IDisposable
     {
         // Arrange
         var squadNumber = 999;
-        var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
         repository
             .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
             .ReturnsAsync(null as Player);
@@ -193,7 +191,8 @@ public class PlayerServiceTests : IDisposable
             repository.Object,
             logger.Object,
             memoryCache.Object,
-            mapper.Object
+            mapper.Object,
+            environment.Object
         );
 
         // Act
@@ -216,7 +215,7 @@ public class PlayerServiceTests : IDisposable
         var squadNumber = 10;
         var player = PlayerFakes.MakeFromStarting11(squadNumber);
         var response = PlayerFakes.MakeResponseModelForRetrieve(squadNumber);
-        var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
         repository
             .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
             .ReturnsAsync(player);
@@ -226,7 +225,8 @@ public class PlayerServiceTests : IDisposable
             repository.Object,
             logger.Object,
             memoryCache.Object,
-            mapper.Object
+            mapper.Object,
+            environment.Object
         );
 
         // Act
@@ -254,7 +254,7 @@ public class PlayerServiceTests : IDisposable
         var squadNumber = 23;
         var player = PlayerFakes.MakeFromStarting11(squadNumber);
         var request = PlayerFakes.MakeRequestModelForUpdate(squadNumber);
-        var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
         repository
             .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
             .ReturnsAsync(player);
@@ -263,7 +263,8 @@ public class PlayerServiceTests : IDisposable
             repository.Object,
             logger.Object,
             memoryCache.Object,
-            mapper.Object
+            mapper.Object,
+            environment.Object
         );
 
         // Act
@@ -293,7 +294,7 @@ public class PlayerServiceTests : IDisposable
         // Arrange
         var squadNumber = 26;
         var player = PlayerFakes.MakeFromStarting11(squadNumber);
-        var (repository, logger, memoryCache, mapper) = PlayerMocks.InitServiceMocks();
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
         repository
             .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
             .ReturnsAsync(player);
@@ -302,7 +303,8 @@ public class PlayerServiceTests : IDisposable
             repository.Object,
             logger.Object,
             memoryCache.Object,
-            mapper.Object
+            mapper.Object,
+            environment.Object
         );
 
         // Act
@@ -326,20 +328,5 @@ public class PlayerServiceTests : IDisposable
         stopwatch.Stop();
 
         return stopwatch.ElapsedMilliseconds;
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", null);
-            _disposed = true;
-        }
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 }
