@@ -7,6 +7,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -46,14 +47,17 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
             Mock<IPlayerRepository> repository,
             Mock<ILogger<PlayerService>> logger,
             Mock<IMemoryCache> memoryCache,
-            Mock<IMapper> mapper
+            Mock<IMapper> mapper,
+            Mock<IHostEnvironment> environment
         ) InitServiceMocks(object? cacheValue = null)
         {
             var repository = new Mock<IPlayerRepository>();
             var logger = new Mock<ILogger<PlayerService>>();
             var memoryCache = SetupMemoryCacheMock(cacheValue ?? It.IsAny<object>());
             var mapper = new Mock<IMapper>();
-            return (repository, logger, memoryCache, mapper);
+            var environment = new Mock<IHostEnvironment>();
+            environment.Setup(env => env.EnvironmentName).Returns("Development");
+            return (repository, logger, memoryCache, mapper, environment);
         }
 
         public static Mock<IMemoryCache> SetupMemoryCacheMock(object? value)
