@@ -7,10 +7,8 @@ using Moq;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Unit;
 
-public class PlayerServiceTests : IDisposable
+public class PlayerServiceTests
 {
-    private bool _disposed;
-
     /* -------------------------------------------------------------------------
      * Create
      * ---------------------------------------------------------------------- */
@@ -330,19 +328,5 @@ public class PlayerServiceTests : IDisposable
         stopwatch.Stop();
 
         return stopwatch.ElapsedMilliseconds;
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            _disposed = true;
-        }
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 }

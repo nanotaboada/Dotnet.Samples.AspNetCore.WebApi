@@ -49,14 +49,14 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
             Mock<IMemoryCache> memoryCache,
             Mock<IMapper> mapper,
             Mock<IHostEnvironment> environment
-        ) InitServiceMocks(object? cacheValue = null)
+        ) InitServiceMocks(object? cacheValue = null, string environmentName = "Development")
         {
             var repository = new Mock<IPlayerRepository>();
             var logger = new Mock<ILogger<PlayerService>>();
             var memoryCache = SetupMemoryCacheMock(cacheValue ?? It.IsAny<object>());
             var mapper = new Mock<IMapper>();
             var environment = new Mock<IHostEnvironment>();
-            environment.Setup(env => env.EnvironmentName).Returns("Development");
+            environment.Setup(env => env.EnvironmentName).Returns(environmentName);
             return (repository, logger, memoryCache, mapper, environment);
         }
 
