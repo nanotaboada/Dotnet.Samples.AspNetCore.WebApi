@@ -9,6 +9,7 @@ updates:
     commit-message:
       include: scope
       prefix: "chore(deps): "
+    # Pin AutoMapper to 14.x line to avoid commercial v15.x upgrades
     ignore:
       - dependency-name: "AutoMapper"
         update-types: ["version-update:semver-major"]
@@ -16,6 +17,15 @@ updates:
       serilog:
         patterns:
           - "Serilog*"
+      entity-framework:
+        patterns:
+          - "Microsoft.EntityFrameworkCore*"
+      aspnetcore:
+        patterns:
+          - "Microsoft.AspNetCore*"
+      fluentvalidation:
+        patterns:
+          - "FluentValidation*"
 
   - package-ecosystem: "nuget"
     directory: "/test/Dotnet.Samples.AspNetCore.WebApi.Tests"
@@ -24,6 +34,7 @@ updates:
     commit-message:
       include: scope
       prefix: "chore(deps): "
+    # Pin AutoMapper to 14.x line to avoid commercial v15.x upgrades
     ignore:
       - dependency-name: "AutoMapper"
         update-types: ["version-update:semver-major"]
@@ -31,6 +42,9 @@ updates:
       xunit:
         patterns:
           - "xunit*"
+      entity-framework:
+        patterns:
+          - "Microsoft.EntityFrameworkCore*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
