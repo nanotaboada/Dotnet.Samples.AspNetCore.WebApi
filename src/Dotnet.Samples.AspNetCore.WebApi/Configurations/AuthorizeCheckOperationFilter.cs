@@ -10,6 +10,11 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Configurations
     /// </summary>
     public class AuthorizeCheckOperationFilter : IOperationFilter
     {
+        /// <summary>
+        /// Applies the Bearer security requirement to Swagger operations with [Authorize] attributes.
+        /// </summary>
+        /// <param name="operation">The OpenAPI operation to modify.</param>
+        /// <param name="context">The operation filter context containing method metadata.</param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             // Check if [Authorize] is applied at the method or class level

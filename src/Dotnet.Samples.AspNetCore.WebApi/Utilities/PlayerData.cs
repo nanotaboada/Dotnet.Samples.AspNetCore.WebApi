@@ -4,8 +4,17 @@ using Dotnet.Samples.AspNetCore.WebApi.Models;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Utilities;
 
+/// <summary>
+/// Provides static player data for database seeding and testing.
+/// Single source of truth for all player definitions.
+/// </summary>
 public static class PlayerData
 {
+    /// <summary>
+    /// Returns the starting 11 players without IDs (for EF Core auto-increment).
+    /// Used for database migrations and seeding.
+    /// </summary>
+    /// <returns>List of 11 Player entities representing the starting lineup.</returns>
     public static List<Player> MakeStarting11()
     {
         return
