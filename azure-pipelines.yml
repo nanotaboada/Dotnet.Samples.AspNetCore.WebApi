@@ -2,10 +2,13 @@
 # Build and test ASP.NET Core projects targeting .NET 8 on Linux.
 # https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core
 
-# Trigger pipeline on commits to master and pull requests (equivalent to GitHub Actions 'on: [push, pull_request]')
+# Pipeline triggers:
+# - Runs on pushes to master (production deployments)
+# - Runs on all pull requests to master (validation before merge)
+# - Does NOT run on pushes to development branches (cost optimization)
+# Development branches (refactor/*, fix/*, feat/*, etc.) are validated only when a PR is opened
 trigger:
   - master
-  - feature/*
 
 pr:
   - master
