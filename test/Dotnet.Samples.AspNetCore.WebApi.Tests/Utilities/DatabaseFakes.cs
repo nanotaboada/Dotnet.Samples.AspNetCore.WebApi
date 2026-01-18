@@ -14,6 +14,11 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
     /// </summary>
     public static class DatabaseFakes
     {
+        /// <summary>
+        /// Creates an in-memory SQLite connection and DbContext options for testing.
+        /// The connection remains open for the lifetime of the test.
+        /// </summary>
+        /// <returns>A tuple containing the SQLite connection and DbContext options.</returns>
         public static (DbConnection, DbContextOptions<PlayerDbContext>) CreateSqliteConnection()
         {
             var dbConnection = new SqliteConnection("Filename=:memory:");
@@ -26,6 +31,11 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
             return (dbConnection, dbContextOptions);
         }
 
+        /// <summary>
+        /// Creates a PlayerDbContext instance with the specified options.
+        /// </summary>
+        /// <param name="dbContextOptions">The DbContext options to use.</param>
+        /// <returns>A new PlayerDbContext instance.</returns>
         public static PlayerDbContext CreateDbContext(
             DbContextOptions<PlayerDbContext> dbContextOptions
         )
@@ -33,6 +43,11 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
             return new PlayerDbContext(dbContextOptions);
         }
 
+        /// <summary>
+        /// Creates the database schema for the test database.
+        /// Extension method for PlayerDbContext.
+        /// </summary>
+        /// <param name="context">The PlayerDbContext instance.</param>
         public static void CreateTable(this PlayerDbContext context)
         {
             using var cmd = context.Database.GetDbConnection().CreateCommand();
@@ -46,6 +61,11 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Seeds the test database with the starting 11 players.
+        /// Extension method for PlayerDbContext.
+        /// </summary>
+        /// <param name="context">The PlayerDbContext instance.</param>
         public static void Seed(this PlayerDbContext context)
         {
             context.Players.AddRange(PlayerFakes.MakeStarting11());

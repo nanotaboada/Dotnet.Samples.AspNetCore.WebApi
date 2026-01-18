@@ -22,6 +22,10 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
     /// </summary>
     public static class PlayerMocks
     {
+        /// <summary>
+        /// Initializes mocks for PlayerController dependencies.
+        /// </summary>
+        /// <returns>A tuple containing mocked service, logger, and validator.</returns>
         public static (
             Mock<IPlayerService> service,
             Mock<ILogger<PlayerController>> logger,
@@ -35,6 +39,10 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
             return (service, logger, validator);
         }
 
+        /// <summary>
+        /// Creates a mock IUrlHelper configured to return any string for Action calls.
+        /// </summary>
+        /// <returns>A configured Mock of IUrlHelper.</returns>
         public static Mock<IUrlHelper> SetupUrlHelperMock()
         {
             var mock = new Mock<IUrlHelper>();
@@ -43,6 +51,12 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
             return mock;
         }
 
+        /// <summary>
+        /// Initializes mocks for PlayerService dependencies.
+        /// </summary>
+        /// <param name="cacheValue">Optional cache value to return from memory cache.</param>
+        /// <param name="environmentName">The environment name (defaults to "Development").</param>
+        /// <returns>A tuple containing mocked repository, logger, cache, mapper, and environment.</returns>
         public static (
             Mock<IPlayerRepository> repository,
             Mock<ILogger<PlayerService>> logger,
@@ -60,6 +74,12 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
             return (repository, logger, memoryCache, mapper, environment);
         }
 
+        /// <summary>
+        /// Creates a mock IMemoryCache with configurable behavior.
+        /// First TryGetValue call returns false, subsequent calls return true with the specified value.
+        /// </summary>
+        /// <param name="value">The value to return from cache after the first call.</param>
+        /// <returns>A configured Mock of IMemoryCache.</returns>
         public static Mock<IMemoryCache> SetupMemoryCacheMock(object? value)
         {
             var cachedValue = false;

@@ -68,6 +68,10 @@ public static class PlayerFakes
      * Create
      * ---------------------------------------------------------------------- */
 
+    /// <summary>
+    /// Creates a PlayerRequestModel for testing create operations.
+    /// Uses data from a substitute player (Leandro Paredes).
+    /// </summary>
     public static PlayerRequestModel MakeRequestModelForCreate()
     {
         var player = MakeNew();
@@ -85,6 +89,10 @@ public static class PlayerFakes
         };
     }
 
+    /// <summary>
+    /// Creates a PlayerResponseModel for testing create operation responses.
+    /// Uses data from a substitute player (Leandro Paredes).
+    /// </summary>
     public static PlayerResponseModel MakeResponseModelForCreate()
     {
         var player = MakeNew();
@@ -106,6 +114,11 @@ public static class PlayerFakes
      * Retrieve
      * ---------------------------------------------------------------------- */
 
+    /// <summary>
+    /// Creates a PlayerRequestModel for testing retrieve operations.
+    /// Uses data from the starting 11 based on the specified squad number.
+    /// </summary>
+    /// <param name="squadNumber">The squad number of the player to retrieve.</param>
     public static PlayerRequestModel MakeRequestModelForRetrieve(int squadNumber)
     {
         var player =
@@ -127,6 +140,11 @@ public static class PlayerFakes
         };
     }
 
+    /// <summary>
+    /// Creates a PlayerResponseModel for testing retrieve operation responses.
+    /// Uses data from the starting 11 based on the specified squad number.
+    /// </summary>
+    /// <param name="squadNumber">The squad number of the player to retrieve.</param>
     public static PlayerResponseModel MakeResponseModelForRetrieve(int squadNumber)
     {
         var player =
@@ -148,6 +166,10 @@ public static class PlayerFakes
         };
     }
 
+    /// <summary>
+    /// Creates a list of PlayerResponseModel for testing retrieve all operations.
+    /// Uses all players from the starting 11.
+    /// </summary>
     public static List<PlayerResponseModel> MakeResponseModelsForRetrieve() =>
         [
             .. PlayerData
@@ -173,11 +195,21 @@ public static class PlayerFakes
      * Update
      * ---------------------------------------------------------------------- */
 
+    /// <summary>
+    /// Creates a PlayerRequestModel for testing update operations.
+    /// Delegates to MakeRequestModelForRetrieve.
+    /// </summary>
+    /// <param name="squadNumber">The squad number of the player to update.</param>
     public static PlayerRequestModel MakeRequestModelForUpdate(int squadNumber)
     {
         return MakeRequestModelForRetrieve(squadNumber);
     }
 
+    /// <summary>
+    /// Creates a PlayerResponseModel for testing update operation responses.
+    /// Delegates to MakeResponseModelForRetrieve.
+    /// </summary>
+    /// <param name="squadNumber">The squad number of the player to update.</param>
     public static PlayerResponseModel MakeResponseModelForUpdate(int squadNumber)
     {
         return MakeResponseModelForRetrieve(squadNumber);
