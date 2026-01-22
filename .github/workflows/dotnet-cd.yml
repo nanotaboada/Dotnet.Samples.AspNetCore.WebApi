@@ -29,14 +29,40 @@ jobs:
         id: version
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
-          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
 
           # Extract semver (e.g., v1.0.0-azteca -> 1.0.0)
           SEMVER=$(echo $TAG_NAME | sed -E 's/^v([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')
-          echo "semver=$SEMVER" >> $GITHUB_OUTPUT
 
           # Extract stadium name (e.g., v1.0.0-azteca -> azteca)
           STADIUM=$(echo $TAG_NAME | sed -E 's/^v[0-9]+\.[0-9]+\.[0-9]+-//')
+
+          # Validate semver format (X.Y.Z)
+          if ! echo "$SEMVER" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "❌ Error: Invalid semantic version '$SEMVER' extracted from tag '$TAG_NAME'"
+            echo "Expected format: v{MAJOR}.{MINOR}.{PATCH}-{STADIUM} (e.g., v1.0.0-azteca)"
+            exit 1
+          fi
+
+          # Valid stadium names (A-Z from CHANGELOG.md)
+          VALID_STADIUMS="azteca bernabeu centenario dusseldorf ekaterinburg frankfurt gelsenkirchen hardrock ibnbatouta johannesburg kazan lusail maracana nantes olympiastadion parcdesprinces qatar974 rosebowl sansiro toronto ullevi volgograd wembley xiamen yokohama zentralstadion"
+
+          # Validate stadium name against the list
+          if [ -z "$STADIUM" ]; then
+            echo "❌ Error: Stadium name is empty in tag '$TAG_NAME'"
+            echo "Expected format: v{MAJOR}.{MINOR}.{PATCH}-{STADIUM} (e.g., v1.0.0-azteca)"
+            exit 1
+          fi
+
+          if ! echo "$VALID_STADIUMS" | grep -qw "$STADIUM"; then
+            echo "❌ Error: Invalid stadium name '$STADIUM' in tag '$TAG_NAME'"
+            echo "Valid stadiums (A-Z): $VALID_STADIUMS"
+            echo "See CHANGELOG.md for the complete list"
+            exit 1
+          fi
+
+          # Export validated outputs
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "semver=$SEMVER" >> $GITHUB_OUTPUT
           echo "stadium=$STADIUM" >> $GITHUB_OUTPUT
 
           echo "📦 Release version: $SEMVER"
