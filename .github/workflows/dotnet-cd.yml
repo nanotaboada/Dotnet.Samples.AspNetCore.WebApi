@@ -1,0 +1,137 @@
+# Building, testing, and publishing .NET releases
+# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET CD
+
+on:
+  push:
+    tags:
+      - 'v*.*.*-*'
+
+env:
+  DOTNET_VERSION: 8.0.x
+  PACKAGE_NAME: nanotaboada/dotnet-samples-aspnetcore-webapi
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+
+          # Extract semver (e.g., v1.0.0-azteca -> 1.0.0)
+          SEMVER=$(echo $TAG_NAME | sed -E 's/^v([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/')
+          echo "semver=$SEMVER" >> $GITHUB_OUTPUT
+
+          # Extract stadium name (e.g., v1.0.0-azteca -> azteca)
+          STADIUM=$(echo $TAG_NAME | sed -E 's/^v[0-9]+\.[0-9]+\.[0-9]+-//')
+          echo "stadium=$STADIUM" >> $GITHUB_OUTPUT
+
+          echo "📦 Release version: $SEMVER"
+          echo "🏟️ Stadium name: $STADIUM"
+
+      - name: Set up .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v5.1.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: true
+          cache-dependency-path: |
+            src/Dotnet.Samples.AspNetCore.WebApi/packages.lock.json
+            test/Dotnet.Samples.AspNetCore.WebApi.Tests/packages.lock.json
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build projects (Release configuration)
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.12.0
+
+      - name: Build and push Docker image to GitHub Container Registry
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: |
+            ghcr.io/${{ env.PACKAGE_NAME }}:latest
+            ghcr.io/${{ env.PACKAGE_NAME }}:${{ steps.version.outputs.semver }}
+            ghcr.io/${{ env.PACKAGE_NAME }}:${{ steps.version.outputs.stadium }}
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get previous tag
+          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+-' | sed -n '2p')
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "📝 First release - no previous tag found"
+            CHANGELOG="Initial release"
+          else
+            echo "📝 Generating changelog from $PREVIOUS_TAG to ${{ steps.version.outputs.tag_name }}"
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" ${PREVIOUS_TAG}..${{ steps.version.outputs.tag_name }})
+          fi
+
+          # Write changelog to file
+          echo "$CHANGELOG" > changelog.txt
+          cat changelog.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2.2.0
+        with:
+          name: "v${{ steps.version.outputs.semver }} - ${{ steps.version.outputs.stadium }}"
+          tag_name: ${{ steps.version.outputs.tag_name }}
+          body: |
+            # 🏟️ Release ${{ steps.version.outputs.semver }} - ${{ steps.version.outputs.stadium }}
+
+            ## Docker Images
+
+            Pull this release using any of the following tags:
+
+            ```bash
+            # By semantic version (recommended)
+            docker pull ghcr.io/${{ env.PACKAGE_NAME }}:${{ steps.version.outputs.semver }}
+
+            # By stadium name
+            docker pull ghcr.io/${{ env.PACKAGE_NAME }}:${{ steps.version.outputs.stadium }}
+
+            # Latest
+            docker pull ghcr.io/${{ env.PACKAGE_NAME }}:latest
+            ```
+
+            ## Changes
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ---
+
+            📦 **Package:** [ghcr.io/${{ env.PACKAGE_NAME }}](https://github.com/${{ github.repository }}/pkgs/container/dotnet-samples-aspnetcore-webapi)
+          draft: false
+          prerelease: false
+          generate_release_notes: true
