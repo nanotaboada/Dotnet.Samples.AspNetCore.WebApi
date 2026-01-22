@@ -102,6 +102,13 @@ jobs:
           echo "$CHANGELOG" > changelog.txt
           cat changelog.txt
 
+          # Set output for use in release body
+          {
+            echo "changelog<<EOF"
+            echo "$CHANGELOG"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.2.0
         with:

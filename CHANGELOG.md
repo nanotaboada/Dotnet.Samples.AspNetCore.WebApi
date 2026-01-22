@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Stadium Release Names
 
-This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matches:
+This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matches (with notable fallbacks where necessary):
 
 | Letter | Stadium Name | Location | Tag Name |
 | ------ | ----------- | -------- | -------- |
@@ -26,7 +26,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 | M | Maracanã | Brazil (1950, 2014) | `maracana` |
 | N | Nantes Beaujoire | France (1998) | `nantes` |
 | O | Olympiastadion Berlin | Germany (1974, 2006) | `olympiastadion` |
-| P | Parc des Princes | France (1938, 1998) | `parcdesprince` |
+| P | Parc des Princes | France (1938, 1998) | `parcdesprinces` |
 | Q | Qatar 974 | Qatar (2022) | `qatar974` |
 | R | Rose Bowl | USA (1994) | `rosebowl` |
 | S | San Siro | Italy (1934, 1990) | `sansiro` |
