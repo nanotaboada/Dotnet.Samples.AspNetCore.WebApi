@@ -19,7 +19,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Set up .NET ${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v5.1.0
@@ -47,7 +47,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Lint commit messages
         uses: wagoid/commitlint-github-action@v6.2.1
@@ -86,7 +86,7 @@ jobs:
         service: [codecov, codacy]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Download Cobertura coverage report artifact
         uses: actions/download-artifact@v7.0.0
