@@ -18,13 +18,13 @@ dotnet build
 
 # Run application
 dotnet run --project src/Dotnet.Samples.AspNetCore.WebApi
-# Server starts on http://localhost:5000 (HTTP) and https://localhost:5001 (HTTPS)
+# Server starts on https://localhost:9000
 
 # View API documentation
-# Open https://localhost:5001/swagger in browser
+# Open https://localhost:9000/swagger in browser
 
 # View health check
-curl https://localhost:5001/health
+curl https://localhost:9000/health
 ```
 
 ## .NET Version
@@ -249,7 +249,7 @@ dotnet run --project src/Dotnet.Samples.AspNetCore.WebApi
 
 ## API Endpoints
 
-**Base URL**: `https://localhost:5001`
+**Base URL**: `https://localhost:9000`
 
 | Method | Path | Description |
 | ------ | ---- | ----------- |
@@ -266,8 +266,8 @@ dotnet run --project src/Dotnet.Samples.AspNetCore.WebApi
 ### Port already in use
 
 ```bash
-# Kill process on port 5000/5001
-lsof -ti:5000,5001 | xargs kill -9
+# Kill process on port 9000
+lsof -ti:9000 | xargs kill -9
 ```
 
 ### Restore/build failures
@@ -297,13 +297,12 @@ rm src/Dotnet.Samples.AspNetCore.WebApi/Storage/players.db
 ### EF Core migration issues
 
 ```bash
-# List migrations
-dotnet ef migrations list --project src/Dotnet.Samples.AspNetCore.WebApi
+# This project uses EnsureCreated() for database initialization
+# Schema is automatically created on first run
 
-# Apply migrations manually (usually auto-applied on startup)
-dotnet ef database update --project src/Dotnet.Samples.AspNetCore.WebApi
-
-# Note: This project uses EnsureCreated(), not migrations
+# To reset the database, delete the SQLite file:
+rm src/Dotnet.Samples.AspNetCore.WebApi/Storage/players.db
+# Database will be recreated on next startup
 ```
 
 ### SSL certificate issues (HTTPS)
@@ -313,7 +312,7 @@ dotnet ef database update --project src/Dotnet.Samples.AspNetCore.WebApi
 dotnet dev-certs https --trust
 
 # Or use HTTP instead
-dotnet run --project src/Dotnet.Samples.AspNetCore.WebApi --urls "http://localhost:5000"
+dotnet run --project src/Dotnet.Samples.AspNetCore.WebApi --urls "http://localhost:9000"
 ```
 
 ### Test failures
@@ -339,22 +338,22 @@ docker compose up
 
 ### Using Swagger UI (Recommended)
 
-Open <https://localhost:5001/swagger> - Interactive documentation with "Try it out"
+Open <https://localhost:9000/swagger> - Interactive documentation with "Try it out"
 
 ### Using curl
 
 ```bash
 # Health check
-curl https://localhost:5001/health -k
+curl https://localhost:9000/health -k
 
 # Get all players
-curl https://localhost:5001/players -k
+curl https://localhost:9000/players -k
 
 # Get player by ID
-curl https://localhost:5001/players/1 -k
+curl https://localhost:9000/players/1 -k
 
 # Create player
-curl -X POST https://localhost:5001/players -k \
+curl -X POST https://localhost:9000/players -k \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "Pele",
@@ -366,8 +365,8 @@ curl -X POST https://localhost:5001/players -k \
   }'
 
 # Update player
-curl -X PUT https://localhost:5001/players/1 -k \
-  -H "Content-Type: application/json" \
+curl -X PUT https://localhost:9000/players/1 -k
+  -H "Content-Type: application/json"
   -d '{
     "firstName": "Diego",
     "lastName": "Maradona",
@@ -378,7 +377,7 @@ curl -X PUT https://localhost:5001/players/1 -k \
   }'
 
 # Delete player
-curl -X DELETE https://localhost:5001/players/1 -k
+curl -X DELETE https://localhost:9000/players/1 -k
 ```
 
 **Note**: `-k` flag skips SSL certificate verification for self-signed development certificates.

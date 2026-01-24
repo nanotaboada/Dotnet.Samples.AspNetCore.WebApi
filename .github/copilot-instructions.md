@@ -1,14 +1,14 @@
 # GitHub Copilot Instructions
 
-> **⚡ Token Efficiency Note**: This is a minimal pointer file (~500 tokens, auto-loaded by Copilot).  
-> For complete operational details, reference: `#file:AGENTS.md` (~2,500 tokens, loaded on-demand)  
+> **⚡ Token Efficiency Note**: This is a minimal pointer file (~500 tokens, auto-loaded by Copilot).
+> For complete operational details, reference: `#file:AGENTS.md` (~2,500 tokens, loaded on-demand)
 > For specialized knowledge, use: `#file:SKILLS/<skill-name>/SKILL.md` (loaded on-demand when needed)
 
 ## 🎯 Quick Context
 
-**Project**: ASP.NET Core 8 REST API demonstrating layered architecture patterns  
-**Stack**: .NET 8 (LTS) • EF Core 9 • SQLite • Docker • xUnit  
-**Pattern**: Repository + Service Layer + AutoMapper + FluentValidation  
+**Project**: ASP.NET Core 8 REST API demonstrating layered architecture patterns
+**Stack**: .NET 8 (LTS) • EF Core 9 • SQLite • Docker • xUnit
+**Pattern**: Repository + Service Layer + AutoMapper + FluentValidation
 **Philosophy**: Learning-focused PoC emphasizing clarity and best practices
 
 ## 📐 Core Conventions
@@ -22,7 +22,7 @@
 
 ## 🏗️ Architecture at a Glance
 
-```
+```text
 Controller → Service → Repository → Database
      ↓          ↓
 Validation  Caching
@@ -68,8 +68,8 @@ docker compose up
 
 ## 📚 Need More Detail?
 
-**For operational procedures**: Load `#file:AGENTS.md`  
-**For Docker expertise**: Load `#file:SKILLS/docker-containerization/SKILL.md`  
+**For operational procedures**: Load `#file:AGENTS.md`
+**For Docker expertise**: *(Planned)* `#file:SKILLS/docker-containerization/SKILL.md`
 **For testing patterns**: *(Planned)* `#file:SKILLS/testing-patterns/SKILL.md`
 
 ---
