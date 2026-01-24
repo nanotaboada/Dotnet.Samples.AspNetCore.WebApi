@@ -1,12 +1,13 @@
 # 🧪 RESTful API with .NET and ASP.NET Core
 
-[![.NET CI](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet.yml/badge.svg)](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet.yml)
+[![.NET CI](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet-ci.yml)
+[![.NET CD](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet-cd.yml/badge.svg)](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet-cd.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanotaboada_Dotnet.Samples.AspNetCore.WebApi&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nanotaboada_Dotnet.Samples.AspNetCore.WebApi)
 [![Build Status](https://dev.azure.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/_apis/build/status%2FDotnet.Samples.AspNetCore.WebApi?branchName=master)](https://dev.azure.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/_build/latest?definitionId=14&branchName=master)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ac7b7e22f1cd4d9d9233b36982b0d6a9)](https://app.codacy.com/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![codecov](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/graph/badge.svg?token=hgJc1rStJ9)](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/badge)](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-white.svg)](https://opensource.org/licenses/MIT)
 
 Proof of Concept for a RESTful API built with .NET 8 (LTS) and ASP.NET Core. Manage football player data with SQLite, Entity Framework Core, Swagger documentation, and in-memory caching.
 
@@ -21,6 +22,7 @@ Proof of Concept for a RESTful API built with .NET 8 (LTS) and ASP.NET Core. Man
 - [Quick Start](#quick-start)
 - [Testing](#testing)
 - [Docker](#docker)
+- [Releases](#releases)
 - [Environment Variables](#environment-variables)
 - [Command Summary](#command-summary)
 - [Contributing](#contributing)
@@ -288,6 +290,49 @@ docker compose down -v
 ```
 
 The containerized application runs on port 9000 and includes health checks that monitor the `/health` endpoint.
+
+## Releases
+
+This project uses **stadium-themed release names** inspired by famous football stadiums that hosted FIFA World Cup matches. Each release is named after a stadium (A-Z alphabetically), making versions memorable and fun.
+
+### Release Naming Convention
+
+Releases follow the pattern: `v{SEMVER}-{STADIUM}` (e.g., `v1.0.0-azteca`)
+
+- **Semantic Version**: Standard versioning (MAJOR.MINOR.PATCH)
+- **Stadium Name**: Alphabetically ordered codename from the [stadium list](CHANGELOG.md#stadium-release-names)
+
+### Create a Release
+
+To create a new release, tag a commit and push the tag:
+
+```bash
+git tag -a v1.0.0-azteca -m "Release 1.0.0 - Azteca"
+git push origin v1.0.0-azteca
+```
+
+This triggers the CD workflow which automatically:
+
+1. Builds and tests the project in Release configuration
+2. Publishes Docker images to GitHub Container Registry with three tags
+3. Creates a GitHub Release with auto-generated changelog
+
+### Pull Docker Images
+
+Each release publishes multiple tags for flexibility:
+
+```bash
+# By semantic version (recommended for production)
+docker pull ghcr.io/nanotaboada/dotnet-samples-aspnetcore-webapi:1.0.0
+
+# By stadium name (memorable alternative)
+docker pull ghcr.io/nanotaboada/dotnet-samples-aspnetcore-webapi:azteca
+
+# Latest release
+docker pull ghcr.io/nanotaboada/dotnet-samples-aspnetcore-webapi:latest
+```
+
+> 💡 **Note:** See [CHANGELOG.md](CHANGELOG.md) for the complete stadium list (A-Z) and release history.
 
 ## Environment Variables
 
