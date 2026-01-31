@@ -1,26 +1,27 @@
 # GitHub Copilot Instructions
 
-> **⚡ Token Efficiency Note**: This is a minimal pointer file (~500 tokens, auto-loaded by Copilot).
-> For complete operational details, reference: `#file:AGENTS.md` (~2,500 tokens, loaded on-demand)
-> For specialized knowledge, use: `#file:SKILLS/<skill-name>/SKILL.md` (loaded on-demand when needed)
+> **Token Budget**: Target 600, limit 650 (auto-loaded)
+> Details: `#file:AGENTS.md` (~2,550 tokens, on-demand)
+> Skills: `#file:SKILLS/<name>/SKILL.md` (on-demand)
 
-## 🎯 Quick Context
+## Quick Context
 
-**Project**: ASP.NET Core 8 REST API demonstrating layered architecture patterns
-**Stack**: .NET 8 (LTS) • EF Core 9 • SQLite • Docker • xUnit
-**Pattern**: Repository + Service Layer + AutoMapper + FluentValidation
-**Philosophy**: Learning-focused PoC emphasizing clarity and best practices
+ASP.NET Core 8 REST API with layered architecture
+**Stack**: .NET 8 LTS, EF Core 9, SQLite, Docker, xUnit
+**Pattern**: Repository + Service + AutoMapper + FluentValidation
+**Focus**: Learning PoC emphasizing clarity and best practices
 
-## 📐 Core Conventions
+## Core Conventions
 
 - **Naming**: PascalCase (public), camelCase (private)
 - **DI**: Primary constructors everywhere
 - **Async**: All I/O operations use async/await
 - **Logging**: Serilog with structured logging
 - **Testing**: xUnit + Moq + FluentAssertions
-- **Formatting**: CSharpier (opinionated)
+- **Formatting**: CSharpier
+- **Commits**: Subject ≤80 chars, include issue number (#123), body lines ≤80 chars, conventional commits
 
-## 🏗️ Architecture at a Glance
+## Architecture
 
 ```text
 Controller → Service → Repository → Database
@@ -28,13 +29,13 @@ Controller → Service → Repository → Database
 Validation  Caching
 ```
 
-- **Controllers**: Minimal logic, delegate to services
-- **Services**: Business logic + caching with `IMemoryCache`
-- **Repositories**: Generic `Repository<T>` + specific implementations
-- **Models**: `Player` entity + Request/Response DTOs
-- **Validators**: FluentValidation for input structure (business rules in services)
+Controllers: Minimal logic, delegate to services
+Services: Business logic + `IMemoryCache` caching
+Repositories: Generic `Repository<T>` + specific implementations
+Models: `Player` entity + DTOs
+Validators: FluentValidation (structure only, business rules in services)
 
-## ✅ Copilot Should
+## Copilot Should
 
 - Generate idiomatic ASP.NET Core code with minimal controller logic
 - Use EF Core async APIs with `AsNoTracking()` for reads
@@ -44,14 +45,14 @@ Validation  Caching
 - Use primary constructors for DI
 - Implement structured logging with `ILogger<T>`
 
-## 🚫 Copilot Should Avoid
+## Copilot Should Avoid
 
 - Synchronous EF Core APIs
 - Controller business logic (belongs in services)
 - Static service/repository classes
 - `ConfigureAwait(false)` (unnecessary in ASP.NET Core)
 
-## ⚡ Quick Commands
+## Quick Commands
 
 ```bash
 # Run with hot reload
@@ -66,12 +67,21 @@ docker compose up
 # Swagger: https://localhost:9000/swagger
 ```
 
-## 📚 Need More Detail?
+## Load On-Demand Files
 
-**For operational procedures**: Load `#file:AGENTS.md`
-**For Docker expertise**: *(Planned)* `#file:SKILLS/docker-containerization/SKILL.md`
-**For testing patterns**: *(Planned)* `#file:SKILLS/testing-patterns/SKILL.md`
+**Load `#file:AGENTS.md` when:**
+- "How do I run tests with coverage?"
+- "CI/CD pipeline setup or troubleshooting"
+- "Database migration procedures"
+- "Publishing/deployment workflows"
+- "Detailed troubleshooting guides"
+
+**Load `#file:SKILLS/<skill-name>/SKILL.md` (planned):**
+- Docker optimization: `docker-containerization/SKILL.md`
+- Testing patterns: `testing-patterns/SKILL.md`
+
+**Human-readable overview**: See `README.md` (not auto-loaded)
 
 ---
 
-💡 **Why this structure?** Copilot auto-loads this file on every chat (~500 tokens). Loading `AGENTS.md` or `SKILLS/` explicitly gives you deep context only when needed, saving 80% of your token budget!
+**Why this structure?** Base instructions (~600 tokens) load automatically. On-demand files (~2,550 tokens) load only when needed, saving 80% of tokens per chat.
