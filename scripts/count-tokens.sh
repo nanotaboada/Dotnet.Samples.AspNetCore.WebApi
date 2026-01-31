@@ -19,11 +19,16 @@ if command -v python3 &> /dev/null; then
         # tiktoken not found - offer to install
         echo "⚠️  tiktoken not installed"
         echo ""
-        echo "tiktoken provides accurate token counting for Claude/GPT models."
-        read -p "📦 Install tiktoken now? (y/n): " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo "📥 Installing tiktoken..."
+
+        # Detect non-interactive environment (CI/CD)
+        if [ ! -t 0 ] || [ -n "$CI" ] || [ -n "$CI_CD" ]; then
+            echo "🤖 Non-interactive environment detected (CI/CD)"
+            echo "📝 Using word-based approximation"
+            echo "   (To auto-install in CI, set AUTO_INSTALL_TIKTOKEN=1)"
+            echo ""
+            USE_APPROX=1
+        elif [ -n "$AUTO_INSTALL_TIKTOKEN" ]; then
+            echo "📥 Installing tiktoken (AUTO_INSTALL_TIKTOKEN=1)..."
             if pip3 install tiktoken --quiet; then
                 echo "✅ tiktoken installed successfully!"
                 echo ""
@@ -35,10 +40,27 @@ if command -v python3 &> /dev/null; then
                 USE_APPROX=1
             fi
         else
-            echo "📝 Using word-based approximation instead"
-            echo "   (Install manually: pip3 install tiktoken)"
+            echo "tiktoken provides accurate token counting for Claude/GPT models."
+            read -p "📦 Install tiktoken now? (y/n): " -n 1 -r
             echo ""
-            USE_APPROX=1
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                echo "📥 Installing tiktoken..."
+                if pip3 install tiktoken --quiet; then
+                    echo "✅ tiktoken installed successfully!"
+                    echo ""
+                    # Re-run the script after installation
+                    exec "$0" "$@"
+                else
+                    echo "❌ Installation failed. Using word-based approximation instead."
+                    echo ""
+                    USE_APPROX=1
+                fi
+            else
+                echo "📝 Using word-based approximation instead"
+                echo "   (Install manually: pip3 install tiktoken)"
+                echo ""
+                USE_APPROX=1
+            fi
         fi
     fi
 
@@ -63,13 +85,23 @@ PYTHON
 
         # Count tokens for each file
         echo "📄 .github/copilot-instructions.md"
-        COPILOT_TOKENS=$(python3 /tmp/count_tokens.py .github/copilot-instructions.md)
-        echo "   Tokens: $COPILOT_TOKENS"
+        if [ -f ".github/copilot-instructions.md" ]; then
+            COPILOT_TOKENS=$(python3 /tmp/count_tokens.py .github/copilot-instructions.md 2>&1 | grep -v "ERROR:root:code for hash" | tail -1)
+            echo "   Tokens: $COPILOT_TOKENS"
+        else
+            echo "   ⚠️  File not found, skipping"
+            COPILOT_TOKENS=0
+        fi
         echo ""
 
         echo "📄 AGENTS.md"
-        AGENTS_TOKENS=$(python3 /tmp/count_tokens.py AGENTS.md)
-        echo "   Tokens: $AGENTS_TOKENS"
+        if [ -f "AGENTS.md" ]; then
+            AGENTS_TOKENS=$(python3 /tmp/count_tokens.py AGENTS.md 2>&1 | grep -v "ERROR:root:code for hash" | tail -1)
+            echo "   Tokens: $AGENTS_TOKENS"
+        else
+            echo "   ⚠️  File not found, skipping"
+            AGENTS_TOKENS=0
+        fi
         echo ""
 
         # Calculate total
@@ -91,8 +123,13 @@ PYTHON
             echo "❌ copilot-instructions.md exceeds limit! Optimization required."
         fi
 
-        SAVINGS=$((AGENTS_TOKENS * 100 / TOTAL))
-        echo "💡 Savings: ${SAVINGS}% saved when AGENTS.md not needed"
+        # Calculate savings (guard against division by zero)
+        if [ $TOTAL -gt 0 ]; then
+            SAVINGS=$((AGENTS_TOKENS * 100 / TOTAL))
+            echo "💡 Savings: ${SAVINGS}% saved when AGENTS.md not needed"
+        else
+            echo "💡 Savings: 0% (no tokens to count)"
+        fi
 
         # Cleanup
         rm /tmp/count_tokens.py
