@@ -1,9 +1,9 @@
 # AGENTS.md
 
-> **⚡ Token Efficiency Note**: This file contains complete operational instructions (~2,500 tokens).
-> **Auto-loaded**: NO (load explicitly with `#file:AGENTS.md` when you need detailed procedures)
-> **When to load**: Complex workflows, troubleshooting, CI/CD setup, detailed architecture questions
-> **Related files**: See `#file:.github/copilot-instructions.md` for quick context (auto-loaded, ~500 tokens)
+> **Token Efficiency**: Complete operational instructions (~2,550 tokens).
+> **Auto-loaded**: NO (load explicitly with `#file:AGENTS.md` when needed)
+> **When to load**: Complex workflows, troubleshooting, CI/CD setup, detailed architecture
+> **Related files**: `#file:.github/copilot-instructions.md` (auto-loaded, ~650 tokens)
 
 ---
 
