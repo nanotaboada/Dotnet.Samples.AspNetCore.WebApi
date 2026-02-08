@@ -81,9 +81,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    strategy:
-      matrix:
-        service: [codecov, codacy]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.2
@@ -93,17 +90,9 @@ jobs:
         with:
           name: cobertura.xml
 
-      - name: Upload Cobertura coverage report to ${{ matrix.service }}
-        if: ${{ matrix.service == 'codecov' }}
+      - name: Upload Cobertura coverage report to Codecov
         uses: codecov/codecov-action@v5.5.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: cobertura.xml
           use_oidc: false
-
-      - name: Upload Cobertura coverage report to ${{ matrix.service }}
-        if: ${{ matrix.service == 'codacy' }}
-        uses: codacy/codacy-coverage-reporter-action@v1.3.0
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: cobertura.xml
