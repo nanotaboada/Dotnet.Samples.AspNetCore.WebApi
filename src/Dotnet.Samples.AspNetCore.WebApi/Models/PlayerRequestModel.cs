@@ -12,19 +12,43 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Models;
 /// </remarks>
 public class PlayerRequestModel
 {
+    /// <summary>
+    /// The first name of the Player.
+    /// </summary>
     public string? FirstName { get; set; }
 
+    /// <summary>
+    /// The middle name of the Player, if any.
+    /// </summary>
     public string? MiddleName { get; set; }
 
+    /// <summary>
+    /// The last name of the Player.
+    /// </summary>
     public string? LastName { get; set; }
 
+    /// <summary>
+    /// The date of birth of the Player.
+    /// </summary>
     public DateTime? DateOfBirth { get; set; }
 
+    /// <summary>
+    /// The squad number assigned to the Player (required).
+    /// </summary>
     public required int SquadNumber { get; set; }
 
+    /// <summary>
+    /// The abbreviated form of the Player's position.
+    /// </summary>
     public string? AbbrPosition { get; set; }
 
+    /// <summary>
+    /// The team to which the Player belongs.
+    /// </summary>
     public string? Team { get; set; }
 
+    /// <summary>
+    /// The league where the team plays.
+    /// </summary>
     public string? League { get; set; }
 }

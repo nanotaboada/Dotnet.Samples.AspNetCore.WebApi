@@ -4,7 +4,6 @@
 [![.NET CD](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet-cd.yml/badge.svg)](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet-cd.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanotaboada_Dotnet.Samples.AspNetCore.WebApi&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nanotaboada_Dotnet.Samples.AspNetCore.WebApi)
 [![Build Status](https://dev.azure.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/_apis/build/status%2FDotnet.Samples.AspNetCore.WebApi?branchName=master)](https://dev.azure.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/_build/latest?definitionId=14&branchName=master)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ac7b7e22f1cd4d9d9233b36982b0d6a9)](https://app.codacy.com/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![codecov](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/graph/badge.svg?token=hgJc1rStJ9)](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/badge)](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-white.svg)](https://opensource.org/licenses/MIT)
@@ -30,18 +29,14 @@ Proof of Concept for a RESTful API built with .NET 8 (LTS) and ASP.NET Core. Man
 
 ## Features
 
-- 🔌 RESTful CRUD operations for football player data
-- 📚 Interactive API documentation
-- 🚦 Fixed window rate limiting
-- ⌨️ Input validation
-- ⚡ In-memory caching (1-hour TTL)
-- 💿 Relational database with ORM
-- 🏗️ Layered architecture pattern
-- ⌛ Asynchronous operations throughout
-- 📝 Structured logging to console and file
-- 🩺 Health check endpoint for monitoring
-- 🐳 Full containerization support
-- ✅ Comprehensive unit tests
+- 🏗️ **Clean layered architecture** - Repository pattern, dependency injection, and async operations throughout
+- 📚 **Interactive API exploration** - Swagger UI documentation with health monitoring endpoints
+- ⚡ **Performance optimizations** - In-memory caching, rate limiting, and efficient database queries
+- 🧪 **High test coverage** - xUnit tests with automated reporting to Codecov and SonarCloud
+- 📖 **Token-efficient documentation** - AGENTS.md + auto-loaded Copilot instructions for AI-assisted development
+- 🐳 **Full containerization** - Multi-stage Docker builds with Docker Compose orchestration
+- 🔄 **Complete CI/CD pipeline** - Automated testing, code quality checks, Docker publishing, and GitHub releases
+- 🏟️ **Stadium-themed semantic versioning** - Memorable, alphabetical release names from World Cup venues
 
 ## Tech Stack
 
@@ -190,7 +185,7 @@ graph TB
 
 Interactive API documentation is available via Swagger UI at `https://localhost:9000/swagger/index.html` when the server is running.
 
-> 💡 **Note:** Swagger documentation is only available in development mode for security reasons.
+> 💡 Swagger documentation is only available in development mode for security reasons.
 
 **Quick Reference:**
 
@@ -273,7 +268,7 @@ docker compose build
 docker compose up
 ```
 
-> 💡 **Note:** On first run, the container copies a pre-seeded SQLite database into a persistent volume. On subsequent runs, that volume is reused and the data is preserved.
+> 💡 On first run, the container copies a pre-seeded SQLite database into a persistent volume. On subsequent runs, that volume is reused and the data is preserved.
 
 ### Stop the application
 
@@ -304,18 +299,39 @@ Releases follow the pattern: `v{SEMVER}-{STADIUM}` (e.g., `v1.0.0-azteca`)
 
 ### Create a Release
 
-To create a new release, tag a commit and push the tag:
+To create a new release, follow this workflow:
+
+#### 1. Update CHANGELOG.md
+
+First, document your changes in [CHANGELOG.md](CHANGELOG.md):
+
+```bash
+# Move items from [Unreleased] to new release section
+# Example: [1.0.0 - azteca] - 2026-01-22
+git add CHANGELOG.md
+git commit -m "docs: prepare changelog for v1.0.0-azteca release"
+git push
+```
+
+#### 2. Create and Push Tag
+
+Then create and push the version tag:
 
 ```bash
 git tag -a v1.0.0-azteca -m "Release 1.0.0 - Azteca"
 git push origin v1.0.0-azteca
 ```
 
+#### 3. Automated CD Workflow
+
 This triggers the CD workflow which automatically:
 
-1. Builds and tests the project in Release configuration
-2. Publishes Docker images to GitHub Container Registry with three tags
-3. Creates a GitHub Release with auto-generated changelog
+1. Validates the stadium name
+2. Builds and tests the project in Release configuration
+3. Publishes Docker images to GitHub Container Registry with three tags
+4. Creates a GitHub Release with auto-generated changelog from commits
+
+> 💡 Always update CHANGELOG.md before creating the tag. See [CHANGELOG.md](CHANGELOG.md#how-to-release) for detailed release instructions.
 
 ### Pull Docker Images
 
@@ -332,7 +348,7 @@ docker pull ghcr.io/nanotaboada/dotnet-samples-aspnetcore-webapi:azteca
 docker pull ghcr.io/nanotaboada/dotnet-samples-aspnetcore-webapi:latest
 ```
 
-> 💡 **Note:** See [CHANGELOG.md](CHANGELOG.md) for the complete stadium list (A-Z) and release history.
+> 💡 See [CHANGELOG.md](CHANGELOG.md) for the complete stadium list (A-Z) and release history.
 
 ## Environment Variables
 
@@ -366,7 +382,7 @@ For containerized production deployment:
 STORAGE_PATH=/storage/players-sqlite3.db
 ```
 
-> 💡 **Note:** Additional environment variables (`ASPNETCORE_ENVIRONMENT=Production` and `ASPNETCORE_URLS=http://+:9000`) are set in the `Dockerfile`.
+> 💡 Additional environment variables (`ASPNETCORE_ENVIRONMENT=Production` and `ASPNETCORE_URLS=http://+:9000`) are set in the `Dockerfile`.
 
 ## Command Summary
 
