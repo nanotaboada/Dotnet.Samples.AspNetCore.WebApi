@@ -141,7 +141,7 @@ jobs:
           name: "v${{ steps.version.outputs.semver }} - ${{ steps.version.outputs.stadium }} 🏟️"
           tag_name: ${{ steps.version.outputs.tag_name }}
           body: |
-            #Release ${{ steps.version.outputs.semver }} - ${{ steps.version.outputs.stadium }} 🏟️
+            # Release ${{ steps.version.outputs.semver }} - ${{ steps.version.outputs.stadium }} 🏟️
 
             ## Docker Images
 
