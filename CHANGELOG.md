@@ -44,30 +44,87 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+- Token efficiency strategy for Copilot/AI agents with optimized instruction loading and improved token counting script (#364)
+
 ### Changed
+
+- Bump Swashbuckle.AspNetCore from 10.1.0 to 10.1.2
+- Bump docker/login-action from 3.6.0 to 3.7.0
+- Bump softprops/action-gh-release from 2.2.0 to 2.5.0
+- Bump actions/checkout from 6.0.1 to 6.0.2
+
+### Deprecated
+
+### Removed
 
 ### Fixed
 
-### Removed
+### Security
+
+---
+
+## [1.0.0 - azteca] - 2026-01-22
+
+Initial release. See [README.md](README.md) for complete feature list and documentation.
 
 ---
 
 ## How to Release
 
-To create a new release:
+To create a new release, follow these steps in order:
 
-1. Update this CHANGELOG with release notes under the appropriate version heading
-2. Create and push a version tag with stadium name:
+### 1. Update CHANGELOG.md
 
-   ```bash
-   git tag -a v1.0.0-azteca -m "Release 1.0.0 - Azteca"
-   git push origin v1.0.0-azteca
-   ```
+Move items from the `[Unreleased]` section to a new release section:
 
-3. The CD workflow will automatically:
-   - Build and test the project
-   - Publish Docker images to GHCR with three tags (`:1.0.0`, `:azteca`, `:latest`)
-   - Create a GitHub Release with auto-generated notes
+```markdown
+## [X.Y.Z - STADIUM_NAME] - YYYY-MM-DD
+
+### Added
+- New features here
+
+### Changed
+- Changes here
+
+### Fixed
+- Bug fixes here
+
+### Removed
+- Removed features here
+```
+
+**Important:** Commit and push this change before creating the tag.
+
+### 2. Create and Push Version Tag
+
+```bash
+git tag -a vX.Y.Z-stadium -m "Release X.Y.Z - Stadium"
+git push origin vX.Y.Z-stadium
+```
+
+Example:
+
+```bash
+git tag -a v1.0.0-azteca -m "Release 1.0.0 - Azteca"
+git push origin v1.0.0-azteca
+```
+
+### 3. Automated CD Workflow
+
+The CD workflow automatically:
+
+- ✅ Validates the stadium name against the A-Z list
+- ✅ Builds and tests the project in Release configuration
+- ✅ Publishes Docker images to GHCR with three tags (`:X.Y.Z`, `:stadium`, `:latest`)
+- ✅ Creates a GitHub Release with auto-generated notes from commits
+
+### Pre-Release Checklist
+
+- [ ] CHANGELOG.md updated with release notes
+- [ ] CHANGELOG.md changes committed and pushed
+- [ ] Tag created with correct format: `vX.Y.Z-stadium`
+- [ ] Stadium name is valid (A-Z from table above)
+- [ ] Tag pushed to trigger CD workflow
 
 ---
 
@@ -81,10 +138,21 @@ To create a new release:
 ### Changed
 - Changes in existing functionality
 
-### Fixed
-- Bug fixes
+### Deprecated
+- Soon-to-be removed features
 
 ### Removed
 - Removed features
 
+### Fixed
+- Bug fixes
+
+### Security
+- Security vulnerability fixes
+
 -->
+
+---
+
+[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.0.0-azteca...HEAD
+[1.0.0 - azteca]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/releases/tag/v1.0.0-azteca

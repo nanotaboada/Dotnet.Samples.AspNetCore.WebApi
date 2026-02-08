@@ -138,10 +138,10 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.5.0
         with:
-          name: "v${{ steps.version.outputs.semver }} - ${{ steps.version.outputs.stadium }}"
+          name: "v${{ steps.version.outputs.semver }} - ${{ steps.version.outputs.stadium }} 🏟️"
           tag_name: ${{ steps.version.outputs.tag_name }}
           body: |
-            # 🏟️ Release ${{ steps.version.outputs.semver }} - ${{ steps.version.outputs.stadium }}
+            #Release ${{ steps.version.outputs.semver }} - ${{ steps.version.outputs.stadium }} 🏟️
 
             ## Docker Images
 

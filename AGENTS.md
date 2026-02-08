@@ -81,9 +81,11 @@ dotnet build && dotnet test
 
 **Pre-commit checklist**:
 
-1. Run `dotnet build --configuration Release` - must build successfully
-2. Run `dotnet test` - all tests must pass
-3. Check code formatting and style
+1. Update CHANGELOG.md `[Unreleased]` section with your changes (Added/Changed/Fixed/Removed)
+2. Run `dotnet build --configuration Release` - must build successfully
+3. Run `dotnet test` - all tests must pass
+4. Check code formatting and style
+5. Follow conventional commit format (enforced by commitlint)
 
 ### Running the Application
 
@@ -153,6 +155,66 @@ curl http://localhost:5000/health
 
 **First run behavior**: Container initializes SQLite database with seed data. Volume persists data between runs.
 
+## Release Management
+
+### CHANGELOG Maintenance
+
+**Important**: Update CHANGELOG.md continuously as you work, not just before releases.
+
+**For every meaningful commit**:
+
+1. Add your changes to the `[Unreleased]` section in CHANGELOG.md
+2. Categorize under the appropriate heading:
+   - **Added**: New features
+   - **Changed**: Changes in existing functionality
+   - **Deprecated**: Soon-to-be removed features
+   - **Removed**: Removed features
+   - **Fixed**: Bug fixes
+   - **Security**: Security vulnerability fixes
+3. Use clear, user-facing descriptions (not just commit messages)
+4. Include PR/issue numbers when relevant (#123)
+
+**Example**:
+
+```markdown
+## [Unreleased]
+
+### Added
+- User authentication with JWT tokens (#145)
+- Rate limiting middleware for API endpoints
+
+### Deprecated
+- Legacy authentication endpoint /api/v1/auth (use /api/v2/auth instead)
+
+### Fixed
+- Null reference exception in player service (#147)
+
+### Security
+- Fix SQL injection vulnerability in search endpoint (#148)
+```
+
+### Creating a Release
+
+When ready to release:
+
+1. **Update CHANGELOG.md**: Move items from `[Unreleased]` to a new versioned section:
+
+   ```markdown
+   ## [1.1.0 - bernabeu] - 2026-02-15
+   ```
+
+2. **Commit and push** CHANGELOG changes
+3. **Create and push tag**:
+
+   ```bash
+   git tag -a v1.1.0-bernabeu -m "Release 1.1.0 - Bernabéu"
+   git push origin v1.1.0-bernabeu
+   ```
+
+4. **CD workflow runs automatically** to publish Docker images and create GitHub Release
+
+See [CHANGELOG.md](CHANGELOG.md#how-to-release) for complete release instructions and stadium naming convention.
+
 ## CI/CD Pipeline
 
 ### Continuous Integration (dotnet.yml)
@@ -165,7 +227,7 @@ curl http://localhost:5000/health
 2. **Restore**: `dotnet restore` with dependency caching
 3. **Build**: `dotnet build --no-restore --configuration Release`
 4. **Test**: `dotnet test --no-build --verbosity normal --settings .runsettings`
-5. **Coverage**: Upload coverage reports to Codecov and Codacy
+5. **Coverage**: Upload coverage reports to Codecov
 
 **Local validation** (run this before pushing):
 
@@ -384,6 +446,7 @@ curl -X DELETE https://localhost:9000/players/1 -k
 
 ## Important Notes
 
+- **CHANGELOG maintenance**: Update CHANGELOG.md `[Unreleased]` section with every meaningful change
 - **Never commit secrets**: No API keys, tokens, or credentials in code
 - **Test coverage**: Maintain high coverage with xUnit tests
 - **Commit messages**: Follow conventional commits (enforced by commitlint in CI)
