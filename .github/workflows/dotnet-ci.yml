@@ -10,7 +10,7 @@ on:
     branches: [ "master" ]
 
 env:
-  DOTNET_VERSION: 8.0.x
+  DOTNET_VERSION: 10.0.x
 
 jobs:
   build:
@@ -48,6 +48,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.2
+
+      - name: Set up .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v5.1.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: true
+          cache-dependency-path: |
+            src/Dotnet.Samples.AspNetCore.WebApi/packages.lock.json
+            test/Dotnet.Samples.AspNetCore.WebApi.Tests/packages.lock.json
 
       - name: Lint commit messages
         uses: wagoid/commitlint-github-action@v6.2.1

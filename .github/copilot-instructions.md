@@ -6,8 +6,8 @@
 
 ## Quick Context
 
-ASP.NET Core 8 REST API with layered architecture
-**Stack**: .NET 8 LTS, EF Core 9, SQLite, Docker, xUnit
+ASP.NET Core 10 REST API with layered architecture
+**Stack**: .NET 10 LTS, EF Core 10, SQLite, Docker, xUnit
 **Pattern**: Repository + Service + AutoMapper + FluentValidation
 **Focus**: Learning PoC emphasizing clarity and best practices
 
@@ -19,7 +19,11 @@ ASP.NET Core 8 REST API with layered architecture
 - **Logging**: Serilog with structured logging
 - **Testing**: xUnit + Moq + FluentAssertions
 - **Formatting**: CSharpier
-- **Commits**: Subject ≤80 chars, include issue number (#123), body lines ≤80 chars, conventional commits
+- **Commits**: Conventional Commits with issue number suffix
+  - Format: `type(scope): description (#issue)` (max 80 chars)
+  - Types: feat, fix, chore, docs, test, refactor
+  - Example: `feat(api): add player search endpoint (#123)`
+  - Body lines ≤80 chars
 
 ## Architecture
 

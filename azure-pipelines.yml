@@ -1,5 +1,5 @@
-# ASP.NET Core 8.0
-# Build and test ASP.NET Core projects targeting .NET 8 on Linux.
+# ASP.NET Core 10.0
+# Build and test ASP.NET Core projects targeting .NET 10 on Linux.
 # https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core
 
 # Pipeline triggers:
@@ -26,7 +26,7 @@ variables:
 
 # Pipeline steps (equivalent to GitHub Actions 'steps:')
 steps:
-  # Checkout repository (equivalent to actions/checkout@v6)
+  # Checkout repository (equivalent to actions/checkout)
   # Azure Pipelines does this implicitly, but making it explicit for clarity
   - checkout: self
     displayName: "Checkout repository"
@@ -41,12 +41,12 @@ steps:
         nuget | "$(Agent.OS)"
       path: $(NUGET_PACKAGES)
 
-  # Install .NET 8 SDK (equivalent to actions/setup-dotnet@v5)
+  # Install .NET 10 SDK (equivalent to actions/setup-dotnet)
   # performMultiLevelLookup: allows finding other SDK versions if needed
   - task: UseDotNet@2
-    displayName: "Set up .NET 8"
+    displayName: "Set up .NET 10"
     inputs:
-      version: "8.x"
+      version: "10.x"
       performMultiLevelLookup: true
 
   # Restore NuGet packages (equivalent to 'dotnet restore')
