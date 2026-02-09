@@ -2,7 +2,7 @@
 # Stage 1: Builder
 # This stage builds the application and its dependencies.
 # ------------------------------------------------------------------------------
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS builder
 
 WORKDIR /src
 
@@ -22,7 +22,7 @@ RUN dotnet publish -c Release -o /app/publish
 # Stage 2: Runtime
 # This stage creates the final, minimal image to run the application.
 # ------------------------------------------------------------------------------
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 
 WORKDIR /app
 
@@ -31,8 +31,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
 
 # Metadata labels for the image. These are useful for registries and inspection.
-LABEL org.opencontainers.image.title="🧪 Web API made with .NET 8 (LTS) and ASP.NET Core"
-LABEL org.opencontainers.image.description="Proof of Concept for a Web API made with .NET 8 (LTS) and ASP.NET Core"
+LABEL org.opencontainers.image.title="🧪 Web API made with .NET 10 (LTS) and ASP.NET Core"
+LABEL org.opencontainers.image.description="Proof of Concept for a Web API made with .NET 10 (LTS) and ASP.NET Core"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.source="https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi"
 

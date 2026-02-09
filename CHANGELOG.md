@@ -44,14 +44,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
-- Token efficiency strategy for Copilot/AI agents with optimized instruction loading and improved token counting script (#364)
-
 ### Changed
-
-- Bump Swashbuckle.AspNetCore from 10.1.0 to 10.1.2
-- Bump docker/login-action from 3.6.0 to 3.7.0
-- Bump softprops/action-gh-release from 2.2.0 to 2.5.0
-- Bump actions/checkout from 6.0.1 to 6.0.2
 
 ### Deprecated
 
@@ -60,6 +53,25 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 ### Fixed
 
 ### Security
+
+---
+
+## [1.1.0 - bernabeu] - 2026-02-09
+
+### Changed
+
+- Upgrade to .NET 10 LTS from .NET 8 (#368)
+- Update Microsoft.AspNetCore.OpenApi to 10.0.0
+- Update Microsoft.EntityFrameworkCore.Sqlite to 10.0.0
+- Update Microsoft.EntityFrameworkCore.Design to 10.0.0
+- Update Microsoft.VisualStudio.Web.CodeGeneration.Design to 10.0.0
+- Update Docker images to .NET 10 SDK and runtime
+- Update CI/CD pipelines to use .NET 10 SDK
+- Token efficiency strategy for Copilot/AI agents with optimized instruction loading and improved token counting script (#364)
+- Bump Swashbuckle.AspNetCore from 10.1.0 to 10.1.2
+- Bump docker/login-action from 3.6.0 to 3.7.0
+- Bump softprops/action-gh-release from 2.2.0 to 2.5.0
+- Bump actions/checkout from 6.0.1 to 6.0.2
 
 ---
 

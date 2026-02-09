@@ -6,8 +6,8 @@
 
 ## Quick Context
 
-ASP.NET Core 8 REST API with layered architecture
-**Stack**: .NET 8 LTS, EF Core 9, SQLite, Docker, xUnit
+ASP.NET Core 10 REST API with layered architecture
+**Stack**: .NET 10 LTS, EF Core 10, SQLite, Docker, xUnit
 **Pattern**: Repository + Service + AutoMapper + FluentValidation
 **Focus**: Learning PoC emphasizing clarity and best practices
 

@@ -9,7 +9,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/badge)](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-white.svg)](https://opensource.org/licenses/MIT)
 
-Proof of Concept for a RESTful API built with .NET 8 (LTS) and ASP.NET Core. Manage football player data with SQLite, Entity Framework Core, Swagger documentation, and in-memory caching.
+Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Manage football player data with SQLite, Entity Framework Core, Swagger documentation, and in-memory caching.
 
 ## Table of Contents
 
@@ -43,13 +43,13 @@ Proof of Concept for a RESTful API built with .NET 8 (LTS) and ASP.NET Core. Man
 
 | Category | Technology |
 |----------|------------|
-| **Framework** | [.NET 8](https://github.com/dotnet/core) (LTS) |
-| **Web Framework** | [ASP.NET Core 8.0](https://github.com/dotnet/aspnetcore) |
+| **Framework** | [.NET 10](https://github.com/dotnet/core) (LTS) |
+| **Web Framework** | [ASP.NET Core 10.0](https://github.com/dotnet/aspnetcore) |
 | **API Documentation** | [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) (OpenAPI 3.0) |
 | **Validation** | [FluentValidation 12](https://github.com/FluentValidation/FluentValidation) |
 | **Mapping** | [AutoMapper 14](https://github.com/AutoMapper/AutoMapper) |
 | **Database** | [SQLite 3](https://github.com/sqlite/sqlite) |
-| **ORM** | [Entity Framework Core 9.0](https://github.com/dotnet/efcore) |
+| **ORM** | [Entity Framework Core 10.0](https://github.com/dotnet/efcore) |
 | **Logging** | [Serilog 9](https://github.com/serilog/serilog) |
 | **Testing** | [xUnit](https://github.com/xunit/xunit), [Moq](https://github.com/devlooped/moq), [FluentAssertions](https://github.com/fluentassertions/fluentassertions) |
 | **Containerization** | [Docker](https://github.com/docker) & [Docker Compose](https://github.com/docker/compose) |
@@ -204,7 +204,7 @@ For complete endpoint documentation with request/response schemas, explore the [
 
 Before you begin, ensure you have the following installed:
 
-- .NET 8 SDK (LTS) or higher
+- .NET 10 SDK (LTS) or higher
 - Docker Desktop (optional, for containerized deployment)
 - dotnet-ef CLI tool (for database migrations)
 

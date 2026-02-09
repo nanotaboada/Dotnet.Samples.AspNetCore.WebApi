@@ -29,7 +29,7 @@ curl https://localhost:9000/health
 
 ## .NET Version
 
-This project targets **.NET 8 (LTS)**.
+This project targets **.NET 10 (LTS)**.
 
 ## Development Workflow
 
