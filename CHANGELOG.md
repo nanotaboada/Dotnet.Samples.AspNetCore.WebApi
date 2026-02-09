@@ -65,7 +65,8 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 - Update Microsoft.EntityFrameworkCore.Sqlite to 10.0.0
 - Update Microsoft.EntityFrameworkCore.Design to 10.0.0
 - Update Microsoft.VisualStudio.Web.CodeGeneration.Design to 10.0.0
-- Update Docker images to .NET 10 SDK and runtime
+- Update Docker images to .NET 10 SDK and runtime (now based on Ubuntu 24.04 LTS instead of Debian 12)
+- Update Dockerfile user creation commands for Ubuntu compatibility (`groupadd`/`useradd` instead of `adduser`)
 - Update CI/CD pipelines to use .NET 10 SDK
 - Token efficiency strategy for Copilot/AI agents with optimized instruction loading and improved token counting script (#364)
 - Bump Swashbuckle.AspNetCore from 10.1.0 to 10.1.2

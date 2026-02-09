@@ -57,7 +57,7 @@ COPY --chmod=555        scripts/healthcheck.sh      ./healthcheck.sh
 COPY --from=builder /src/Dotnet.Samples.AspNetCore.WebApi/storage/players-sqlite3.db ./hold/players-sqlite3.db
 
 # Add non-root user and make volume mount point writable
-RUN adduser --system --disabled-password --group aspnetcore && \
+RUN groupadd -r aspnetcore && useradd -r -g aspnetcore aspnetcore && \
     mkdir -p /storage && \
     chown aspnetcore:aspnetcore /storage
 
