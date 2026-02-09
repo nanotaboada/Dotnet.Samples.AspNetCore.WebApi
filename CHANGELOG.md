@@ -166,5 +166,6 @@ The CD workflow automatically:
 
 ---
 
-[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.0.0-azteca...HEAD
+[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.1.0-bernabeu...HEAD
+[1.1.0 - bernabeu]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.0.0-azteca...v1.1.0-bernabeu
 [1.0.0 - azteca]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/releases/tag/v1.0.0-azteca
