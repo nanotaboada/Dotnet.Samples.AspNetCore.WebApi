@@ -19,7 +19,11 @@ ASP.NET Core 10 REST API with layered architecture
 - **Logging**: Serilog with structured logging
 - **Testing**: xUnit + Moq + FluentAssertions
 - **Formatting**: CSharpier
-- **Commits**: Subject ≤80 chars, include issue number (#123), body lines ≤80 chars, conventional commits
+- **Commits**: Conventional Commits with issue number suffix
+  - Format: `type(scope): description (#issue)` (max 80 chars)
+  - Types: feat, fix, chore, docs, test, refactor
+  - Example: `feat(api): add player search endpoint (#123)`
+  - Body lines ≤80 chars
 
 ## Architecture
 
