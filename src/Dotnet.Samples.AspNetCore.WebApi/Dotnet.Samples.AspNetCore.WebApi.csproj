@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup Label="Development dependencies">
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup Label="Runtime dependencies">
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.3" />
     <PackageReference Include="AutoMapper" Version="[14.0.0,15.0.0)" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
