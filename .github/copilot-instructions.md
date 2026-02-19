@@ -91,7 +91,7 @@ Example: `feat(api): add player search endpoint (#123)`
 
 - Database schema (entity fields, migrations)
 - Dependencies (`*.csproj`, `global.json`)
-- CI/CD configuration (`.github/workflows/`, `azure-pipelines.yml`)
+- CI/CD configuration (`.github/workflows/`)
 - Docker setup
 - Application configuration (`appsettings.json`)
 - API contracts (breaking DTO changes)
@@ -106,7 +106,7 @@ Example: `feat(api): add player search endpoint (#123)`
 
 ### Key workflows
 
-**Add an endpoint**: Add DTO in `Models/` → add service method in `Services/` → add controller action in `Controllers/` → add validator in `Validators/` → add tests → run pre-commit checks.
+**Add an endpoint**: Add DTO in `Models/` → update `PlayerMappingProfile` in `Mappings/` (AutoMapper) → add repository method(s) in `Repositories/` → add service method in `Services/` → add controller action in `Controllers/` → add validator in `Validators/` → add tests → run pre-commit checks.
 
 **Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → reset `Storage/players.db` → update tests → run `dotnet test`.
 
