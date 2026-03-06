@@ -69,7 +69,7 @@ jobs:
           echo "🏟️ Stadium name: $STADIUM"
 
       - name: Set up .NET ${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v5.1.0
+        uses: actions/setup-dotnet@v5.2.0
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           cache: true
