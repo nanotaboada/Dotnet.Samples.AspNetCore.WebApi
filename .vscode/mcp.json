@@ -22,7 +22,7 @@
     {
       "id": "github_token",
       "type": "promptString",
-      "description": "GitHub Personal Access Token",
+      "description": "GitHub Personal Access Token. Prefer fine-grained PATs with minimum permissions: Contents (read), Issues (read & write), Pull requests (read & write). If a classic PAT is unavoidable, minimum scope: repo.",
       "password": true
     }
   ]
