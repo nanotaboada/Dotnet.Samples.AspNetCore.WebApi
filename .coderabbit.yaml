@@ -1,9 +1,11 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# https://docs.coderabbit.ai/getting-started/configure-coderabbit
+
 # CodeRabbit Configuration
 # Optimized for .NET 8 / ASP.NET Core Web API project
 
 language: en-US
 early_access: true
-enable_free_tier: true
 
 reviews:
   profile: chill
@@ -23,12 +25,9 @@ reviews:
   suggested_labels: true
   auto_apply_labels: false
   suggested_reviewers: false
-  auto_assign_reviewers: false
-  in_progress_fortune: true
   poem: false
   abort_on_close: true
 
-  # Path-based review instructions for this .NET project
   path_instructions:
     - path: "**/*.cs"
       instructions: |
@@ -107,7 +106,6 @@ reviews:
         - Ensure package versions are up to date
         - Validate that ImplicitUsings is enabled
 
-  # Ignore patterns for this project
   path_filters:
     - "!**/bin/**"
     - "!**/obj/**"
@@ -138,11 +136,64 @@ reviews:
       enabled: true
     unit_tests:
       enabled: true
+    custom:
+      - name: "sync documentation"
+        instructions: |
+          This is a PoC/learning project targeting developers unfamiliar with the stack.
+          Documentation is a first-class concern. Review the PR changes and perform the
+          following three checks:
+
+          ## 1. Method/function docstrings
+          For every public function, method, or handler touched in the PR:
+          - If it lacks a docstring/doc comment, add one using the idiomatic format
+            for the language and framework in use.
+          - If it has one but no longer matches the current signature, parameters,
+            or behavior, update it.
+          - Docstrings should explain *why* and *what*, not just restate the signature.
+            Assume the reader is learning the language.
+
+          ## 2. README.md
+          Check whether the PR introduces or removes endpoints, changes behavior,
+          adds dependencies, or modifies how to run the project.
+          If so, update the relevant sections of README.md to reflect the current state.
+          Do not rewrite sections unrelated to the changes.
+
+          ## 3. .github/copilot-instructions.md
+          If the PR introduces patterns, conventions, or architectural decisions that
+          should guide future AI-assisted contributions, add or update the relevant
+          instructions in .github/copilot-instructions.md.
+          Focus on things a developer (or AI assistant) unfamiliar with this specific
+          stack implementation should know before writing code here.
+
+      - name: "enforce http error handling"
+        instructions: |
+          Audit all HTTP handler functions in the changed files.
+          Ensure errors return appropriate HTTP status codes (400 for bad input,
+          404 for not found, 500 for unexpected errors) and a consistent JSON error
+          body with at least a "message" field.
+          Flag handlers that return 200 on error or swallow errors silently.
+          Use idiomatic error handling patterns for the language and framework in use.
+
+      - name: "idiomatic review"
+        instructions: |
+          Review the changed files for non-idiomatic patterns given the language and
+          framework in use. Flag code that looks like it was translated from another
+          language rather than written naturally for this stack. Suggest idiomatic
+          alternatives with brief explanations. This is a PoC comparison project,
+          so idiomatic usage is a first-class concern.
+
+      - name: "verify api contract"
+        instructions: |
+          Review the changed files and verify that all HTTP endpoints (method, path,
+          request body shape, and response shape) match the project's intended REST API
+          contract. Check the README or any spec/contract file in the repo for reference.
+          Flag any deviations — missing fields, wrong status codes, inconsistent naming.
+          Do not make changes; only report findings as a comment.
 
   pre_merge_checks:
     docstrings:
       mode: warning
-      threshold: 75
+      threshold: 80
     title:
       mode: warning
       requirements: |
@@ -150,35 +201,47 @@ reviews:
         - Keep under 80 characters
         - Be descriptive and specific
     description:
-      mode: warning
+      mode: off
     issue_assessment:
-      mode: warning
+      mode: off
 
   tools:
-    # Relevant tools for .NET/C# projects
+    # Secret scanners
     gitleaks:
       enabled: true
+    trufflehog:
+      enabled: true
+
+    # IaC / infrastructure
     checkov:
+      enabled: true
+    trivy:
       enabled: true
     hadolint:
       enabled: true
+
+    # General static analysis
+    semgrep:
+      enabled: true
+    opengrep:
+      enabled: true
+
+    # File-type linters
     yamllint:
       enabled: true
     actionlint:
       enabled: true
-    semgrep:
-      enabled: true
     markdownlint:
       enabled: true
-    github-checks:
-      enabled: true
-      timeout_ms: 120000
     dotenvLint:
       enabled: true
     checkmake:
       enabled: true
     osvScanner:
       enabled: true
+    github-checks:
+      enabled: true
+      timeout_ms: 120000
 
     # Disable irrelevant tools for this .NET project
     shellcheck:
@@ -203,6 +266,8 @@ reviews:
       enabled: false
     flake8:
       enabled: false
+    pylint:
+      enabled: false
     rubocop:
       enabled: false
     buf:
@@ -221,8 +286,6 @@ reviews:
       enabled: false
     prismaLint:
       enabled: false
-    pylint:
-      enabled: false
     oxc:
       enabled: false
     shopifyThemeCheck:
@@ -236,6 +299,14 @@ reviews:
     languagetool:
       enabled: false
     circleci:
+      enabled: false
+    fortitudeLint:
+      enabled: false
+    stylelint:
+      enabled: false
+    blinter:
+      enabled: false
+    psscriptanalyzer:
       enabled: false
 
 chat:
