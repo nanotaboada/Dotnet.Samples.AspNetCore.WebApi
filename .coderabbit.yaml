@@ -320,12 +320,7 @@ knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - "**/*.cs"
-      - "**/*.csproj"
-      - "**/Dockerfile"
-      - "**/*.{yml,yaml}"
-      - "**/appsettings*.json"
-      - "src/**/*.json"
+      - ".github/copilot-instructions.md"
   learnings:
     scope: auto
   issues:
