@@ -15,7 +15,7 @@ public class PlayerServiceTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenCreateAsync_WhenRepositoryAddAsync_ThenAddsPlayerToRepositoryAndRemovesCache()
+    public async Task CreateAsync_WhenCalled_AddsPlayerAndRemovesCache()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -49,7 +49,7 @@ public class PlayerServiceTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenRetrieveAsync_WhenRepositoryGetAllAsyncReturnsPlayers_ThenCacheCreateEntryAndResultShouldBeListOfPlayers()
+    public async Task RetrieveAsync_CacheMiss_QueriesRepositoryAndCachesResult()
     {
         // Arrange
         var value = It.IsAny<object>();
@@ -83,7 +83,7 @@ public class PlayerServiceTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenRetrieveAsync_WhenExecutedForTheSecondTime_ThenSecondExecutionTimeShouldBeLessThanFirst()
+    public async Task RetrieveAsync_CacheHit_ReturnsBeforeQueryingRepository()
     {
         // Arrange
         var value = It.IsAny<object>();
@@ -121,7 +121,7 @@ public class PlayerServiceTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenRetrieveByIdAsync_WhenRepositoryFindByIdAsyncReturnsNull_TheResultShouldBeNull()
+    public async Task RetrieveByIdAsync_PlayerNotFound_ReturnsNull()
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -147,7 +147,7 @@ public class PlayerServiceTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenRetrieveByIdAsync_WhenRepositoryFindByIdAsyncReturnsPlayer_TheResultShouldBePlayer()
+    public async Task RetrieveByIdAsync_PlayerFound_ReturnsMappedResponseModel()
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -178,7 +178,7 @@ public class PlayerServiceTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenRetrieveBySquadNumberAsync_WhenRepositoryFindBySquadNumberAsyncReturnsNull_ThenResultShouldBeNull()
+    public async Task RetrieveBySquadNumberAsync_PlayerNotFound_ReturnsNull()
     {
         // Arrange
         var squadNumber = 999;
@@ -209,7 +209,7 @@ public class PlayerServiceTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenRetrieveBySquadNumberAsync_WhenRepositoryFindBySquadNumberAsyncReturnsPlayer_ThenResultShouldBePlayer()
+    public async Task RetrieveBySquadNumberAsync_PlayerFound_ReturnsMappedResponseModel()
     {
         // Arrange
         var squadNumber = 10;
@@ -248,7 +248,7 @@ public class PlayerServiceTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenUpdateAsync_WhenRepositoryFindBySquadNumberAsyncReturnsPlayer_ThenRepositoryUpdateAsyncAndCacheRemove()
+    public async Task UpdateAsync_PlayerFound_UpdatesRepositoryAndRemovesCache()
     {
         // Arrange
         var squadNumber = 23;
@@ -283,13 +283,50 @@ public class PlayerServiceTests
         );
     }
 
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task UpdateAsync_PlayerNotFound_DoesNotUpdateRepository()
+    {
+        // Arrange
+        var squadNumber = 999;
+        var request = PlayerFakes.MakeRequestModelForCreate();
+        request.SquadNumber = squadNumber;
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
+        repository
+            .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
+            .ReturnsAsync(null as Player);
+
+        var service = new PlayerService(
+            repository.Object,
+            logger.Object,
+            memoryCache.Object,
+            mapper.Object,
+            environment.Object
+        );
+
+        // Act
+        await service.UpdateAsync(request);
+
+        // Assert
+        repository.Verify(
+            repository => repository.FindBySquadNumberAsync(It.IsAny<int>()),
+            Times.Once
+        );
+        repository.Verify(repository => repository.UpdateAsync(It.IsAny<Player>()), Times.Never);
+        memoryCache.Verify(cache => cache.Remove(It.IsAny<object>()), Times.Never);
+        mapper.Verify(
+            mapper => mapper.Map(It.IsAny<PlayerRequestModel>(), It.IsAny<Player>()),
+            Times.Never
+        );
+    }
+
     /* -------------------------------------------------------------------------
      * Delete
      * ---------------------------------------------------------------------- */
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenDeleteAsync_WhenRepositoryFindBySquadNumberAsyncReturnsPlayer_ThenRepositoryDeleteAsyncAndCacheRemove()
+    public async Task DeleteAsync_PlayerFound_RemovesFromRepositoryAndRemovesCache()
     {
         // Arrange
         var squadNumber = 26;
@@ -317,6 +354,37 @@ public class PlayerServiceTests
         );
         repository.Verify(repository => repository.RemoveAsync(It.IsAny<Guid>()), Times.Once);
         memoryCache.Verify(cache => cache.Remove(It.IsAny<object>()), Times.Once);
+    }
+
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task DeleteAsync_PlayerNotFound_DoesNotRemoveFromRepository()
+    {
+        // Arrange
+        var squadNumber = 999;
+        var (repository, logger, memoryCache, mapper, environment) = PlayerMocks.InitServiceMocks();
+        repository
+            .Setup(repository => repository.FindBySquadNumberAsync(squadNumber))
+            .ReturnsAsync(null as Player);
+
+        var service = new PlayerService(
+            repository.Object,
+            logger.Object,
+            memoryCache.Object,
+            mapper.Object,
+            environment.Object
+        );
+
+        // Act
+        await service.DeleteAsync(squadNumber);
+
+        // Assert
+        repository.Verify(
+            repository => repository.FindBySquadNumberAsync(It.IsAny<int>()),
+            Times.Once
+        );
+        repository.Verify(repository => repository.RemoveAsync(It.IsAny<Guid>()), Times.Never);
+        memoryCache.Verify(cache => cache.Remove(It.IsAny<object>()), Times.Never);
     }
 
     private static async Task<long> ExecutionTimeAsync(Func<Task> awaitable)

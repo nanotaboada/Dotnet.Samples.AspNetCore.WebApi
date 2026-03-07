@@ -46,7 +46,9 @@ test/Dotnet.Samples.AspNetCore.WebApi.Tests/
 - **Reads**: Use `AsNoTracking()` for all EF Core read queries
 - **Errors**: RFC 7807 Problem Details for all error responses
 - **Logging**: Structured logging via `ILogger<T>`; never `Console.Write`
-- **Tests**: xUnit + Moq + FluentAssertions; test naming mirrors method under test
+- **Tests**: xUnit + Moq + FluentAssertions; naming convention per layer:
+  - Controller: `{HttpMethod}_{Resource}_{Condition}_Returns{Outcome}` (e.g. `Get_Players_Existing_ReturnsPlayers`)
+  - Service / Validator: `{MethodName}_{StateUnderTest}_{ExpectedBehavior}` (e.g. `RetrieveAsync_CacheMiss_QueriesRepositoryAndCachesResult`)
 - **Avoid**: synchronous EF Core APIs, controller business logic, static service/repository classes
 
 ## Commands

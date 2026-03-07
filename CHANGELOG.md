@@ -46,11 +46,17 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- Rename test methods to follow Microsoft .NET naming standard (#396)
+
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+- Fix broken 201 assertion in controller test for `Post_Players_NonExisting` (#396)
+- Add missing edge case tests for `UpdateAsync`, `DeleteAsync`, and
+  `DateOfBirth` boundary validation (#396)
 
 ### Security
 
