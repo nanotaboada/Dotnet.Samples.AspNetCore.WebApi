@@ -45,9 +45,11 @@ public class PlayerRequestModelValidator : AbstractValidator<PlayerRequestModel>
             () =>
             {
                 RuleFor(player => player.DateOfBirth)
-                    .Must(date => date < DateTime.UtcNow)
+                    .Must(date => date!.Value.Date < DateTime.UtcNow.Date)
                     .WithMessage("DateOfBirth must be a date in the past.")
-                    .Must(date => date >= new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+                    .Must(date =>
+                        date!.Value.Date >= new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                    )
                     .WithMessage("DateOfBirth must be on or after January 1, 1900.");
             }
         );
