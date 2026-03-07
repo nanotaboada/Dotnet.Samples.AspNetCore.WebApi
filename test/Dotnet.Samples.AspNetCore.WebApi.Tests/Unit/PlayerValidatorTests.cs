@@ -212,7 +212,7 @@ public class PlayerValidatorTests
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
-        request.DateOfBirth = new DateTime(1899, 12, 31);
+        request.DateOfBirth = new DateTime(1899, 12, 31, 0, 0, 0, DateTimeKind.Utc);
         var validator = CreateValidator();
 
         // Act
