@@ -9,12 +9,18 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Unit;
 
 public class PlayerValidatorTests
 {
+    private sealed class FakeTimeProvider(DateTimeOffset utcNow) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => utcNow;
+    }
+
     private static PlayerRequestModelValidator CreateValidator(
-        Mock<IPlayerRepository>? repositoryMock = null
+        Mock<IPlayerRepository>? repositoryMock = null,
+        TimeProvider? timeProvider = null
     )
     {
         var mock = repositoryMock ?? new Mock<IPlayerRepository>();
-        return new PlayerRequestModelValidator(mock.Object);
+        return new PlayerRequestModelValidator(mock.Object, timeProvider);
     }
 
     /* -------------------------------------------------------------------------
@@ -213,9 +219,11 @@ public class PlayerValidatorTests
     public async Task ValidateAsync_DateOfBirthToday_ReturnsValidationError()
     {
         // Arrange
+        var fixedNow = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var timeProvider = new FakeTimeProvider(fixedNow);
         var request = PlayerFakes.MakeRequestModelForCreate();
-        request.DateOfBirth = DateTime.UtcNow.Date; // rule: strictly < UtcNow.Date
-        var validator = CreateValidator();
+        request.DateOfBirth = fixedNow.Date; // same "today" the validator sees
+        var validator = CreateValidator(timeProvider: timeProvider);
 
         // Act
         var result = await validator.ValidateAsync(request);

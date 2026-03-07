@@ -146,14 +146,12 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is CreatedAtRoute<PlayerResponseModel> httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<CreatedAtRoute<PlayerResponseModel>>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status201Created);
-            httpResult.Value.Should().BeEquivalentTo(response);
-            httpResult.RouteName.Should().Be("RetrieveBySquadNumber");
-            httpResult.RouteValues.Should().NotBeNull().And.ContainKey("squadNumber");
-        }
+        var httpResult = result.Should().BeOfType<CreatedAtRoute<PlayerResponseModel>>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status201Created);
+        httpResult.Value.Should().BeEquivalentTo(response);
+        httpResult.RouteName.Should().Be("RetrieveBySquadNumber");
+        httpResult.RouteValues.Should().NotBeNull().And.ContainKey("squadNumber");
+        httpResult.RouteValues!["squadNumber"].Should().Be(response.Dorsal);
     }
 
     /* -------------------------------------------------------------------------
