@@ -14,6 +14,9 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities;
 /// </summary>
 public static class PlayerFakes
 {
+    private static string? FormatBirth(DateTime? dateOfBirth) =>
+        dateOfBirth.HasValue ? $"{dateOfBirth.Value:MMMM d, yyyy}" : null;
+
     /// <summary>
     /// Returns the starting 11 players with generated GUIDs for in-memory testing.
     /// Reuses production player data from PlayerData.MakeStarting11().
@@ -101,7 +104,7 @@ public static class PlayerFakes
         {
             FullName =
                 $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
-            Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+            Birth = FormatBirth(player.DateOfBirth),
             Dorsal = player.SquadNumber,
             Position = player.Position,
             Club = player.Team,
@@ -157,7 +160,7 @@ public static class PlayerFakes
         {
             FullName =
                 $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
-            Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+            Birth = FormatBirth(player.DateOfBirth),
             Dorsal = player.SquadNumber,
             Position = player.Position,
             Club = player.Team,
@@ -181,7 +184,7 @@ public static class PlayerFakes
                     {
                         FullName =
                             $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
-                        Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+                        Birth = FormatBirth(player.DateOfBirth),
                         Dorsal = player.SquadNumber,
                         Position = player.Position,
                         Club = player.Team,
