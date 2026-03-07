@@ -39,6 +39,18 @@ public class PlayerRequestModelValidator : AbstractValidator<PlayerRequestModel>
             .WithMessage("AbbrPosition is required.")
             .Must(Position.IsValidAbbr)
             .WithMessage("AbbrPosition is invalid.");
+
+        When(
+            player => player.DateOfBirth.HasValue,
+            () =>
+            {
+                RuleFor(player => player.DateOfBirth)
+                    .Must(date => date < DateTime.UtcNow)
+                    .WithMessage("DateOfBirth must be a date in the past.")
+                    .Must(date => date >= new DateTime(1900, 1, 1))
+                    .WithMessage("DateOfBirth must be on or after January 1, 1900.");
+            }
+        );
     }
 
     private async Task<bool> BeUniqueSquadNumber(

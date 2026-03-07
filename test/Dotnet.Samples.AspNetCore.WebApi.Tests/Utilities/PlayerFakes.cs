@@ -101,7 +101,7 @@ public static class PlayerFakes
         {
             FullName =
                 $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
-            Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+            Birth = player.DateOfBirth.HasValue ? $"{player.DateOfBirth.Value:MMMM d, yyyy}" : null,
             Dorsal = player.SquadNumber,
             Position = player.Position,
             Club = player.Team,
@@ -157,7 +157,7 @@ public static class PlayerFakes
         {
             FullName =
                 $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
-            Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+            Birth = player.DateOfBirth.HasValue ? $"{player.DateOfBirth.Value:MMMM d, yyyy}" : null,
             Dorsal = player.SquadNumber,
             Position = player.Position,
             Club = player.Team,
@@ -181,7 +181,9 @@ public static class PlayerFakes
                     {
                         FullName =
                             $"{player.FirstName} {(string.IsNullOrWhiteSpace(player.MiddleName) ? "" : player.MiddleName + " ")}{player.LastName}".Trim(),
-                        Birth = $"{player.DateOfBirth:MMMM d, yyyy}",
+                        Birth = player.DateOfBirth.HasValue
+                            ? $"{player.DateOfBirth.Value:MMMM d, yyyy}"
+                            : null,
                         Dorsal = player.SquadNumber,
                         Position = player.Position,
                         Club = player.Team,
