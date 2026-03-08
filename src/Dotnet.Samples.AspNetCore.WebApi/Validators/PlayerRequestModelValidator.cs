@@ -18,9 +18,13 @@ public class PlayerRequestModelValidator : AbstractValidator<PlayerRequestModel>
 {
     private readonly IPlayerRepository _playerRepository;
 
-    public PlayerRequestModelValidator(IPlayerRepository playerRepository)
+    public PlayerRequestModelValidator(
+        IPlayerRepository playerRepository,
+        TimeProvider? timeProvider = null
+    )
     {
         _playerRepository = playerRepository;
+        var clock = timeProvider ?? TimeProvider.System;
 
         RuleFor(player => player.FirstName).NotEmpty().WithMessage("FirstName is required.");
 
@@ -45,7 +49,7 @@ public class PlayerRequestModelValidator : AbstractValidator<PlayerRequestModel>
             () =>
             {
                 RuleFor(player => player.DateOfBirth)
-                    .Must(date => date!.Value.Date < DateTime.UtcNow.Date)
+                    .Must(date => date!.Value.Date < clock.GetUtcNow().Date)
                     .WithMessage("DateOfBirth must be a date in the past.")
                     .Must(date =>
                         date!.Value.Date >= new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc)

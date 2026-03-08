@@ -24,7 +24,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPostAsync_WhenValidatorReturnsErrors_ThenResponseStatusCodeShouldBe400BadRequest()
+    public async Task Post_Players_ValidationError_Returns400BadRequest()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -65,7 +65,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPostAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe409Conflict()
+    public async Task Post_Players_Existing_Returns409Conflict()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -108,7 +108,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPostAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe201Created()
+    public async Task Post_Players_NonExisting_Returns201Created()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -146,14 +146,12 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is CreatedAtRoute<PlayerRequestModel> httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<Created<PlayerResponseModel>>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status201Created);
-            httpResult.Value.Should().BeEquivalentTo(response);
-            httpResult.RouteName.Should().Be("GetById");
-            httpResult.RouteValues.Should().NotBeNull().And.ContainKey("id");
-        }
+        var httpResult = result.Should().BeOfType<CreatedAtRoute<PlayerResponseModel>>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status201Created);
+        httpResult.Value.Should().BeEquivalentTo(response);
+        httpResult.RouteName.Should().Be("RetrieveBySquadNumber");
+        httpResult.RouteValues.Should().NotBeNull().And.ContainKey("squadNumber");
+        httpResult.RouteValues!["squadNumber"].Should().Be(response.Dorsal);
     }
 
     /* -------------------------------------------------------------------------
@@ -162,7 +160,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenGetAsync_WhenServiceRetrieveAsyncReturnsListOfPlayers_ThenResponseShouldBeEquivalentToListOfPlayers()
+    public async Task Get_Players_Existing_ReturnsPlayers()
     {
         // Arrange
         var response = PlayerFakes.MakeResponseModelsForRetrieve();
@@ -187,7 +185,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenGetAsync_WhenServiceRetrieveAsyncReturnsEmptyList_ThenResponseStatusCodeShouldBe404NotFound()
+    public async Task Get_Players_NonExisting_Returns404NotFound()
     {
         // Arrange
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
@@ -209,7 +207,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenGetByIdAsync_WhenServiceRetrieveByIdAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
+    public async Task Get_PlayerById_NonExisting_Returns404NotFound()
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -234,7 +232,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenGetByIdAsync_WhenServiceRetrieveByIdAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe200Ok()
+    public async Task Get_PlayerById_Existing_Returns200OK()
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -260,7 +258,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenGetBySquadNumberAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
+    public async Task Get_PlayerBySquadNumber_NonExisting_Returns404NotFound()
     {
         // Arrange
         var squadNumber = 999;
@@ -285,7 +283,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenGetBySquadNumberAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe200Ok()
+    public async Task Get_PlayerBySquadNumber_Existing_Returns200OK()
     {
         // Arrange
         var squadNumber = 10;
@@ -317,7 +315,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPutAsync_WhenValidatorReturnsErrors_ThenResponseStatusCodeShouldBe400BadRequest()
+    public async Task Put_PlayerBySquadNumber_ValidationError_Returns400BadRequest()
     {
         // Arrange
         var squadNumber = 20;
@@ -361,7 +359,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPutAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
+    public async Task Put_PlayerBySquadNumber_NonExisting_Returns404NotFound()
     {
         // Arrange
         var squadNumber = 999;
@@ -403,7 +401,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenPutAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe204NoContent()
+    public async Task Put_PlayerBySquadNumber_Existing_Returns204NoContent()
     {
         // Arrange
         var squadNumber = 23;
@@ -446,7 +444,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenDeleteAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsNull_ThenResponseStatusCodeShouldBe404NotFound()
+    public async Task Delete_PlayerBySquadNumber_NonExisting_Returns404NotFound()
     {
         // Arrange
         var squadNumber = 999;
@@ -472,7 +470,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenDeleteAsync_WhenServiceRetrieveBySquadNumberAsyncReturnsPlayer_ThenResponseStatusCodeShouldBe204NoContent()
+    public async Task Delete_PlayerBySquadNumber_Existing_Returns204NoContent()
     {
         // Arrange
         var squadNumber = 26;

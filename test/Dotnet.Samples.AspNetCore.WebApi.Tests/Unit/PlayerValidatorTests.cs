@@ -9,12 +9,18 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Unit;
 
 public class PlayerValidatorTests
 {
+    private sealed class FakeTimeProvider(DateTimeOffset utcNow) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => utcNow;
+    }
+
     private static PlayerRequestModelValidator CreateValidator(
-        Mock<IPlayerRepository>? repositoryMock = null
+        Mock<IPlayerRepository>? repositoryMock = null,
+        TimeProvider? timeProvider = null
     )
     {
         var mock = repositoryMock ?? new Mock<IPlayerRepository>();
-        return new PlayerRequestModelValidator(mock.Object);
+        return new PlayerRequestModelValidator(mock.Object, timeProvider);
     }
 
     /* -------------------------------------------------------------------------
@@ -23,13 +29,13 @@ public class PlayerValidatorTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenRequestModelIsValid_ThenValidationShouldPass()
+    public async Task ValidateAsync_ValidRequest_ReturnsNoErrors()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
         var repositoryMock = new Mock<IPlayerRepository>();
         repositoryMock
-            .Setup(r => r.FindBySquadNumberAsync(request.SquadNumber))
+            .Setup(repository => repository.FindBySquadNumberAsync(request.SquadNumber))
             .ReturnsAsync(null as Player);
         var validator = CreateValidator(repositoryMock);
 
@@ -47,7 +53,7 @@ public class PlayerValidatorTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenFirstNameIsEmpty_ThenValidationShouldFail()
+    public async Task ValidateAsync_FirstNameEmpty_ReturnsValidationError()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -59,7 +65,7 @@ public class PlayerValidatorTests
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "FirstName");
+        result.Errors.Should().Contain(error => error.PropertyName == "FirstName");
     }
 
     /* -------------------------------------------------------------------------
@@ -68,7 +74,7 @@ public class PlayerValidatorTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenLastNameIsEmpty_ThenValidationShouldFail()
+    public async Task ValidateAsync_LastNameEmpty_ReturnsValidationError()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -80,7 +86,7 @@ public class PlayerValidatorTests
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "LastName");
+        result.Errors.Should().Contain(error => error.PropertyName == "LastName");
     }
 
     /* -------------------------------------------------------------------------
@@ -89,7 +95,7 @@ public class PlayerValidatorTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenSquadNumberIsNotGreaterThanZero_ThenValidationShouldFail()
+    public async Task ValidateAsync_SquadNumberNotGreaterThanZero_ReturnsValidationError()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -101,19 +107,19 @@ public class PlayerValidatorTests
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "SquadNumber");
+        result.Errors.Should().Contain(error => error.PropertyName == "SquadNumber");
     }
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenSquadNumberIsNotUnique_ThenValidationShouldFail()
+    public async Task ValidateAsync_SquadNumberNotUnique_ReturnsValidationError()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
         var existingPlayer = PlayerFakes.MakeNew();
         var repositoryMock = new Mock<IPlayerRepository>();
         repositoryMock
-            .Setup(r => r.FindBySquadNumberAsync(request.SquadNumber))
+            .Setup(repository => repository.FindBySquadNumberAsync(request.SquadNumber))
             .ReturnsAsync(existingPlayer);
         var validator = CreateValidator(repositoryMock);
 
@@ -124,7 +130,9 @@ public class PlayerValidatorTests
         result.IsValid.Should().BeFalse();
         result
             .Errors.Should()
-            .Contain(e => e.PropertyName == "SquadNumber" && e.ErrorMessage.Contains("unique"));
+            .Contain(error =>
+                error.PropertyName == "SquadNumber" && error.ErrorMessage.Contains("unique")
+            );
     }
 
     /* -------------------------------------------------------------------------
@@ -133,7 +141,7 @@ public class PlayerValidatorTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenAbbrPositionIsEmpty_ThenValidationShouldFail()
+    public async Task ValidateAsync_AbbrPositionEmpty_ReturnsValidationError()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -145,12 +153,12 @@ public class PlayerValidatorTests
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "AbbrPosition");
+        result.Errors.Should().Contain(error => error.PropertyName == "AbbrPosition");
     }
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenAbbrPositionIsInvalid_ThenValidationShouldFail()
+    public async Task ValidateAsync_AbbrPositionInvalid_ReturnsValidationError()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -162,7 +170,7 @@ public class PlayerValidatorTests
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "AbbrPosition");
+        result.Errors.Should().Contain(error => error.PropertyName == "AbbrPosition");
     }
 
     /* -------------------------------------------------------------------------
@@ -171,14 +179,14 @@ public class PlayerValidatorTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenDateOfBirthIsNull_ThenValidationShouldPass()
+    public async Task ValidateAsync_DateOfBirthNull_ReturnsNoErrors()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
         request.DateOfBirth = null;
         var repositoryMock = new Mock<IPlayerRepository>();
         repositoryMock
-            .Setup(r => r.FindBySquadNumberAsync(request.SquadNumber))
+            .Setup(repository => repository.FindBySquadNumberAsync(request.SquadNumber))
             .ReturnsAsync(null as Player);
         var validator = CreateValidator(repositoryMock);
 
@@ -191,7 +199,7 @@ public class PlayerValidatorTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenDateOfBirthIsInTheFuture_ThenValidationShouldFail()
+    public async Task ValidateAsync_DateOfBirthInFuture_ReturnsValidationError()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -203,12 +211,31 @@ public class PlayerValidatorTests
 
         // Assert
         result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(error => error.PropertyName == "DateOfBirth");
+    }
+
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task ValidateAsync_DateOfBirthToday_ReturnsValidationError()
+    {
+        // Arrange
+        var fixedNow = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var timeProvider = new FakeTimeProvider(fixedNow);
+        var request = PlayerFakes.MakeRequestModelForCreate();
+        request.DateOfBirth = fixedNow.Date; // same "today" the validator sees
+        var validator = CreateValidator(timeProvider: timeProvider);
+
+        // Act
+        var result = await validator.ValidateAsync(request);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == "DateOfBirth");
     }
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task GivenValidateAsync_WhenDateOfBirthIsBeforeYear1900_ThenValidationShouldFail()
+    public async Task ValidateAsync_DateOfBirthBeforeYear1900_ReturnsValidationError()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -220,6 +247,27 @@ public class PlayerValidatorTests
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "DateOfBirth");
+        result.Errors.Should().Contain(error => error.PropertyName == "DateOfBirth");
+    }
+
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task ValidateAsync_DateOfBirthOnJanuary1st1900_ReturnsNoErrors()
+    {
+        // Arrange
+        var request = PlayerFakes.MakeRequestModelForCreate();
+        request.DateOfBirth = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc); // rule: >= 1900-01-01
+        var repositoryMock = new Mock<IPlayerRepository>();
+        repositoryMock
+            .Setup(r => r.FindBySquadNumberAsync(request.SquadNumber))
+            .ReturnsAsync(null as Player);
+        var validator = CreateValidator(repositoryMock);
+
+        // Act
+        var result = await validator.ValidateAsync(request);
+
+        // Assert
+        result.IsValid.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
     }
 }
