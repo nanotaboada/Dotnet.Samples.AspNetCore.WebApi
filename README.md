@@ -6,7 +6,10 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanotaboada_Dotnet.Samples.AspNetCore.WebApi&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nanotaboada_Dotnet.Samples.AspNetCore.WebApi)
 [![codecov](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/graph/badge.svg?token=hgJc1rStJ9)](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/badge)](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
-[![License: MIT](https://img.shields.io/badge/License-MIT-white.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-3DA639.svg)](https://opensource.org/licenses/MIT)
+![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-contributing-8662C5?logo=githubcopilot&logoColor=white&labelColor=181818)
+![Claude](https://img.shields.io/badge/Claude-Sonnet_4.6-D97757?logo=claude&logoColor=white&labelColor=181818)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi?utm_source=oss&utm_medium=github&utm_campaign=nanotaboada%2FDotnet.Samples.AspNetCore.WebApi&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews&labelColor=181818)
 
 Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Manage football player data with SQLite, Entity Framework Core, Swagger documentation, and in-memory caching.
 
@@ -20,7 +23,7 @@ Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Ma
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Testing](#testing)
-- [Docker](#docker)
+- [Containers](#containers)
 - [Releases](#releases)
 - [Environment Variables](#environment-variables)
 - [Command Summary](#command-summary)
@@ -33,7 +36,7 @@ Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Ma
 - 📚 **Interactive API exploration** - Swagger UI documentation with health monitoring endpoints
 - ⚡ **Performance optimizations** - In-memory caching, rate limiting, and efficient database queries
 - 🧪 **High test coverage** - xUnit tests with automated reporting to Codecov and SonarCloud
-- 📖 **Token-efficient documentation** - AGENTS.md + auto-loaded Copilot instructions for AI-assisted development
+- 📖 **Token-efficient documentation** - Custom instructions with coding guidelines, architecture rules, and agent workflows for AI-assisted development
 - 🐳 **Full containerization** - Multi-stage Docker builds with Docker Compose orchestration
 - 🔄 **Complete CI/CD pipeline** - Automated testing, code quality checks, Docker publishing, and GitHub releases
 - 🏟️ **Stadium-themed semantic versioning** - Memorable, alphabetical release names from World Cup venues
@@ -95,6 +98,7 @@ test/Dotnet.Samples.AspNetCore.WebApi.Tests/
 Dependencies flow from data layer through repositories and services to controllers. External dependencies (AutoMapper, FluentValidation, Serilog, Swashbuckle) integrate at their respective layers.
 
 ```mermaid
+
 %%{init: {
   "theme": "default",
   "themeVariables": {
@@ -105,43 +109,39 @@ Dependencies flow from data layer through repositories and services to controlle
     "clusterBorder": "#ddd"
   }
 }}%%
-graph TB
-    %% Layer 1: Data
-    Data[Data]
 
-    %% Layer 2: Models
+graph RL
+
     Models[Models]
 
-    %% Layer 3: Repositories
-    Repositories[Repositories]
-
-    %% Layer 4: Services
     subgraph Layer4[" "]
+        Data[Data]
+        Repositories[Repositories]
+    end
+
+    subgraph Layer3[" "]
         Services[Services]
         Mappings[Mappings]
         AutoMapper[AutoMapper]
         MemoryCache[MemoryCache]
     end
 
-    %% Layer 5: Controllers
-    subgraph Layer5[" "]
+    subgraph Layer2[" "]
         Controllers[Controllers]
         Validators[Validators]
         FluentValidation[FluentValidation]
         Swashbuckle[Swashbuckle]
     end
 
-    %% Layer 6: Program
-    subgraph Layer6[" "]
+    subgraph Layer1[" "]
         Program[Program]
         Configurations[Configurations]
         Serilog[Serilog]
     end
 
-    %% Tests (separate)
     Tests[Tests]
 
-    %% Main Application Flow
+    %% Application flow
     Data --> Models
     Models --> Repositories
     Repositories --> Services
@@ -164,8 +164,8 @@ graph TB
     MemoryCache --> Services
 
     %% Tests connections
-    Controllers -.-> Tests
     Services -.-> Tests
+    Controllers -.-> Tests
 
     %% Node styling with stroke-width
     classDef core fill:#b3d9ff,stroke:#6db1ff,stroke-width:2px,color:#555,font-family:monospace;
@@ -191,7 +191,7 @@ Interactive API documentation is available via Swagger UI at `https://localhost:
 
 - `GET /players` - List all players
 - `GET /players/{id}` - Get player by ID (requires authentication)
-- `GET /players/squad/{squadNumber}` - Get player by squad number
+- `GET /players/{squadNumber}` - Get player by squad number
 - `POST /players` - Create new player
 - `PUT /players/{squadNumber}` - Update player
 - `DELETE /players/{squadNumber}` - Remove player
@@ -252,7 +252,7 @@ reportgenerator -reports:coverage/**/coverage.cobertura.xml -targetdir:coverage 
 
 Tests are located in the `test/` directory and use xUnit for unit testing. Coverage reports are generated for controllers and services only.
 
-## Docker
+## Containers
 
 This project includes full Docker support with multi-stage builds and Docker Compose for easy deployment.
 
@@ -356,7 +356,7 @@ The application can be configured using environment variables for different scen
 
 ### Local Development (`.vscode/launch.json`)
 
-For local debugging and development:
+For local development and debugging:
 
 ```bash
 # ASP.NET Core environment mode
@@ -372,9 +372,9 @@ ASPNETCORE_DETAILEDERRORS=1
 ASPNETCORE_SHUTDOWNTIMEOUTSECONDS=3
 ```
 
-### Docker Deployment (`compose.yaml`)
+### Container Deployment (`compose.yaml`)
 
-For containerized production deployment:
+For production deployment:
 
 ```bash
 # Database storage path
