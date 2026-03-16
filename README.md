@@ -165,6 +165,7 @@ graph RL
     %% Layer 4
     Models --> Repositories
     Models --> Data
+    Data --> Repositories
     EFCore --> Data
     EFCore -.-> Repositories
 
