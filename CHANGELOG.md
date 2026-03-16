@@ -46,6 +46,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- Upgrade AutoMapper from 14.x to 16.1.1 to resolve high-severity security vulnerability GHSA-rvv3-g6hj-g44x (#414)
 - Rename test methods to follow Microsoft .NET naming standard (#396)
 
 ### Deprecated
