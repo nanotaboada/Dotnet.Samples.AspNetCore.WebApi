@@ -44,7 +44,7 @@ Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Ma
 ## Tech Stack
 
 | Category | Technology |
-|----------|------------|
+| -------- | ---------- |
 | **Framework** | [.NET 10](https://github.com/dotnet/core) (LTS) |
 | **Web Framework** | [ASP.NET Core 10.0](https://github.com/dotnet/aspnetcore) |
 | **API Documentation** | [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) (OpenAPI 3.0) |
@@ -95,7 +95,7 @@ test/Dotnet.Samples.AspNetCore.WebApi.Tests/
 
 ## Architecture
 
-Dependencies flow from data layer through repositories and services to controllers. External dependencies (AutoMapper, FluentValidation, Serilog, Swashbuckle) integrate at their respective layers.
+Layered architecture with dependency injection via constructors and interface-based contracts.
 
 ```mermaid
 
@@ -112,11 +112,19 @@ Dependencies flow from data layer through repositories and services to controlle
 
 graph RL
 
-    Models[Models]
+    Tests[Tests]
 
-    subgraph Layer4[" "]
-        Data[Data]
-        Repositories[Repositories]
+    subgraph Layer1[" "]
+        Program[Program]
+        Serilog[Serilog]
+        Swashbuckle[Swashbuckle]
+    end
+
+    subgraph Layer2[" "]
+        Controllers[Controllers]
+        Validators[Validators]
+        FluentValidation[FluentValidation]
+        AspNetCore[ASP.NET Core]
     end
 
     subgraph Layer3[" "]
@@ -126,44 +134,42 @@ graph RL
         MemoryCache[MemoryCache]
     end
 
-    subgraph Layer2[" "]
-        Controllers[Controllers]
-        Validators[Validators]
-        FluentValidation[FluentValidation]
-        Swashbuckle[Swashbuckle]
+    subgraph Layer4[" "]
+        Repositories[Repositories]
+        Data[Data]
+        EFCore[EF Core]
     end
 
-    subgraph Layer1[" "]
-        Program[Program]
-        Configurations[Configurations]
-        Serilog[Serilog]
-    end
+    Models[Models]
 
-    Tests[Tests]
+    %% Strong dependencies
 
-    %% Application flow
-    Data --> Models
-    Models --> Repositories
-    Repositories --> Services
-    Services --> Controllers
+    %% Layer 1
     Controllers --> Program
-
-    %% Layer connections
-    Models --> Mappings
-    Validators --> Controllers
-    Mappings --> Services
-
-    %% External Dependencies connections
-    AutoMapper --> Mappings
-    FluentValidation --> Validators
     Serilog --> Program
-    Swashbuckle --> Controllers
+    Swashbuckle --> Program
 
-    %% Supporting Features connections
-    Configurations --> Program
+    %% Layer 2
+    Services --> Controllers
+    Validators --> Controllers
+    FluentValidation --> Validators
+    AspNetCore --> Controllers
+
+    %% Layer 3
+    Repositories --> Services
     MemoryCache --> Services
+    Mappings --> Services
+    AutoMapper --> Mappings
+    Models --> Mappings
 
-    %% Tests connections
+    %% Layer 4
+    Models --> Repositories
+    Models --> Data
+    EFCore --> Data
+    EFCore -.-> Repositories
+
+    %% Soft dependencies
+
     Services -.-> Tests
     Controllers -.-> Tests
 
@@ -176,10 +182,30 @@ graph RL
     class Data,Models,Repositories,Services,Controllers,Program,Validators,Mappings core;
     class AutoMapper,FluentValidation,Serilog,Swashbuckle deps;
     class Tests test;
-    class Configurations,MemoryCache feat;
+    class AspNetCore,EFCore,MemoryCache feat;
 ```
 
-*Layered architecture: Core application flow (blue), supporting features (yellow), external dependencies (red), and test coverage (green). Not all dependencies are shown.*
+### Arrow Semantics
+
+Arrows point from a dependency toward its consumer. Solid arrows (`-->`) denote **strong (functional) dependencies**: the consumer actively invokes behavior — registering types with the IoC container, executing queries, applying mappings, or handling HTTP requests. Dotted arrows (`-.->`) denote **soft (structural) dependencies**: the consumer only references types or interfaces without invoking runtime behavior. This distinction follows UML's `«use»` dependency notation and classical coupling theory (Myers, 1978): strong arrows approximate *control or stamp coupling*, while soft arrows approximate *data coupling*, where only shared data structures cross the boundary.
+
+### Composition Root Pattern
+
+The `Program` module acts as the composition root — it is the sole site where dependencies are registered with the IoC container, wired via interfaces, and resolved at runtime by the ASP.NET Core host. Rather than explicit object construction, .NET relies on built-in dependency injection: `Program` registers services, repositories, DbContext, mappers, validators, and middleware, and the framework instantiates them on demand. This pattern enables dependency injection, improves testability, and ensures no other module bears responsibility for type registration or lifecycle management.
+
+### Layered Architecture
+
+The codebase is organized into four conceptual layers: Initialization (`Program`), HTTP (`Controllers`, `Validators`), Business (`Services`, `Mappings`), and Data (`Repositories`, `Data`).
+
+Framework packages and third-party dependencies are co-resident within the layer that consumes them: `Serilog` and `Swashbuckle` inside Initialization, `ASP.NET Core` and `FluentValidation` inside HTTP, `AutoMapper` inside Business, and `EF Core` inside Data. `ASP.NET Core`, `EF Core`, and `MemoryCache` are Microsoft platform packages (yellow); `AutoMapper`, `FluentValidation`, `Serilog`, and `Swashbuckle` are third-party packages (red).
+
+The `Models` package is a **cross-cutting type concern** — it defines shared entities and DTOs consumed across multiple layers via strong dependencies, without containing logic or behavior of its own. Strong dependencies flow strictly downward through the layers, preserving the layer rule: no layer reaches upward to invoke behavior in a layer above it.
+
+### Color Coding
+
+Core packages (blue) implement the application logic, supporting features (yellow) are Microsoft platform packages, third-party dependencies (red) are community packages, and tests (green) ensure code quality.
+
+*Simplified, conceptual view — not all components or dependencies are shown.*
 
 ## API Reference
 
@@ -387,7 +413,7 @@ STORAGE_PATH=/storage/players-sqlite3.db
 ## Command Summary
 
 | Command | Description |
-|---------|-------------|
+| ------- | ----------- |
 | `dotnet watch run --project src/...` | Start development server with hot reload |
 | `dotnet build` | Build the solution |
 | `dotnet test` | Run all tests |
