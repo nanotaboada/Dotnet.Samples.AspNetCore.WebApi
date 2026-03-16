@@ -9,10 +9,6 @@ updates:
     commit-message:
       include: scope
       prefix: "chore(deps): "
-    # Pin AutoMapper to 14.x line to avoid commercial v15.x upgrades
-    ignore:
-      - dependency-name: "AutoMapper"
-        update-types: ["version-update:semver-major"]
     groups:
       serilog:
         patterns:
@@ -34,10 +30,6 @@ updates:
     commit-message:
       include: scope
       prefix: "chore(deps): "
-    # Pin AutoMapper to 14.x line to avoid commercial v15.x upgrades
-    ignore:
-      - dependency-name: "AutoMapper"
-        update-types: ["version-update:semver-major"]
     groups:
       xunit:
         patterns:
