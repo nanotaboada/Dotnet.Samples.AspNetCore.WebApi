@@ -138,7 +138,7 @@ public static partial class ServiceCollectionExtensions
     /// <returns>The IServiceCollection for method chaining.</returns>
     public static IServiceCollection AddMappings(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(PlayerMappingProfile));
+        services.AddAutoMapper(config => config.AddProfile<PlayerMappingProfile>());
         return services;
     }
 
