@@ -199,7 +199,7 @@ The codebase is organized into four conceptual layers: Initialization (`Program`
 
 Framework packages and third-party dependencies are co-resident within the layer that consumes them: `Serilog` and `Swashbuckle` inside Initialization, `ASP.NET Core` and `FluentValidation` inside HTTP, `AutoMapper` inside Business, and `EF Core` inside Data. `ASP.NET Core`, `EF Core`, and `MemoryCache` are Microsoft platform packages (yellow); `AutoMapper`, `FluentValidation`, `Serilog`, and `Swashbuckle` are third-party packages (red).
 
-The `Models` package is a **cross-cutting type concern** — it defines shared entities and DTOs consumed across multiple layers via strong dependencies, without containing logic or behavior of its own. Strong dependencies flow strictly downward through the layers, preserving the layer rule: no layer reaches upward to invoke behavior in a layer above it.
+The `Models` package is a **cross-cutting type concern** — it defines shared entities and DTOs consumed across multiple layers via strong dependencies, without containing logic or behavior of its own. Dependencies always flow from consumers toward their lower-level types: each layer depends on (consumes) the layers below it, and no layer invokes behavior in a layer above it.
 
 ### Color Coding
 
