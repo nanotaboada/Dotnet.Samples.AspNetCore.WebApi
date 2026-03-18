@@ -218,10 +218,10 @@ Interactive API documentation is available via Swagger UI at `https://localhost:
 
 - `GET /players` - List all players
 - `GET /players/{id:Guid}` - Get player by ID (requires authentication)
-- `GET /players/{squadNumber:int}` - Get player by squad number
+- `GET /players/squadNumber/{squadNumber:int}` - Get player by squad number
 - `POST /players` - Create new player
-- `PUT /players/{squadNumber}` - Update player
-- `DELETE /players/{squadNumber}` - Remove player
+- `PUT /players/squadNumber/{squadNumber:int}` - Update player
+- `DELETE /players/squadNumber/{squadNumber:int}` - Remove player
 - `GET /health` - Health check
 
 For complete endpoint documentation with request/response schemas, explore the [interactive Swagger UI](https://localhost:9000/swagger/index.html).
