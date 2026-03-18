@@ -16,6 +16,8 @@ public class PlayerController(
     IValidator<PlayerRequestModel> validator
 ) : ControllerBase
 {
+    private const string NotFoundTitle = "Not Found";
+
     /* -------------------------------------------------------------------------
      * HTTP POST
      * ---------------------------------------------------------------------- */
@@ -104,7 +106,7 @@ public class PlayerController(
             logger.LogWarning("GET /players not found");
             return TypedResults.Problem(
                 statusCode: StatusCodes.Status404NotFound,
-                title: "Not Found",
+                title: NotFoundTitle,
                 detail: "No players were found.",
                 instance: HttpContext?.Request?.Path.ToString()
             );
@@ -134,7 +136,7 @@ public class PlayerController(
             logger.LogWarning("GET /players/{Id} not found", id);
             return TypedResults.Problem(
                 statusCode: StatusCodes.Status404NotFound,
-                title: "Not Found",
+                title: NotFoundTitle,
                 detail: $"Player with Id '{id}' was not found.",
                 instance: HttpContext?.Request?.Path.ToString()
             );
@@ -167,7 +169,7 @@ public class PlayerController(
             logger.LogWarning("GET /players/squadNumber/{SquadNumber} not found", squadNumber);
             return TypedResults.Problem(
                 statusCode: StatusCodes.Status404NotFound,
-                title: "Not Found",
+                title: NotFoundTitle,
                 detail: $"Player with Squad Number '{squadNumber}' was not found.",
                 instance: HttpContext?.Request?.Path.ToString()
             );
@@ -234,7 +236,7 @@ public class PlayerController(
             logger.LogWarning("PUT /players/squadNumber/{SquadNumber} not found", squadNumber);
             return TypedResults.Problem(
                 statusCode: StatusCodes.Status404NotFound,
-                title: "Not Found",
+                title: NotFoundTitle,
                 detail: $"Player with Squad Number '{squadNumber}' was not found.",
                 instance: HttpContext?.Request?.Path.ToString()
             );
@@ -242,7 +244,7 @@ public class PlayerController(
         await playerService.UpdateAsync(player);
         // Sanitize user-provided player data before logging to prevent log forging
         var sanitizedPlayerString = player
-            ?.ToString()
+            .ToString()
             ?.Replace(Environment.NewLine, string.Empty)
             .Replace("\r", string.Empty)
             .Replace("\n", string.Empty);
