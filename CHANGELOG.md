@@ -46,20 +46,41 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
-- Upgrade AutoMapper from 14.x to 16.1.1 to resolve high-severity security vulnerability GHSA-rvv3-g6hj-g44x (#414)
-- Rename test methods to follow Microsoft .NET naming standard (#396)
-
 ### Deprecated
 
 ### Removed
 
 ### Fixed
 
+### Security
+
+---
+
+## [2.0.0 - centenario] - 2026-03-18
+
+### Changed
+
+- Refactor error responses to use RFC 7807 Problem Details (#418)
+- Add `/squadNumber/` path segment to PUT and DELETE routes — **breaking change** (#418)
+- Extract `NotFoundTitle` constant and remove redundant null-conditional operator (#418)
+- Rename test methods to follow Microsoft .NET naming standard (#396)
+- Upgrade AutoMapper from 14.x to 16.1.1 (#414) — see Security section
+- Bump FluentAssertions from 8.8.0 to 8.9.0 (#417)
+- Bump coverlet.collector from 8.0.0 to 8.0.1 (#419)
+- Bump softprops/action-gh-release from 2.6.0 to 2.6.1 (#416)
+
+### Fixed
+
+- Add squad number mismatch guard in `PutAsync` and update README (#418)
+- Strengthen test assertions for Problem Details responses (#418)
 - Fix broken 201 assertion in controller test for `Post_Players_NonExisting` (#396)
 - Add missing edge case tests for `UpdateAsync`, `DeleteAsync`, and
   `DateOfBirth` boundary validation (#396)
 
 ### Security
+
+- Sanitize player data before logging to prevent log forging
+- Upgrade AutoMapper from 14.x to 16.1.1 to resolve high-severity security vulnerability GHSA-rvv3-g6hj-g44x (#414)
 
 ---
 
