@@ -189,11 +189,16 @@ public class PlayerController(
             return TypedResults.NotFound();
         }
         await playerService.UpdateAsync(player);
-        // codeql[cs/log-forging] Serilog structured logging with @ destructuring automatically escapes control characters
+        // Sanitize user-provided player data before logging to prevent log forging
+        var sanitizedPlayerString = player?
+            .ToString()?
+            .Replace(Environment.NewLine, string.Empty)
+            .Replace("\r", string.Empty)
+            .Replace("\n", string.Empty);
         logger.LogInformation(
-            "PUT /players/squadNumber/{SquadNumber} updated: {@Player}",
+            "PUT /players/squadNumber/{SquadNumber} updated: {Player}",
             squadNumber,
-            player
+            sanitizedPlayerString
         );
         return TypedResults.NoContent();
     }
