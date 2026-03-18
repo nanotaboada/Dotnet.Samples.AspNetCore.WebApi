@@ -16,6 +16,8 @@ public class PlayerController(
     IValidator<PlayerRequestModel> validator
 ) : ControllerBase
 {
+    private const string NotFoundTitle = "Not Found";
+
     /* -------------------------------------------------------------------------
      * HTTP POST
      * ---------------------------------------------------------------------- */
@@ -30,8 +32,8 @@ public class PlayerController(
     [HttpPost(Name = "Create")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<IResult> PostAsync([FromBody] PlayerRequestModel player)
     {
         var validation = await validator.ValidateAsync(player);
@@ -39,11 +41,15 @@ public class PlayerController(
         if (!validation.IsValid)
         {
             var errors = validation
-                .Errors.Select(error => new { error.PropertyName, error.ErrorMessage })
-                .ToArray();
+                .Errors.GroupBy(e => e.PropertyName)
+                .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
 
             logger.LogWarning("POST /players validation failed: {@Errors}", errors);
-            return TypedResults.BadRequest(errors);
+            return TypedResults.ValidationProblem(
+                errors,
+                detail: "See the errors field for details.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
 
         if (await playerService.RetrieveBySquadNumberAsync(player.SquadNumber) != null)
@@ -52,7 +58,16 @@ public class PlayerController(
                 "POST /players failed: Player with Squad Number {SquadNumber} already exists",
                 player.SquadNumber
             );
-            return TypedResults.Conflict();
+            return TypedResults.Conflict(
+                new ProblemDetails
+                {
+                    Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409",
+                    Title = "Conflict",
+                    Status = StatusCodes.Status409Conflict,
+                    Detail = $"Player with Squad Number '{player.SquadNumber}' already exists.",
+                    Instance = HttpContext?.Request?.Path.ToString()
+                }
+            );
         }
 
         var result = await playerService.CreateAsync(player);
@@ -76,7 +91,7 @@ public class PlayerController(
     /// <response code="404">Not Found</response>
     [HttpGet(Name = "Retrieve")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetAsync()
     {
         var players = await playerService.RetrieveAsync();
@@ -89,7 +104,12 @@ public class PlayerController(
         else
         {
             logger.LogWarning("GET /players not found");
-            return TypedResults.NotFound();
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotFoundTitle,
+                detail: "No players were found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
     }
 
@@ -102,7 +122,7 @@ public class PlayerController(
     [Authorize]
     [HttpGet("{id:Guid}", Name = "RetrieveById")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetByIdAsync([FromRoute] Guid id)
     {
         var player = await playerService.RetrieveByIdAsync(id);
@@ -114,7 +134,12 @@ public class PlayerController(
         else
         {
             logger.LogWarning("GET /players/{Id} not found", id);
-            return TypedResults.NotFound();
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotFoundTitle,
+                detail: $"Player with Id '{id}' was not found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
     }
 
@@ -124,16 +149,16 @@ public class PlayerController(
     /// <param name="squadNumber">The Squad Number of the Player</param>
     /// <response code="200">OK</response>
     /// <response code="404">Not Found</response>
-    [HttpGet("{squadNumber:int}", Name = "RetrieveBySquadNumber")]
+    [HttpGet("squadNumber/{squadNumber:int}", Name = "RetrieveBySquadNumber")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetBySquadNumberAsync([FromRoute] int squadNumber)
     {
         var player = await playerService.RetrieveBySquadNumberAsync(squadNumber);
         if (player != null)
         {
             logger.LogInformation(
-                "GET /players/{SquadNumber} retrieved: {@Player}",
+                "GET /players/squadNumber/{SquadNumber} retrieved: {@Player}",
                 squadNumber,
                 player
             );
@@ -141,8 +166,13 @@ public class PlayerController(
         }
         else
         {
-            logger.LogWarning("GET /players/{SquadNumber} not found", squadNumber);
-            return TypedResults.NotFound();
+            logger.LogWarning("GET /players/squadNumber/{SquadNumber} not found", squadNumber);
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotFoundTitle,
+                detail: $"Player with Squad Number '{squadNumber}' was not found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
     }
 
@@ -159,11 +189,11 @@ public class PlayerController(
     /// <response code="204">No Content</response>
     /// <response code="400">Bad Request</response>
     /// <response code="404">Not Found</response>
-    [HttpPut("{squadNumber:int}", Name = "Update")]
+    [HttpPut("squadNumber/{squadNumber:int}", Name = "Update")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> PutAsync(
         [FromRoute] int squadNumber,
         [FromBody] PlayerRequestModel player
@@ -173,24 +203,56 @@ public class PlayerController(
         if (!validation.IsValid)
         {
             var errors = validation
-                .Errors.Select(error => new { error.PropertyName, error.ErrorMessage })
-                .ToArray();
+                .Errors.GroupBy(e => e.PropertyName)
+                .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
 
             logger.LogWarning(
-                "PUT /players/{SquadNumber} validation failed: {@Errors}",
+                "PUT /players/squadNumber/{SquadNumber} validation failed: {@Errors}",
                 squadNumber,
                 errors
             );
-            return TypedResults.BadRequest(errors);
+            return TypedResults.ValidationProblem(
+                errors,
+                detail: "See the errors field for details.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
+        }
+        if (player.SquadNumber != squadNumber)
+        {
+            logger.LogWarning(
+                "PutAsync squad number mismatch: route {SquadNumber} != body {PlayerSquadNumber}",
+                squadNumber,
+                player.SquadNumber
+            );
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Bad Request",
+                detail: "Squad number in the route does not match squad number in the request body.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
         if (await playerService.RetrieveBySquadNumberAsync(squadNumber) == null)
         {
-            logger.LogWarning("PUT /players/{SquadNumber} not found", squadNumber);
-            return TypedResults.NotFound();
+            logger.LogWarning("PUT /players/squadNumber/{SquadNumber} not found", squadNumber);
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotFoundTitle,
+                detail: $"Player with Squad Number '{squadNumber}' was not found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
         await playerService.UpdateAsync(player);
-        // codeql[cs/log-forging] Serilog structured logging with @ destructuring automatically escapes control characters
-        logger.LogInformation("PUT /players/{SquadNumber} updated: {@Player}", squadNumber, player);
+        // Sanitize user-provided player data before logging to prevent log forging
+        var sanitizedPlayerString = player
+            .ToString()
+            ?.Replace(Environment.NewLine, string.Empty)
+            .Replace("\r", string.Empty)
+            .Replace("\n", string.Empty);
+        logger.LogInformation(
+            "PUT /players/squadNumber/{SquadNumber} updated: {Player}",
+            squadNumber,
+            sanitizedPlayerString
+        );
         return TypedResults.NoContent();
     }
 
@@ -204,20 +266,25 @@ public class PlayerController(
     /// <param name="squadNumber">The Squad Number of the Player</param>
     /// <response code="204">No Content</response>
     /// <response code="404">Not Found</response>
-    [HttpDelete("{squadNumber:int}", Name = "Delete")]
+    [HttpDelete("squadNumber/{squadNumber:int}", Name = "Delete")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> DeleteAsync([FromRoute] int squadNumber)
     {
         if (await playerService.RetrieveBySquadNumberAsync(squadNumber) == null)
         {
-            logger.LogWarning("DELETE /players/{SquadNumber} not found", squadNumber);
-            return TypedResults.NotFound();
+            logger.LogWarning("DELETE /players/squadNumber/{SquadNumber} not found", squadNumber);
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Not Found",
+                detail: $"Player with Squad Number '{squadNumber}' was not found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
         else
         {
             await playerService.DeleteAsync(squadNumber);
-            logger.LogInformation("DELETE /players/{SquadNumber} deleted", squadNumber);
+            logger.LogInformation("DELETE /players/squadNumber/{SquadNumber} deleted", squadNumber);
             return TypedResults.NoContent();
         }
     }
