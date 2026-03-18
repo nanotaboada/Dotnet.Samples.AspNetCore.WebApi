@@ -30,7 +30,7 @@ public class PlayerController(
     [HttpPost(Name = "Create")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IResult> PostAsync([FromBody] PlayerRequestModel player)
     {
@@ -39,11 +39,15 @@ public class PlayerController(
         if (!validation.IsValid)
         {
             var errors = validation
-                .Errors.Select(error => new { error.PropertyName, error.ErrorMessage })
-                .ToArray();
+                .Errors.GroupBy(e => e.PropertyName)
+                .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
 
             logger.LogWarning("POST /players validation failed: {@Errors}", errors);
-            return TypedResults.BadRequest(errors);
+            return TypedResults.ValidationProblem(
+                errors,
+                detail: "See the errors field for details.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
 
         if (await playerService.RetrieveBySquadNumberAsync(player.SquadNumber) != null)
@@ -76,7 +80,7 @@ public class PlayerController(
     /// <response code="404">Not Found</response>
     [HttpGet(Name = "Retrieve")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetAsync()
     {
         var players = await playerService.RetrieveAsync();
@@ -89,7 +93,12 @@ public class PlayerController(
         else
         {
             logger.LogWarning("GET /players not found");
-            return TypedResults.NotFound();
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Not Found",
+                detail: "No players were found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
     }
 
@@ -102,7 +111,7 @@ public class PlayerController(
     [Authorize]
     [HttpGet("{id:Guid}", Name = "RetrieveById")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetByIdAsync([FromRoute] Guid id)
     {
         var player = await playerService.RetrieveByIdAsync(id);
@@ -114,7 +123,12 @@ public class PlayerController(
         else
         {
             logger.LogWarning("GET /players/{Id} not found", id);
-            return TypedResults.NotFound();
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Not Found",
+                detail: $"Player with Id '{id}' was not found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
     }
 
@@ -126,7 +140,7 @@ public class PlayerController(
     /// <response code="404">Not Found</response>
     [HttpGet("squadNumber/{squadNumber:int}", Name = "RetrieveBySquadNumber")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetBySquadNumberAsync([FromRoute] int squadNumber)
     {
         var player = await playerService.RetrieveBySquadNumberAsync(squadNumber);
@@ -142,7 +156,12 @@ public class PlayerController(
         else
         {
             logger.LogWarning("GET /players/squadNumber/{SquadNumber} not found", squadNumber);
-            return TypedResults.NotFound();
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Not Found",
+                detail: $"Player with Squad Number '{squadNumber}' was not found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
     }
 
@@ -162,8 +181,8 @@ public class PlayerController(
     [HttpPut("squadNumber/{squadNumber:int}", Name = "Update")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> PutAsync(
         [FromRoute] int squadNumber,
         [FromBody] PlayerRequestModel player
@@ -173,20 +192,29 @@ public class PlayerController(
         if (!validation.IsValid)
         {
             var errors = validation
-                .Errors.Select(error => new { error.PropertyName, error.ErrorMessage })
-                .ToArray();
+                .Errors.GroupBy(e => e.PropertyName)
+                .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
 
             logger.LogWarning(
                 "PUT /players/squadNumber/{SquadNumber} validation failed: {@Errors}",
                 squadNumber,
                 errors
             );
-            return TypedResults.BadRequest(errors);
+            return TypedResults.ValidationProblem(
+                errors,
+                detail: "See the errors field for details.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
         if (await playerService.RetrieveBySquadNumberAsync(squadNumber) == null)
         {
             logger.LogWarning("PUT /players/squadNumber/{SquadNumber} not found", squadNumber);
-            return TypedResults.NotFound();
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Not Found",
+                detail: $"Player with Squad Number '{squadNumber}' was not found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
         if (player.SquadNumber != squadNumber)
         {
@@ -195,11 +223,11 @@ public class PlayerController(
                 squadNumber,
                 player.SquadNumber
             );
-            return TypedResults.BadRequest(
-                new
-                {
-                    Error = "Squad number in the route does not match squad number in the request body."
-                }
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Bad Request",
+                detail: "Squad number in the route does not match squad number in the request body.",
+                instance: HttpContext?.Request?.Path.ToString()
             );
         }
         await playerService.UpdateAsync(player);
@@ -229,13 +257,18 @@ public class PlayerController(
     /// <response code="404">Not Found</response>
     [HttpDelete("squadNumber/{squadNumber:int}", Name = "Delete")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> DeleteAsync([FromRoute] int squadNumber)
     {
         if (await playerService.RetrieveBySquadNumberAsync(squadNumber) == null)
         {
             logger.LogWarning("DELETE /players/squadNumber/{SquadNumber} not found", squadNumber);
-            return TypedResults.NotFound();
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Not Found",
+                detail: $"Player with Squad Number '{squadNumber}' was not found.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
         }
         else
         {
