@@ -188,11 +188,25 @@ public class PlayerController(
             logger.LogWarning("PUT /players/squadNumber/{SquadNumber} not found", squadNumber);
             return TypedResults.NotFound();
         }
+        if (player.SquadNumber != squadNumber)
+        {
+            logger.LogWarning(
+                "PutAsync squad number mismatch: route {SquadNumber} != body {PlayerSquadNumber}",
+                squadNumber,
+                player.SquadNumber
+            );
+            return TypedResults.BadRequest(
+                new
+                {
+                    Error = "Squad number in the route does not match squad number in the request body."
+                }
+            );
+        }
         await playerService.UpdateAsync(player);
         // Sanitize user-provided player data before logging to prevent log forging
-        var sanitizedPlayerString = player?
-            .ToString()?
-            .Replace(Environment.NewLine, string.Empty)
+        var sanitizedPlayerString = player
+            ?.ToString()
+            ?.Replace(Environment.NewLine, string.Empty)
             .Replace("\r", string.Empty)
             .Replace("\n", string.Empty);
         logger.LogInformation(
