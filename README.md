@@ -330,14 +330,16 @@ To create a new release, follow this workflow:
 
 #### 1. Update CHANGELOG.md
 
-First, document your changes in [CHANGELOG.md](CHANGELOG.md):
+First, create a `release/` branch and document your changes in [CHANGELOG.md](CHANGELOG.md):
 
 ```bash
+git checkout -b release/1.0.0-azteca
 # Move items from [Unreleased] to new release section
 # Example: [1.0.0 - azteca] - 2026-01-22
 git add CHANGELOG.md
 git commit -m "docs: prepare changelog for v1.0.0-azteca release"
-git push
+git push origin release/1.0.0-azteca
+# Open a PR, get it reviewed, and merge into master
 ```
 
 #### 2. Create and Push Tag
