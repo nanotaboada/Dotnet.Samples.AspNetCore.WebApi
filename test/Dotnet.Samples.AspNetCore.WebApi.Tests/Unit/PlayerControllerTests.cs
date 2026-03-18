@@ -5,6 +5,7 @@ using FluentAssertions;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Unit;
@@ -56,11 +57,8 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is ValidationProblem httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<ValidationProblem>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-        }
+        var httpResult = result.Should().BeOfType<ValidationProblem>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
     [Fact]
@@ -99,11 +97,8 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is Conflict httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<Conflict>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status409Conflict);
-        }
+        var httpResult = result.Should().BeOfType<Conflict<ProblemDetails>>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status409Conflict);
     }
 
     [Fact]
@@ -174,13 +169,10 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveAsync(), Times.Once);
-        if (result is Ok<List<PlayerResponseModel>> httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<Ok<List<PlayerResponseModel>>>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
-            httpResult.Value.Should().NotBeNull().And.BeOfType<List<PlayerResponseModel>>();
-            httpResult.Value.Should().BeEquivalentTo(response);
-        }
+        var httpResult = result.Should().BeOfType<Ok<List<PlayerResponseModel>>>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+        httpResult.Value.Should().NotBeNull().And.BeOfType<List<PlayerResponseModel>>();
+        httpResult.Value.Should().BeEquivalentTo(response);
     }
 
     [Fact]
@@ -198,11 +190,8 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveAsync(), Times.Once);
-        if (result is ProblemHttpResult httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<ProblemHttpResult>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        }
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
     [Fact]
@@ -223,11 +212,8 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<Guid>()), Times.Once);
-        if (result is ProblemHttpResult httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<ProblemHttpResult>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        }
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
     [Fact]
@@ -247,13 +233,10 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveByIdAsync(It.IsAny<Guid>()), Times.Once);
-        if (result is Ok<PlayerResponseModel> httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<Ok<PlayerResponseModel>>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
-            httpResult.Value.Should().NotBeNull().And.BeOfType<PlayerResponseModel>();
-            httpResult.Value.Should().BeEquivalentTo(response);
-        }
+        var httpResult = result.Should().BeOfType<Ok<PlayerResponseModel>>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+        httpResult.Value.Should().NotBeNull().And.BeOfType<PlayerResponseModel>();
+        httpResult.Value.Should().BeEquivalentTo(response);
     }
 
     [Fact]
@@ -274,11 +257,8 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
-        if (result is ProblemHttpResult httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<ProblemHttpResult>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        }
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
     [Fact]
@@ -300,13 +280,10 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
-        if (result is Ok<PlayerResponseModel> httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<Ok<PlayerResponseModel>>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
-            httpResult.Value.Should().NotBeNull().And.BeOfType<PlayerResponseModel>();
-            httpResult.Value.Should().BeEquivalentTo(response);
-        }
+        var httpResult = result.Should().BeOfType<Ok<PlayerResponseModel>>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+        httpResult.Value.Should().NotBeNull().And.BeOfType<PlayerResponseModel>();
+        httpResult.Value.Should().BeEquivalentTo(response);
     }
 
     /* -------------------------------------------------------------------------
@@ -350,11 +327,8 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is ValidationProblem httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<ValidationProblem>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-        }
+        var httpResult = result.Should().BeOfType<ValidationProblem>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
     [Fact]
@@ -379,7 +353,10 @@ public class PlayerControllerTests : IDisposable
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         // Act
-        var result = await controller.PutAsync(squadNumber, It.IsAny<PlayerRequestModel>());
+        var result = await controller.PutAsync(
+            squadNumber,
+            new PlayerRequestModel { SquadNumber = squadNumber }
+        );
 
         // Assert
         service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
@@ -392,11 +369,8 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        if (result is ProblemHttpResult httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<ProblemHttpResult>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        }
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
     [Fact]
@@ -427,13 +401,10 @@ public class PlayerControllerTests : IDisposable
         var result = await controller.PutAsync(squadNumber, request);
 
         // Assert
-        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
+        service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Never);
         service.Verify(service => service.UpdateAsync(It.IsAny<PlayerRequestModel>()), Times.Never);
-        if (result is ProblemHttpResult httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<ProblemHttpResult>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-        }
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
     [Fact]
@@ -468,11 +439,8 @@ public class PlayerControllerTests : IDisposable
         // Assert
         service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
         service.Verify(service => service.UpdateAsync(It.IsAny<PlayerRequestModel>()), Times.Once);
-        if (result is NoContent httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<NoContent>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status204NoContent);
-        }
+        var httpResult = result.Should().BeOfType<NoContent>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status204NoContent);
     }
 
     /* -------------------------------------------------------------------------
@@ -498,11 +466,8 @@ public class PlayerControllerTests : IDisposable
         // Assert
         service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
         service.Verify(service => service.DeleteAsync(It.IsAny<int>()), Times.Never);
-        if (result is ProblemHttpResult httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<ProblemHttpResult>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        }
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
     [Fact]
@@ -526,11 +491,8 @@ public class PlayerControllerTests : IDisposable
         // Assert
         service.Verify(service => service.RetrieveBySquadNumberAsync(It.IsAny<int>()), Times.Once);
         service.Verify(service => service.DeleteAsync(It.IsAny<int>()), Times.Once);
-        if (result is NoContent httpResult)
-        {
-            httpResult.Should().NotBeNull().And.BeOfType<NoContent>();
-            httpResult.StatusCode.Should().Be(StatusCodes.Status204NoContent);
-        }
+        var httpResult = result.Should().BeOfType<NoContent>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status204NoContent);
     }
 
     protected virtual void Dispose(bool disposing)

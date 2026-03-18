@@ -31,7 +31,7 @@ public class PlayerController(
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status201Created)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<IResult> PostAsync([FromBody] PlayerRequestModel player)
     {
         var validation = await validator.ValidateAsync(player);
@@ -56,7 +56,16 @@ public class PlayerController(
                 "POST /players failed: Player with Squad Number {SquadNumber} already exists",
                 player.SquadNumber
             );
-            return TypedResults.Conflict();
+            return TypedResults.Conflict(
+                new ProblemDetails
+                {
+                    Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409",
+                    Title = "Conflict",
+                    Status = StatusCodes.Status409Conflict,
+                    Detail = $"Player with Squad Number '{player.SquadNumber}' already exists.",
+                    Instance = HttpContext?.Request?.Path.ToString()
+                }
+            );
         }
 
         var result = await playerService.CreateAsync(player);
@@ -206,16 +215,6 @@ public class PlayerController(
                 instance: HttpContext?.Request?.Path.ToString()
             );
         }
-        if (await playerService.RetrieveBySquadNumberAsync(squadNumber) == null)
-        {
-            logger.LogWarning("PUT /players/squadNumber/{SquadNumber} not found", squadNumber);
-            return TypedResults.Problem(
-                statusCode: StatusCodes.Status404NotFound,
-                title: "Not Found",
-                detail: $"Player with Squad Number '{squadNumber}' was not found.",
-                instance: HttpContext?.Request?.Path.ToString()
-            );
-        }
         if (player.SquadNumber != squadNumber)
         {
             logger.LogWarning(
@@ -227,6 +226,16 @@ public class PlayerController(
                 statusCode: StatusCodes.Status400BadRequest,
                 title: "Bad Request",
                 detail: "Squad number in the route does not match squad number in the request body.",
+                instance: HttpContext?.Request?.Path.ToString()
+            );
+        }
+        if (await playerService.RetrieveBySquadNumberAsync(squadNumber) == null)
+        {
+            logger.LogWarning("PUT /players/squadNumber/{SquadNumber} not found", squadNumber);
+            return TypedResults.Problem(
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Not Found",
+                detail: $"Player with Squad Number '{squadNumber}' was not found.",
                 instance: HttpContext?.Request?.Path.ToString()
             );
         }
