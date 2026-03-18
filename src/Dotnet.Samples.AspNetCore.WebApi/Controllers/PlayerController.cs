@@ -124,7 +124,7 @@ public class PlayerController(
     /// <param name="squadNumber">The Squad Number of the Player</param>
     /// <response code="200">OK</response>
     /// <response code="404">Not Found</response>
-    [HttpGet("{squadNumber:int}", Name = "RetrieveBySquadNumber")]
+    [HttpGet("squadNumber/{squadNumber:int}", Name = "RetrieveBySquadNumber")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetBySquadNumberAsync([FromRoute] int squadNumber)
@@ -133,7 +133,7 @@ public class PlayerController(
         if (player != null)
         {
             logger.LogInformation(
-                "GET /players/{SquadNumber} retrieved: {@Player}",
+                "GET /players/squadNumber/{SquadNumber} retrieved: {@Player}",
                 squadNumber,
                 player
             );
@@ -141,7 +141,7 @@ public class PlayerController(
         }
         else
         {
-            logger.LogWarning("GET /players/{SquadNumber} not found", squadNumber);
+            logger.LogWarning("GET /players/squadNumber/{SquadNumber} not found", squadNumber);
             return TypedResults.NotFound();
         }
     }
@@ -159,7 +159,7 @@ public class PlayerController(
     /// <response code="204">No Content</response>
     /// <response code="400">Bad Request</response>
     /// <response code="404">Not Found</response>
-    [HttpPut("{squadNumber:int}", Name = "Update")]
+    [HttpPut("squadNumber/{squadNumber:int}", Name = "Update")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -177,7 +177,7 @@ public class PlayerController(
                 .ToArray();
 
             logger.LogWarning(
-                "PUT /players/{SquadNumber} validation failed: {@Errors}",
+                "PUT /players/squadNumber/{SquadNumber} validation failed: {@Errors}",
                 squadNumber,
                 errors
             );
@@ -185,12 +185,16 @@ public class PlayerController(
         }
         if (await playerService.RetrieveBySquadNumberAsync(squadNumber) == null)
         {
-            logger.LogWarning("PUT /players/{SquadNumber} not found", squadNumber);
+            logger.LogWarning("PUT /players/squadNumber/{SquadNumber} not found", squadNumber);
             return TypedResults.NotFound();
         }
         await playerService.UpdateAsync(player);
         // codeql[cs/log-forging] Serilog structured logging with @ destructuring automatically escapes control characters
-        logger.LogInformation("PUT /players/{SquadNumber} updated: {@Player}", squadNumber, player);
+        logger.LogInformation(
+            "PUT /players/squadNumber/{SquadNumber} updated: {@Player}",
+            squadNumber,
+            player
+        );
         return TypedResults.NoContent();
     }
 
@@ -204,20 +208,20 @@ public class PlayerController(
     /// <param name="squadNumber">The Squad Number of the Player</param>
     /// <response code="204">No Content</response>
     /// <response code="404">Not Found</response>
-    [HttpDelete("{squadNumber:int}", Name = "Delete")]
+    [HttpDelete("squadNumber/{squadNumber:int}", Name = "Delete")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> DeleteAsync([FromRoute] int squadNumber)
     {
         if (await playerService.RetrieveBySquadNumberAsync(squadNumber) == null)
         {
-            logger.LogWarning("DELETE /players/{SquadNumber} not found", squadNumber);
+            logger.LogWarning("DELETE /players/squadNumber/{SquadNumber} not found", squadNumber);
             return TypedResults.NotFound();
         }
         else
         {
             await playerService.DeleteAsync(squadNumber);
-            logger.LogInformation("DELETE /players/{SquadNumber} deleted", squadNumber);
+            logger.LogInformation("DELETE /players/squadNumber/{SquadNumber} deleted", squadNumber);
             return TypedResults.NoContent();
         }
     }
