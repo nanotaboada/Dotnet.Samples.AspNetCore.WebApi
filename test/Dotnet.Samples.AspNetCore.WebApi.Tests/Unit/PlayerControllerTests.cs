@@ -2,6 +2,7 @@ using Dotnet.Samples.AspNetCore.WebApi.Controllers;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities;
 using FluentAssertions;
+using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -31,12 +32,17 @@ public class PlayerControllerTests : IDisposable
         var request = PlayerFakes.MakeRequestModelForCreate();
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         validator
-            .Setup(validator => validator.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .Setup(validator =>
+                validator.ValidateAsync(
+                    It.IsAny<IValidationContext>(),
+                    It.IsAny<CancellationToken>()
+                )
+            )
             .ReturnsAsync(
                 new ValidationResult(
                     new List<ValidationFailure>
                     {
-                        new("SquadNumber", "SquadNumber must be greater than 0.")
+                        new("SquadNumber", "SquadNumber must be greater than 0."),
                     }
                 )
             );
@@ -52,7 +58,7 @@ public class PlayerControllerTests : IDisposable
         validator.Verify(
             validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 ),
             Times.Once
@@ -75,7 +81,7 @@ public class PlayerControllerTests : IDisposable
         validator
             .Setup(validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 )
             )
@@ -92,7 +98,7 @@ public class PlayerControllerTests : IDisposable
         validator.Verify(
             validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 ),
             Times.Once
@@ -116,7 +122,7 @@ public class PlayerControllerTests : IDisposable
         validator
             .Setup(validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 )
             )
@@ -136,7 +142,7 @@ public class PlayerControllerTests : IDisposable
         validator.Verify(
             validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 ),
             Times.Once
@@ -303,12 +309,17 @@ public class PlayerControllerTests : IDisposable
         var controller = new PlayerController(service.Object, logger.Object, validator.Object);
 
         validator
-            .Setup(validator => validator.ValidateAsync(request, It.IsAny<CancellationToken>()))
+            .Setup(validator =>
+                validator.ValidateAsync(
+                    It.IsAny<IValidationContext>(),
+                    It.IsAny<CancellationToken>()
+                )
+            )
             .ReturnsAsync(
                 new ValidationResult(
                     new List<ValidationFailure>
                     {
-                        new("SquadNumber", "SquadNumber must be greater than 0.")
+                        new("SquadNumber", "SquadNumber must be greater than 0."),
                     }
                 )
             );
@@ -322,7 +333,7 @@ public class PlayerControllerTests : IDisposable
         validator.Verify(
             validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 ),
             Times.Once
@@ -344,7 +355,7 @@ public class PlayerControllerTests : IDisposable
         validator
             .Setup(validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 )
             )
@@ -364,7 +375,7 @@ public class PlayerControllerTests : IDisposable
         validator.Verify(
             validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 ),
             Times.Once
@@ -389,7 +400,7 @@ public class PlayerControllerTests : IDisposable
         validator
             .Setup(validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 )
             )
@@ -425,7 +436,7 @@ public class PlayerControllerTests : IDisposable
         validator
             .Setup(validator =>
                 validator.ValidateAsync(
-                    It.IsAny<PlayerRequestModel>(),
+                    It.IsAny<IValidationContext>(),
                     It.IsAny<CancellationToken>()
                 )
             )
