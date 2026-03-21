@@ -36,7 +36,11 @@ public class PlayerController(
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<IResult> PostAsync([FromBody] PlayerRequestModel player)
     {
-        var validation = await validator.ValidateAsync(player);
+        // Use the "Create" rule set, which includes BeUniqueSquadNumber.
+        var validation = await validator.ValidateAsync(
+            player,
+            options => options.IncludeRuleSets("Create")
+        );
 
         if (!validation.IsValid)
         {
@@ -199,7 +203,13 @@ public class PlayerController(
         [FromBody] PlayerRequestModel player
     )
     {
-        var validation = await validator.ValidateAsync(player);
+        // Use the "Update" rule set, which omits BeUniqueSquadNumber.
+        // The player being updated already exists in the database, so a
+        // uniqueness check on its own squad number would always fail.
+        var validation = await validator.ValidateAsync(
+            player,
+            options => options.IncludeRuleSets("Update")
+        );
         if (!validation.IsValid)
         {
             var errors = validation

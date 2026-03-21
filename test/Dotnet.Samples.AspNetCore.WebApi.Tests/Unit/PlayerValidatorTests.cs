@@ -3,6 +3,7 @@ using Dotnet.Samples.AspNetCore.WebApi.Repositories;
 using Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities;
 using Dotnet.Samples.AspNetCore.WebApi.Validators;
 using FluentAssertions;
+using FluentValidation;
 using Moq;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Unit;
@@ -40,7 +41,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator(repositoryMock);
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeTrue();
@@ -61,7 +65,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator();
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -82,7 +89,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator();
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -103,7 +113,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator();
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -124,7 +137,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator(repositoryMock);
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -133,6 +149,33 @@ public class PlayerValidatorTests
             .Contain(error =>
                 error.PropertyName == "SquadNumber" && error.ErrorMessage.Contains("unique")
             );
+    }
+
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task ValidateAsync_SquadNumber_BelongsToPlayerBeingUpdated_ReturnsNoErrors()
+    {
+        // Arrange
+        // Simulate a PUT request for an existing player: the squad number in the
+        // body matches the one already in the database. The "Update" rule set must
+        // not run BeUniqueSquadNumber, otherwise this valid request would be rejected.
+        var request = PlayerFakes.MakeRequestModelForUpdate(10);
+        var existingPlayer = PlayerFakes.MakeFromStarting11(10);
+        var repositoryMock = new Mock<IPlayerRepository>();
+        repositoryMock
+            .Setup(repository => repository.FindBySquadNumberAsync(request.SquadNumber))
+            .ReturnsAsync(existingPlayer);
+        var validator = CreateValidator(repositoryMock);
+
+        // Act
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Update")
+        );
+
+        // Assert
+        result.IsValid.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
     }
 
     /* -------------------------------------------------------------------------
@@ -149,7 +192,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator();
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -166,7 +212,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator();
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -191,7 +240,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator(repositoryMock);
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeTrue();
@@ -207,7 +259,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator();
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -226,7 +281,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator(timeProvider: timeProvider);
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -243,7 +301,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator();
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -264,7 +325,10 @@ public class PlayerValidatorTests
         var validator = CreateValidator(repositoryMock);
 
         // Act
-        var result = await validator.ValidateAsync(request);
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
 
         // Assert
         result.IsValid.Should().BeTrue();
