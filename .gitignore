@@ -2,3 +2,4 @@ logs/
 bin/
 obj/
 TestResults/
+.claude/settings.local.json

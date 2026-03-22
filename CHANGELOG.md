@@ -44,15 +44,16 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+- Add SonarCloud configuration via `sonar-project.properties` with CPD exclusions for test files and `PlayerRequestModelValidator` (#426)
+- Add bug report issue template (`.github/ISSUE_TEMPLATE/bug_report.md`) (#426)
+
 ### Changed
 
-### Deprecated
-
-### Removed
+- Bump `codecov/codecov-action` from 5.5.2 to 5.5.3 (#423)
 
 ### Fixed
 
-### Security
+- Scope `BeUniqueSquadNumber` validator to `"Create"` rule set to prevent false rejection of valid `PUT` requests (#424)
 
 ---
 
@@ -195,6 +196,7 @@ The CD workflow automatically:
 
 ---
 
-[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.1.0-bernabeu...HEAD
+[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.0.0-centenario...HEAD
+[2.0.0 - centenario]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.1.0-bernabeu...v2.0.0-centenario
 [1.1.0 - bernabeu]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.0.0-azteca...v1.1.0-bernabeu
 [1.0.0 - azteca]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/releases/tag/v1.0.0-azteca
