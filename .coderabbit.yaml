@@ -2,7 +2,7 @@
 # https://docs.coderabbit.ai/getting-started/configure-coderabbit
 
 # CodeRabbit Configuration
-# Optimized for .NET 8 / ASP.NET Core Web API project
+# Optimized for .NET 10 / ASP.NET Core Web API project
 
 language: en-US
 early_access: true
@@ -80,16 +80,18 @@ reviews:
     - path: "test/**/*.cs"
       instructions: |
         - Tests should use xUnit, Moq, and FluentAssertions
-        - Verify test naming follows Given_When_Then pattern
+        - Verify test naming follows the two-pattern convention (exactly 3 underscore-delimited segments):
+          - Controller tests: {HttpMethod}_{Resource}_{Condition}_Returns{Outcome} (e.g. Get_Players_Existing_ReturnsPlayers)
+          - Service/Validator tests: {MethodName}_{StateUnderTest}_{ExpectedBehavior} (e.g. RetrieveAsync_CacheMiss_QueriesRepositoryAndCachesResult)
         - Check that mocks are properly configured
         - Ensure async tests use Task return type
-        - Validate test data uses faker patterns
+        - Validate test data uses PlayerFakes factory methods from test/Utilities/
         - Tests should use [Fact] and [Theory] attributes with [Trait("Category", "Unit")]
 
     - path: "**/Dockerfile"
       instructions: |
         - Verify multi-stage builds are used
-        - Check that .NET 8 SDK and runtime versions match
+        - Check that .NET 10 SDK and runtime versions match
         - Ensure non-root user is used for security
         - Validate HEALTHCHECK instruction is present
 
@@ -101,7 +103,7 @@ reviews:
 
     - path: "**/*.csproj"
       instructions: |
-        - Verify .NET 8 (net8.0) target framework
+        - Verify .NET 10 (net10.0) target framework
         - Check that nullable reference types are enabled
         - Ensure package versions are up to date
         - Validate that ImplicitUsings is enabled
@@ -345,7 +347,9 @@ code_generation:
       - path: "test/**/*.cs"
         instructions: |
           - Use xUnit framework with [Fact] and [Theory] attributes
-          - Follow Given_When_Then naming pattern for test methods
+          - Follow the two-pattern naming convention (exactly 3 underscore-delimited segments):
+            - Controller tests: {HttpMethod}_{Resource}_{Condition}_Returns{Outcome}
+            - Service/Validator tests: {MethodName}_{StateUnderTest}_{ExpectedBehavior}
           - Use [Trait("Category", "Unit")] attribute for all unit tests
           - Use Moq for mocking dependencies
           - Use FluentAssertions for readable assertions

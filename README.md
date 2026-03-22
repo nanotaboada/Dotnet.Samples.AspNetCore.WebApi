@@ -7,6 +7,7 @@
 [![codecov](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/graph/badge.svg?token=hgJc1rStJ9)](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/badge)](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-3DA639.svg)](https://opensource.org/licenses/MIT)
+![Dependabot](https://img.shields.io/badge/Dependabot-contributing-025E8C?logo=dependabot&logoColor=white&labelColor=181818)
 ![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-contributing-8662C5?logo=githubcopilot&logoColor=white&labelColor=181818)
 ![Claude](https://img.shields.io/badge/Claude-Sonnet_4.6-D97757?logo=claude&logoColor=white&labelColor=181818)
 ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi?utm_source=oss&utm_medium=github&utm_campaign=nanotaboada%2FDotnet.Samples.AspNetCore.WebApi&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews&labelColor=181818)
@@ -82,15 +83,23 @@ src/Dotnet.Samples.AspNetCore.WebApi/
 ├── Validators/                 # FluentValidation rules
 │   └── PlayerRequestModelValidator.cs
 ├── Configurations/             # Swagger, rate limiting config
+├── Enums/                      # Domain enumerations (e.g. Position)
 ├── Extensions/                 # Service registration extensions
+├── Middlewares/                # Custom ASP.NET Core middleware
 ├── Utilities/                  # Helper classes
 ├── Migrations/                 # EF Core migrations
 └── storage/                    # Pre-seeded SQLite database
 
 test/Dotnet.Samples.AspNetCore.WebApi.Tests/
-└── Unit/                       # Unit tests with xUnit
-    ├── PlayerControllerTests.cs
-    └── PlayerServiceTests.cs
+├── Unit/                       # Unit tests with xUnit
+│   ├── PlayerControllerTests.cs
+│   ├── PlayerServiceTests.cs
+│   └── PlayerValidatorTests.cs
+└── Utilities/                  # Shared test helpers
+    ├── DatabaseFakes.cs
+    ├── PlayerFakes.cs
+    ├── PlayerMocks.cs
+    └── PlayerStubs.cs
 ```
 
 ## Architecture
@@ -421,6 +430,7 @@ STORAGE_PATH=/storage/players-sqlite3.db
 | `dotnet build` | Build the solution |
 | `dotnet test` | Run all tests |
 | `dotnet test --collect:"XPlat Code Coverage"` | Run tests with coverage report |
+| `dotnet csharpier .` | Format source code |
 | `dotnet ef migrations add <Name>` | Create a new migration |
 | `dotnet ef database update` | Apply migrations |
 | `./scripts/run-migrations-and-copy-database.sh` | Regenerate database with seed data |
