@@ -2,54 +2,129 @@
 
 ## Overview
 
-REST API for managing football players built with ASP.NET Core 10. Implements CRUD operations with a layered architecture, EF Core + SQLite persistence, FluentValidation, AutoMapper, and in-memory caching. Part of a cross-language comparison study (Go, Java, Python, Rust, TypeScript).
+REST API for managing football players built with ASP.NET Core 10. Implements CRUD operations with a layered architecture, EF Core + SQLite persistence, FluentValidation, AutoMapper, and in-memory caching. Part of a cross-language comparison study (Go, Java, Python, Rust, TypeScript). Primarily a learning and reference project — clarity and educational value take precedence over brevity.
 
 ## Tech Stack
 
-- **Language**: C# (.NET 10 LTS)
-- **Framework**: ASP.NET Core (MVC controllers)
-- **ORM**: Entity Framework Core 10
-- **Database**: SQLite
-- **Mapping**: AutoMapper
-- **Validation**: FluentValidation
-- **Caching**: `IMemoryCache` (1-hour TTL)
-- **Logging**: Serilog (structured, console + file)
-- **Testing**: xUnit + Moq + FluentAssertions
-- **Formatting**: CSharpier
-- **Containerization**: Docker
+| Category        | Technology                          |
+|-----------------|-------------------------------------|
+| Language        | C# (.NET 10 LTS)                    |
+| Framework       | ASP.NET Core (MVC controllers)      |
+| ORM             | Entity Framework Core 10            |
+| Database        | SQLite                              |
+| Mapping         | AutoMapper                          |
+| Validation      | FluentValidation                    |
+| Caching         | `IMemoryCache` (1-hour TTL)         |
+| Logging         | Serilog (structured, console + file)|
+| Testing         | xUnit + Moq + FluentAssertions      |
+| Formatting      | CSharpier                           |
+| Containerization| Docker                              |
 
 ## Structure
 
-```text
+```tree
 src/Dotnet.Samples.AspNetCore.WebApi/
 ├── Controllers/        — HTTP handlers; minimal logic, delegate to services        [HTTP layer]
 ├── Services/           — Business logic + IMemoryCache caching                     [business layer]
 ├── Repositories/       — Generic Repository<T> + specific implementations          [data layer]
-├── Models/             — Player entity + DTOs
-├── Validators/         — FluentValidation (structure only; business rules in services)
-├── Profiles/           — AutoMapper profiles
-├── Data/               — DbContext + DbInitializer
-└── Storage/            — SQLite database file
+├── Models/             — Player entity + request/response DTOs
+├── Validators/         — FluentValidation validators (one per request model)
+├── Mappings/           — AutoMapper profiles (PlayerMappingProfile)
+├── Enums/              — Position abbreviations and other domain enumerations
+├── Extensions/         — IServiceCollection extension methods (service registration)
+├── Configurations/     — Options classes bound from appsettings.json
+├── Middlewares/        — Custom ASP.NET Core middleware
+├── Data/               — DbContext + DbInitializer (seed data)
+└── Storage/            — SQLite database file (players.db)
 
 test/Dotnet.Samples.AspNetCore.WebApi.Tests/
-├── ControllersTests/
-└── ServicesTests/
+├── Unit/               — Unit tests (controllers, services, validators)
+└── Utilities/          — Shared test helpers: PlayerFakes, PlayerMocks, PlayerStubs
 ```
 
 **Layer rule**: `Controller → Service → Repository → Database`. Controllers must not access repositories directly. Business logic must not live in controllers.
 
+**Cross-cutting**: `Program.cs` wires health checks (`GET /health`), rate limiting, CORS (dev only), and Swagger UI (dev only). Serilog is configured at host level. All validators are registered via `AddValidatorsFromAssemblyContaining<PlayerRequestModelValidator>()`.
+
 ## Coding Guidelines
 
-- **Naming**: PascalCase (public members), camelCase (private fields)
+- **Naming**: PascalCase (public members), camelCase (private fields with `_` prefix)
 - **DI**: Primary constructors everywhere
 - **Async**: All I/O operations use `async`/`await`; no `ConfigureAwait(false)` (unnecessary in ASP.NET Core)
 - **Reads**: Use `AsNoTracking()` for all EF Core read queries
-- **Errors**: RFC 7807 Problem Details for all error responses
+- **Errors**: RFC 7807 Problem Details (`TypedResults.Problem` / `TypedResults.ValidationProblem`) for all error responses
 - **Logging**: Structured logging via `ILogger<T>`; never `Console.Write`
-- **Tests**: xUnit + Moq + FluentAssertions; naming convention per layer:
-  - Controller: `{HttpMethod}_{Resource}_{Condition}_Returns{Outcome}` (e.g. `Get_Players_Existing_ReturnsPlayers`)
-  - Service / Validator: `{MethodName}_{StateUnderTest}_{ExpectedBehavior}` (e.g. `RetrieveAsync_CacheMiss_QueriesRepositoryAndCachesResult`)
 - **Avoid**: synchronous EF Core APIs, controller business logic, static service/repository classes
+
+### Test naming conventions
+
+Tests live under `test/.../Unit/`. Two naming patterns, strictly by layer:
+
+| Layer                | Pattern                                                       | Example                                                          |
+|----------------------|---------------------------------------------------------------|------------------------------------------------------------------|
+| Controller           | `{HttpMethod}_{Resource}_{Condition}_Returns{Outcome}`        | `Get_Players_Existing_ReturnsPlayers`                            |
+| Service / Validator  | `{MethodName}_{StateUnderTest}_{ExpectedBehavior}`            | `RetrieveAsync_CacheMiss_QueriesRepositoryAndCachesResult`       |
+
+Each pattern has exactly three underscore-delimited segments. Do not add a fourth segment.
+
+### FluentValidation rule sets
+
+Validators use CRUD-named rule sets to make intent explicit. Use `RuleSet("Create", ...)` and `RuleSet("Update", ...)` — never anonymous / default rules.
+
+```csharp
+// "Create" rule set — POST /players
+// Includes BeUniqueSquadNumber to prevent duplicate squad numbers on insert.
+RuleSet("Create", () => {
+    RuleFor(p => p.SquadNumber)
+        .MustAsync(BeUniqueSquadNumber).WithMessage("SquadNumber must be unique.");
+    // ... other rules
+});
+
+// "Update" rule set — PUT /players/squadNumber/{n}
+// BeUniqueSquadNumber intentionally omitted: the player already exists in DB.
+RuleSet("Update", () => {
+    // ... same structural rules, no uniqueness check
+});
+```
+
+Controllers must call the appropriate rule set explicitly:
+
+```csharp
+// POST
+await validator.ValidateAsync(player, opts => opts.IncludeRuleSets("Create"));
+// PUT
+await validator.ValidateAsync(player, opts => opts.IncludeRuleSets("Update"));
+```
+
+### Mocking validators in controller tests
+
+`ValidateAsync(T, Action<ValidationStrategy<T>>)` is a FluentValidation extension method. Internally it calls `ValidateAsync(IValidationContext, CancellationToken)`. Moq must target the **interface overload**, not the generic one:
+
+```csharp
+// ✅ Correct — matches the overload actually called at runtime
+_validatorMock
+    .Setup(v => v.ValidateAsync(It.IsAny<IValidationContext>(), It.IsAny<CancellationToken>()))
+    .ReturnsAsync(new ValidationResult());
+
+// ❌ Wrong — targets a different overload; mock is never hit → NullReferenceException
+_validatorMock
+    .Setup(v => v.ValidateAsync(It.IsAny<PlayerRequestModel>(), It.IsAny<CancellationToken>()))
+    .ReturnsAsync(new ValidationResult());
+```
+
+Add `using FluentValidation;` to any test file that calls the rule set overload.
+
+### Test utilities
+
+`test/.../Utilities/` contains shared helpers used across all unit tests:
+
+| Class           | Purpose                                                                 |
+|-----------------|-------------------------------------------------------------------------|
+| `PlayerFakes`   | Deterministic in-memory objects: `MakeNew()`, `MakeRequestModelForCreate()`, `MakeRequestModelForUpdate(n)`, `MakeFromStarting11(n)` |
+| `PlayerMocks`   | Pre-configured `Mock<T>` setups for common scenarios                    |
+| `PlayerStubs`   | Simple stub implementations where Moq would be overkill                 |
+
+Always prefer `PlayerFakes` factory methods over constructing test data inline.
 
 ## Commands
 
@@ -69,7 +144,7 @@ docker compose up
 1. Update `CHANGELOG.md` `[Unreleased]` section (Added / Changed / Fixed / Removed)
 2. `dotnet build --configuration Release` — must succeed
 3. `dotnet test --settings .runsettings` — all tests must pass
-4. Verify code formatting with CSharpier
+4. `dotnet csharpier .` — format; fix any reported issues
 5. Commit message follows Conventional Commits format (enforced by commitlint)
 
 ### Commits
@@ -98,6 +173,7 @@ Example: `feat(api): add player search endpoint (#123)`
 - Application configuration (`appsettings.json`)
 - API contracts (breaking DTO changes)
 - Caching strategy or TTL values
+- FluentValidation rule set structure (adding or removing rule sets affects controller callers and tests)
 
 ### Never modify
 
@@ -105,10 +181,11 @@ Example: `feat(api): add player search endpoint (#123)`
 - `.runsettings` coverage thresholds
 - Port configuration (9000)
 - Database type (SQLite — demo/dev only)
+- CD pipeline tag format (`vX.Y.Z-stadium`) or the stadium name sequence — names are assigned sequentially A→Z from the list in `CHANGELOG.md`; the next name is always the next unused letter
 
 ### Key workflows
 
-**Add an endpoint**: Add DTO in `Models/` → update `PlayerMappingProfile` in `Mappings/` (AutoMapper) → add repository method(s) in `Repositories/` → add service method in `Services/` → add controller action in `Controllers/` → add validator in `Validators/` → add tests → run pre-commit checks.
+**Add an endpoint**: Add DTO in `Models/` → update `PlayerMappingProfile` in `Mappings/` → add repository method(s) in `Repositories/` → add service method in `Services/` → add controller action in `Controllers/` → add/update validator rule set in `Validators/` → add tests in `test/.../Unit/` → run pre-commit checks.
 
 **Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → reset `Storage/players.db` → update tests → run `dotnet test`.
 
@@ -117,6 +194,5 @@ Example: `feat(api): add player search endpoint (#123)`
 ```text
 feat(scope): description (#issue)
 
-Co-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>
-Co-authored-by: Claude <noreply@anthropic.com>
+Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
