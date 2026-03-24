@@ -4,7 +4,7 @@
 [![.NET CD](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet-cd.yml/badge.svg)](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/dotnet-cd.yml)
 [![CodeQL](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/actions/workflows/github-code-scanning/codeql)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanotaboada_Dotnet.Samples.AspNetCore.WebApi&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nanotaboada_Dotnet.Samples.AspNetCore.WebApi)
-[![codecov](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/graph/badge.svg?token=hgJc1rStJ9)](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
+[![codecov](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/branch/master/graph/badge.svg?token=hgJc1rStJ9)](https://codecov.io/gh/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![CodeFactor](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/badge)](https://www.codefactor.io/repository/github/nanotaboada/Dotnet.Samples.AspNetCore.WebApi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-3DA639.svg)](https://opensource.org/licenses/MIT)
 ![Dependabot](https://img.shields.io/badge/Dependabot-contributing-025E8C?logo=dependabot&logoColor=white&labelColor=181818)
@@ -197,23 +197,23 @@ graph RL
 
 ### Arrow Semantics
 
-Arrows point from a dependency toward its consumer. Solid arrows (`-->`) denote **strong (functional) dependencies**: the consumer actively invokes behavior — registering types with the IoC container, executing queries, applying mappings, or handling HTTP requests. Dotted arrows (`-.->`) denote **soft (structural) dependencies**: the consumer only references types or interfaces without invoking runtime behavior. This distinction follows UML's `«use»` dependency notation and classical coupling theory (Myers, 1978): strong arrows approximate *control or stamp coupling*, while soft arrows approximate *data coupling*, where only shared data structures cross the boundary.
+Arrows follow the injection direction: `A --> B` means A is injected into B. Solid arrows (`-->`) represent active ASP.NET Core dependencies — services registered with the IoC container and invoked at runtime. Dotted arrows (`-.->`) represent test dependencies — test classes reference the types they exercise but are not injected into them.
 
 ### Composition Root Pattern
 
-The `Program` module acts as the composition root — it is the sole site where dependencies are registered with the IoC container, wired via interfaces, and resolved at runtime by the ASP.NET Core host. Rather than explicit object construction, .NET relies on built-in dependency injection: `Program` registers services, repositories, DbContext, mappers, validators, and middleware, and the framework instantiates them on demand. This pattern enables dependency injection, improves testability, and ensures no other module bears responsibility for type registration or lifecycle management.
+`Program` is the composition root: it registers all services, repositories, DbContext, mappers, validators, and middleware with the ASP.NET Core IoC container, which resolves them at runtime via constructor injection.
 
 ### Layered Architecture
 
-The codebase is organized into four conceptual layers: Initialization (`Program`), HTTP (`Controllers`, `Validators`), Business (`Services`, `Mappings`), and Data (`Repositories`, `Data`).
+Four layers: Initialization (`Program`), HTTP (`Controllers`, `Validators`), Business (`Services`, `Mappings`), and Data (`Repositories`, `Data`).
 
-Framework packages and third-party dependencies are co-resident within the layer that consumes them: `Serilog` and `Swashbuckle` inside Initialization, `ASP.NET Core` and `FluentValidation` inside HTTP, `AutoMapper` inside Business, and `EF Core` inside Data. `ASP.NET Core`, `EF Core`, and `MemoryCache` are Microsoft platform packages (yellow); `AutoMapper`, `FluentValidation`, `Serilog`, and `Swashbuckle` are third-party packages (red).
+Framework and third-party packages are placed inside the subgraph of the layer that uses them — `Serilog` and `Swashbuckle` in Initialization, `ASP.NET Core` and `FluentValidation` in HTTP, `AutoMapper` in Business, `EF Core` in Data.
 
-The `Models` package is a **cross-cutting type concern** — it defines shared entities and DTOs consumed across multiple layers via strong dependencies, without containing logic or behavior of its own. Dependencies always flow from consumers toward their lower-level types: each layer depends on (consumes) the layers below it, and no layer invokes behavior in a layer above it.
+`Models` is a cross-cutting type concern — shared entities and DTOs consumed across all layers, with no logic of its own.
 
 ### Color Coding
 
-Core packages (blue) implement the application logic, supporting features (yellow) are Microsoft platform packages, third-party dependencies (red) are community packages, and tests (green) ensure code quality.
+Blue = core application packages, yellow = Microsoft platform packages, red = third-party libraries, green = tests.
 
 *Simplified, conceptual view — not all components or dependencies are shown.*
 
@@ -452,4 +452,4 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 
 ## Legal
 
-This project is provided for educational and demonstration purposes and may be used in production environments at your discretion. All referenced trademarks, service marks, product names, company names, and logos are the property of their respective owners and are used solely for identification or illustrative purposes.
+This project is provided for educational and demonstration purposes and may be used in production at your own discretion. All trademarks, service marks, product names, company names, and logos referenced herein are the property of their respective owners and are used solely for identification or illustrative purposes.
