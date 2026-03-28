@@ -100,7 +100,7 @@ jobs:
           name: cobertura.xml
 
       - name: Upload Cobertura coverage report to Codecov
-        uses: codecov/codecov-action@v5.5.3
+        uses: codecov/codecov-action@v6.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: cobertura.xml
