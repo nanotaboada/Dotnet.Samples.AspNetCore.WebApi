@@ -183,6 +183,25 @@ Example: `feat(api): add player search endpoint (#123)`
 - Database type (SQLite — demo/dev only)
 - CD pipeline tag format (`vX.Y.Z-stadium`) or the stadium name sequence — names are assigned sequentially A→Z from the list in `CHANGELOG.md`; the next name is always the next unused letter
 
+### Creating Issues
+
+This project uses Spec-Driven Development (SDD): discuss in Plan mode first, create a GitHub Issue as the spec artifact, then implement. Always offer to draft an issue before writing code.
+
+**Feature request** (`enhancement` label):
+- **Problem**: the pain point being solved
+- **Proposed Solution**: expected behavior and functionality
+- **Suggested Approach** *(optional)*: implementation plan if known
+- **Acceptance Criteria**: at minimum — behaves as proposed, tests added/updated, no regressions
+- **References**: related issues, docs, or examples
+
+**Bug report** (`bug` label):
+- **Description**: clear summary of the bug
+- **Steps to Reproduce**: numbered, minimal steps
+- **Expected / Actual Behavior**: one section each
+- **Environment**: runtime versions + OS
+- **Additional Context**: logs, screenshots, stack traces
+- **Possible Solution** *(optional)*: suggested fix or workaround
+
 ### Key workflows
 
 **Add an endpoint**: Add DTO in `Models/` → update `PlayerMappingProfile` in `Mappings/` → add repository method(s) in `Repositories/` → add service method in `Services/` → add controller action in `Controllers/` → add/update validator rule set in `Validators/` → add tests in `test/.../Unit/` → run pre-commit checks.
