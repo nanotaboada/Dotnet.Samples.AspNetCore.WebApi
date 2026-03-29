@@ -873,8 +873,8 @@ public static class PlayerData
                     "squadNumber": 24,
                     "position": "Central Midfield",
                     "abbrPosition": "CM",
-                    "team": "Chelsea FC",
-                    "league": "Premier League",
+                    "team": "SL Benfica",
+                    "league": "Liga Portugal",
                     "starting11": true
                 },
                 {
@@ -885,7 +885,7 @@ public static class PlayerData
                     "squadNumber": 20,
                     "position": "Central Midfield",
                     "abbrPosition": "CM",
-                    "team": "Liverpool FC",
+                    "team": "Brighton & Hove Albion",
                     "league": "Premier League",
                     "starting11": true
                 },
@@ -897,8 +897,8 @@ public static class PlayerData
                     "squadNumber": 10,
                     "position": "Right Winger",
                     "abbrPosition": "RW",
-                    "team": "Inter Miami CF",
-                    "league": "Major League Soccer",
+                    "team": "Paris Saint-Germain",
+                    "league": "Ligue 1",
                     "starting11": true
                 },
                 {
