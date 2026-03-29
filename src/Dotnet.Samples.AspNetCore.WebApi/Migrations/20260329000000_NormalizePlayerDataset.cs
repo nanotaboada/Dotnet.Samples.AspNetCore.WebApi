@@ -93,25 +93,11 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                 "UPDATE Players SET Id = '79c96f29-c59f-5f98-96b8-3a5946246624' WHERE SquadNumber = 22"
             );
 
-            // Insert Lo Celso (squad 27) — OR IGNORE is safe on a fresh DB where SeedSubstitutes
-            // already seeded him (because GetSubstitutesWithId() now includes him), and required
-            // for an existing DB that was seeded before this migration was added.
-            migrationBuilder.Sql(
-                "INSERT OR IGNORE INTO \"Players\" (\"Id\", \"FirstName\", \"MiddleName\", \"LastName\", \"DateOfBirth\", \"SquadNumber\", \"Position\", \"AbbrPosition\", \"Team\", \"League\", \"Starting11\") "
-                    + "VALUES ('F8D13028-0D22-5513-8774-08A2332B5814', 'Giovani', NULL, 'Lo Celso', '1996-04-09 00:00:00', 27, 'Central Midfield', 'CM', 'Real Betis Balompié', 'La Liga', 0)"
-            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            // Remove Lo Celso (squad 27)
-            migrationBuilder.DeleteData(
-                table: "Players",
-                keyColumn: "Id",
-                keyValue: Guid.Parse("f8d13028-0d22-5513-8774-08a2332b5814")
-            );
-
             // Revert team/league corrections
             migrationBuilder.Sql(
                 "UPDATE Players SET Team = 'Chelsea FC', League = 'Premier League' WHERE SquadNumber = 24"

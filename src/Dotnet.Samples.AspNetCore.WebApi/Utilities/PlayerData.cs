@@ -540,9 +540,9 @@ public static class PlayerData
     }
 
     /// <summary>
-    /// Create a predefined list of 16 substitute players where each player has a fixed GUID identifier and full profile data.
+    /// Create a predefined list of 15 substitute players where each player has a fixed GUID identifier and full profile data.
     /// </summary>
-    /// <returns>A list of 16 Player instances representing substitute players; each entry includes a predefined Id (Guid) and populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to false.</returns>
+    /// <returns>A list of 15 Player instances representing substitute players (squads 1–26); each entry includes a predefined Id (Guid) and populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to false. Lo Celso (squad 27) is intentionally excluded — his squad number falls outside the seeded range so he can serve as the canonical Create/Delete fixture without conflicting with seeded data.</returns>
     public static List<Player> GetSubstitutesWithId()
     {
         return
@@ -752,19 +752,6 @@ public static class PlayerData
                 AbbrPosition = Position.CentreForward.Abbr,
                 Team = "Inter Milan",
                 League = "Serie A",
-                Starting11 = false,
-            },
-            new()
-            {
-                Id = Guid.Parse("f8d13028-0d22-5513-8774-08a2332b5814"),
-                FirstName = "Giovani",
-                LastName = "Lo Celso",
-                DateOfBirth = new DateTime(1996, 4, 9, 0, 0, 0, DateTimeKind.Utc),
-                SquadNumber = 27,
-                Position = Position.CentralMidfield.Text,
-                AbbrPosition = Position.CentralMidfield.Abbr,
-                Team = "Real Betis Balompié",
-                League = "La Liga",
                 Starting11 = false,
             },
         ];
