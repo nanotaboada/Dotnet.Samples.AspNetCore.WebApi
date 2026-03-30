@@ -56,11 +56,11 @@ public static class PlayerFakes
     /// </summary>
     public static Player MakeNew()
     {
-        // Get Leandro Paredes (squad number 5) from substitutes
+        // Get Giovani Lo Celso (squad number 27) from substitutes
         var player =
-            PlayerData.GetSubstitutes().SingleOrDefault(player => player.SquadNumber == 5)
+            PlayerData.GetSubstitutes().SingleOrDefault(player => player.SquadNumber == 27)
             ?? throw new InvalidOperationException(
-                "Substitute player with squad number 5 not found."
+                "Substitute player with squad number 27 not found."
             );
 
         player.Id = Guid.NewGuid();
@@ -73,7 +73,7 @@ public static class PlayerFakes
 
     /// <summary>
     /// Creates a PlayerRequestModel for testing create operations.
-    /// Uses data from a substitute player (Leandro Paredes).
+    /// Uses data from a substitute player (Giovani Lo Celso).
     /// </summary>
     public static PlayerRequestModel MakeRequestModelForCreate()
     {
@@ -88,13 +88,13 @@ public static class PlayerFakes
             SquadNumber = player.SquadNumber,
             AbbrPosition = player.AbbrPosition,
             Team = player.Team,
-            League = player.League
+            League = player.League,
         };
     }
 
     /// <summary>
     /// Creates a PlayerResponseModel for testing create operation responses.
-    /// Uses data from a substitute player (Leandro Paredes).
+    /// Uses data from a substitute player (Giovani Lo Celso).
     /// </summary>
     public static PlayerResponseModel MakeResponseModelForCreate()
     {
@@ -109,7 +109,7 @@ public static class PlayerFakes
             Position = player.Position,
             Club = player.Team,
             League = player.League,
-            Starting11 = player.Starting11 ? "Yes" : "No"
+            Starting11 = player.Starting11 ? "Yes" : "No",
         };
     }
 
@@ -139,7 +139,7 @@ public static class PlayerFakes
             SquadNumber = player.SquadNumber,
             AbbrPosition = player.AbbrPosition,
             Team = player.Team,
-            League = player.League
+            League = player.League,
         };
     }
 
@@ -165,7 +165,7 @@ public static class PlayerFakes
             Position = player.Position,
             Club = player.Team,
             League = player.League,
-            Starting11 = player.Starting11 ? "Yes" : "No"
+            Starting11 = player.Starting11 ? "Yes" : "No",
         };
     }
 
@@ -189,9 +189,9 @@ public static class PlayerFakes
                         Position = player.Position,
                         Club = player.Team,
                         League = player.League,
-                        Starting11 = player.Starting11 ? "Yes" : "No"
+                        Starting11 = player.Starting11 ? "Yes" : "No",
                     };
-                })
+                }),
         ];
 
     /* -------------------------------------------------------------------------

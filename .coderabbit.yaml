@@ -77,6 +77,28 @@ reviews:
         - Ensure error messages are descriptive
         - Verify validators are registered in DI container
 
+    - path: "src/**/Mappings/**/*.cs"
+      instructions: |
+        - Profiles should inherit from AutoMapper Profile
+        - Verify CreateMap<Source, Destination>() calls cover all DTOs in use
+        - Check reverse mappings are defined where bidirectional mapping is needed
+        - Ensure profiles are registered via AddAutoMapper() in the DI setup
+        - Flag any manual property mappings that could be replaced by convention
+
+    - path: "src/**/Middlewares/**/*.cs"
+      instructions: |
+        - Middleware must implement InvokeAsync(HttpContext context) signature
+        - Verify _next(context) is called unless the middleware intentionally short-circuits
+        - Ensure exceptions are not swallowed — rethrow or translate to Problem Details
+        - Middleware should be stateless; dependencies requiring request scope belong in services
+
+    - path: "src/**/Extensions/**/*.cs"
+      instructions: |
+        - Extension methods should target IServiceCollection and return IServiceCollection
+        - Each method should encapsulate a single registration concern
+        - Verify service lifetimes (Singleton/Scoped/Transient) match the dependency's usage
+        - Follow the Add{Feature} naming convention (e.g. AddPlayerServices, AddRateLimiting)
+
     - path: "test/**/*.cs"
       instructions: |
         - Tests should use xUnit, Moq, and FluentAssertions

@@ -49,6 +49,8 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- Normalize player dataset: add Lo Celso (squad 27), correct Fernández/Mac Allister/Messi team data, replace random UUIDs with deterministic UUID v5 values (#435)
+- Align CRUD test fixtures: Lo Celso (squad 27) for Create and Delete, Messi (squad 10) for Retrieve, Damián Martínez (squad 23) for Update (#435)
 - Bump `codecov/codecov-action` from 5.5.2 to 5.5.3 (#423)
 
 ### Fixed

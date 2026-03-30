@@ -486,8 +486,8 @@ public class PlayerControllerTests : IDisposable
     public async Task Delete_PlayerBySquadNumber_Existing_Returns204NoContent()
     {
         // Arrange
-        var squadNumber = 26;
-        var response = PlayerFakes.MakeResponseModelForUpdate(squadNumber);
+        var response = PlayerFakes.MakeResponseModelForCreate();
+        var squadNumber = response.Dorsal;
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))

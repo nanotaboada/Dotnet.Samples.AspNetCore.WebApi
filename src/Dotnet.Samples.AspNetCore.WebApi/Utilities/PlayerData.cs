@@ -118,8 +118,8 @@ public static class PlayerData
                 SquadNumber = 24,
                 Position = Position.CentralMidfield.Text,
                 AbbrPosition = Position.CentralMidfield.Abbr,
-                Team = "Chelsea FC",
-                League = "Premier League",
+                Team = "SL Benfica",
+                League = "Liga Portugal",
                 Starting11 = true,
             },
             new()
@@ -130,7 +130,7 @@ public static class PlayerData
                 SquadNumber = 20,
                 Position = Position.CentralMidfield.Text,
                 AbbrPosition = Position.CentralMidfield.Abbr,
-                Team = "Liverpool FC",
+                Team = "Brighton & Hove Albion",
                 League = "Premier League",
                 Starting11 = true,
             },
@@ -143,8 +143,8 @@ public static class PlayerData
                 SquadNumber = 10,
                 Position = Position.RightWinger.Text,
                 AbbrPosition = Position.RightWinger.Abbr,
-                Team = "Inter Miami CF",
-                League = "Major League Soccer",
+                Team = "Paris Saint-Germain",
+                League = "Ligue 1",
                 Starting11 = true,
             },
             new()
@@ -158,7 +158,7 @@ public static class PlayerData
                 Team = "Manchester City",
                 League = "Premier League",
                 Starting11 = true,
-            }
+            },
         ];
     }
 
@@ -172,7 +172,7 @@ public static class PlayerData
         [
             new()
             {
-                Id = Guid.Parse("f91b9671-cfd1-48d7-afb9-34e93568c9ee"),
+                Id = Guid.Parse("01772c59-43f0-5d85-b913-c78e4e281452"),
                 FirstName = "Damián",
                 MiddleName = "Emiliano",
                 LastName = "Martínez",
@@ -186,7 +186,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("51ec988a-0d8b-42d9-84e4-5e17c93d8d50"),
+                Id = Guid.Parse("da31293b-4c7e-5e0f-a168-469ee29ecbc4"),
                 FirstName = "Nahuel",
                 LastName = "Molina",
                 DateOfBirth = new DateTime(1998, 4, 5, 0, 0, 0, DateTimeKind.Utc),
@@ -199,7 +199,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("0969be24-086c-4c51-9c29-0280683b8133"),
+                Id = Guid.Parse("c096c69e-762b-5281-9290-bb9c167a24a0"),
                 FirstName = "Cristian",
                 MiddleName = "Gabriel",
                 LastName = "Romero",
@@ -213,7 +213,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("ac532709-4682-49db-acc2-395f61f405ab"),
+                Id = Guid.Parse("d5f7dd7a-1dcb-5960-ba27-e34865b63358"),
                 FirstName = "Nicolás",
                 MiddleName = "Hernán Gonzalo",
                 LastName = "Otamendi",
@@ -227,7 +227,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("dc052ee4-c69d-49da-a256-b8ec727f4d59"),
+                Id = Guid.Parse("2f6f90a0-9b9d-5023-96d2-a2aaf03143a6"),
                 FirstName = "Nicolás",
                 MiddleName = "Alejandro",
                 LastName = "Tagliafico",
@@ -241,7 +241,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("6def9bb7-23c2-42b5-b37b-2e9b6fec31cd"),
+                Id = Guid.Parse("b5b46e79-929e-5ed2-949d-0d167109c022"),
                 FirstName = "Ángel",
                 MiddleName = "Fabián",
                 LastName = "Di María",
@@ -255,7 +255,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("8ca911d9-ab32-4366-b2b1-cad5eb6f4bcc"),
+                Id = Guid.Parse("0293b282-1da8-562e-998e-83849b417a42"),
                 FirstName = "Rodrigo",
                 MiddleName = "Javier",
                 LastName = "de Paul",
@@ -269,7 +269,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("198c4774-9607-4e76-8475-ec2528af69d2"),
+                Id = Guid.Parse("d3ba552a-dac3-588a-b961-1ea7224017fd"),
                 FirstName = "Enzo",
                 MiddleName = "Jeremías",
                 LastName = "Fernández",
@@ -277,26 +277,26 @@ public static class PlayerData
                 SquadNumber = 24,
                 Position = Position.CentralMidfield.Text,
                 AbbrPosition = Position.CentralMidfield.Abbr,
-                Team = "Chelsea FC",
-                League = "Premier League",
+                Team = "SL Benfica",
+                League = "Liga Portugal",
                 Starting11 = true,
             },
             new()
             {
-                Id = Guid.Parse("06971ada-1b3d-4d4a-88f5-e2f35311b5aa"),
+                Id = Guid.Parse("9613cae9-16ab-5b54-937e-3135123b9e0d"),
                 FirstName = "Alexis",
                 LastName = "Mac Allister",
                 DateOfBirth = new DateTime(1998, 12, 23, 0, 0, 0, DateTimeKind.Utc),
                 SquadNumber = 20,
                 Position = Position.CentralMidfield.Text,
                 AbbrPosition = Position.CentralMidfield.Abbr,
-                Team = "Liverpool FC",
+                Team = "Brighton & Hove Albion",
                 League = "Premier League",
                 Starting11 = true,
             },
             new()
             {
-                Id = Guid.Parse("df6f6bab-5efd-4518-80bb-09ef54435636"),
+                Id = Guid.Parse("acc433bf-d505-51fe-831e-45eb44c4d43c"),
                 FirstName = "Lionel",
                 MiddleName = "Andrés",
                 LastName = "Messi",
@@ -304,13 +304,13 @@ public static class PlayerData
                 SquadNumber = 10,
                 Position = Position.RightWinger.Text,
                 AbbrPosition = Position.RightWinger.Abbr,
-                Team = "Inter Miami CF",
-                League = "Major League Soccer",
+                Team = "Paris Saint-Germain",
+                League = "Ligue 1",
                 Starting11 = true,
             },
             new()
             {
-                Id = Guid.Parse("27cf4e29-67d5-4c3b-9cf8-7d3fa3942fcb"),
+                Id = Guid.Parse("38bae91d-8519-55a2-b30a-b9fe38849bfb"),
                 FirstName = "Julián",
                 LastName = "Álvarez",
                 DateOfBirth = new DateTime(2000, 1, 30, 0, 0, 0, DateTimeKind.Utc),
@@ -320,7 +320,7 @@ public static class PlayerData
                 Team = "Manchester City",
                 League = "Premier League",
                 Starting11 = true,
-            }
+            },
         ];
     }
 
@@ -523,21 +523,33 @@ public static class PlayerData
                 Team = "Inter Milan",
                 League = "Serie A",
                 Starting11 = false,
-            }
+            },
+            new()
+            {
+                FirstName = "Giovani",
+                LastName = "Lo Celso",
+                DateOfBirth = new DateTime(1996, 4, 9, 0, 0, 0, DateTimeKind.Utc),
+                SquadNumber = 27,
+                Position = Position.CentralMidfield.Text,
+                AbbrPosition = Position.CentralMidfield.Abbr,
+                Team = "Real Betis Balompié",
+                League = "La Liga",
+                Starting11 = false,
+            },
         ];
     }
 
     /// <summary>
     /// Create a predefined list of 15 substitute players where each player has a fixed GUID identifier and full profile data.
     /// </summary>
-    /// <returns>A list of 15 Player instances representing substitute players; each entry includes a predefined Id (Guid) and populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to false.</returns>
+    /// <returns>A list of 15 Player instances representing substitute players (squads 1–26); each entry includes a predefined Id (Guid) and populated fields such as name, date of birth, squad number, position (and abbreviation), team, league, and Starting11 set to false. Lo Celso (squad 27) is intentionally excluded — his squad number falls outside the seeded range so he can serve as the canonical Create/Delete fixture without conflicting with seeded data.</returns>
     public static List<Player> GetSubstitutesWithId()
     {
         return
         [
             new()
             {
-                Id = Guid.Parse("b1f8a5d3-2c4e-4a6b-8d9f-1e3c5a7b9d2f"),
+                Id = Guid.Parse("5a9cd988-95e6-54c1-bc34-9aa08acca8d0"),
                 FirstName = "Franco",
                 MiddleName = "Daniel",
                 LastName = "Armani",
@@ -551,7 +563,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("c2e9b6f4-3d5f-4b7c-9e0a-2f4d6b8c0e3a"),
+                Id = Guid.Parse("c62f2ac1-41e8-5d34-b073-2ba0913d0e31"),
                 FirstName = "Gerónimo",
                 LastName = "Rulli",
                 DateOfBirth = new DateTime(1992, 5, 20, 0, 0, 0, DateTimeKind.Utc),
@@ -564,7 +576,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("d3f0c7e5-4e6a-5c8d-0f1b-3a5e7c9d1f4b"),
+                Id = Guid.Parse("5fdb10e8-38c0-5084-9a3f-b369a960b9c2"),
                 FirstName = "Juan",
                 MiddleName = "Marcos",
                 LastName = "Foyth",
@@ -578,7 +590,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("e4a1d8f6-5f7b-6d9e-1a2c-4b6d8e0a2c5d"),
+                Id = Guid.Parse("bbd441f7-fcfb-5834-8468-2a9004b64c8c"),
                 FirstName = "Gonzalo",
                 MiddleName = "Ariel",
                 LastName = "Montiel",
@@ -592,7 +604,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("f5b2e9a7-6a8c-7e0f-2b3d-5c7e9a1b3d6e"),
+                Id = Guid.Parse("d8bfea25-f189-5d5e-b3a5-ed89329b9f7c"),
                 FirstName = "Germán",
                 MiddleName = "Alejo",
                 LastName = "Pezzella",
@@ -606,7 +618,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("a6c3f0b8-7b9d-8f1a-3c4e-6d8f0b2c4e7f"),
+                Id = Guid.Parse("dca343a8-12e5-53d6-89a8-916b120a5ee4"),
                 FirstName = "Marcos",
                 MiddleName = "Javier",
                 LastName = "Acuña",
@@ -620,7 +632,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("b7d4a1c9-8c0e-9a2b-4d5f-7e9a1c3d5f8a"),
+                Id = Guid.Parse("98306555-a466-5d18-804e-dc82175e697b"),
                 FirstName = "Lisandro",
                 LastName = "Martínez",
                 DateOfBirth = new DateTime(1998, 1, 18, 0, 0, 0, DateTimeKind.Utc),
@@ -633,7 +645,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("c8e5b2d0-9d1f-0b3c-5e6a-8f0b2d4e6a9b"),
+                Id = Guid.Parse("9d140400-196f-55d8-86e1-e0b96a375c83"),
                 FirstName = "Leandro",
                 MiddleName = "Daniel",
                 LastName = "Paredes",
@@ -647,7 +659,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("d9f6c3e1-0e2a-1c4d-6f7b-9a1c3e5f7b0c"),
+                Id = Guid.Parse("d3b0e8e8-2c34-531a-b608-b24fed0ef986"),
                 FirstName = "Exequiel",
                 MiddleName = "Alejandro",
                 LastName = "Palacios",
@@ -661,7 +673,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("e0a7d4f2-1f3b-2d5e-7a8c-0b2d4f6a8c1d"),
+                Id = Guid.Parse("7cc8d527-56a2-58bd-9528-2618fc139d30"),
                 FirstName = "Alejandro",
                 MiddleName = "Darío",
                 LastName = "Gómez",
@@ -675,7 +687,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("f1b8e5a3-2a4c-3e6f-8b9d-1c3e5a7b9d2e"),
+                Id = Guid.Parse("191c82af-0c51-526a-b903-c3600b61b506"),
                 FirstName = "Guido",
                 LastName = "Rodríguez",
                 DateOfBirth = new DateTime(1994, 4, 12, 0, 0, 0, DateTimeKind.Utc),
@@ -688,7 +700,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("a2c9f6b4-3b5d-4f7a-9c0e-2d4f6b8c0e3f"),
+                Id = Guid.Parse("b1306b7b-a3a4-5f7c-90fd-dd5bdbed57ba"),
                 FirstName = "Ángel",
                 MiddleName = "Martín",
                 LastName = "Correa",
@@ -702,7 +714,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("b3d0a7c5-4c6e-5a8b-0d1f-3e5a7c9d1f4a"),
+                Id = Guid.Parse("ecec27e8-487b-5622-b116-0855020477ed"),
                 FirstName = "Thiago",
                 MiddleName = "Ezequiel",
                 LastName = "Almada",
@@ -716,7 +728,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("c4e1b8d6-5d7f-6b9c-1e2a-4f6d8e0a2c5b"),
+                Id = Guid.Parse("7941cd7c-4df1-5952-97e8-1e7f5d08e8aa"),
                 FirstName = "Paulo",
                 MiddleName = "Exequiel",
                 LastName = "Dybala",
@@ -730,7 +742,7 @@ public static class PlayerData
             },
             new()
             {
-                Id = Guid.Parse("d5f2c9e7-6e8a-7c0d-2f3b-5a7e9a1b3d6c"),
+                Id = Guid.Parse("79c96f29-c59f-5f98-96b8-3a5946246624"),
                 FirstName = "Lautaro",
                 MiddleName = "Javier",
                 LastName = "Martínez",
@@ -741,7 +753,7 @@ public static class PlayerData
                 Team = "Inter Milan",
                 League = "Serie A",
                 Starting11 = false,
-            }
+            },
         ];
     }
 
@@ -848,8 +860,8 @@ public static class PlayerData
                     "squadNumber": 24,
                     "position": "Central Midfield",
                     "abbrPosition": "CM",
-                    "team": "Chelsea FC",
-                    "league": "Premier League",
+                    "team": "SL Benfica",
+                    "league": "Liga Portugal",
                     "starting11": true
                 },
                 {
@@ -860,7 +872,7 @@ public static class PlayerData
                     "squadNumber": 20,
                     "position": "Central Midfield",
                     "abbrPosition": "CM",
-                    "team": "Liverpool FC",
+                    "team": "Brighton & Hove Albion",
                     "league": "Premier League",
                     "starting11": true
                 },
@@ -872,8 +884,8 @@ public static class PlayerData
                     "squadNumber": 10,
                     "position": "Right Winger",
                     "abbrPosition": "RW",
-                    "team": "Inter Miami CF",
-                    "league": "Major League Soccer",
+                    "team": "Paris Saint-Germain",
+                    "league": "Ligue 1",
                     "starting11": true
                 },
                 {
@@ -900,6 +912,8 @@ public static class PlayerData
         return players;
     }
 
-    private static readonly JsonSerializerOptions options =
-        new() { PropertyNameCaseInsensitive = true };
+    private static readonly JsonSerializerOptions options = new()
+    {
+        PropertyNameCaseInsensitive = true,
+    };
 }
