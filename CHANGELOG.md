@@ -44,7 +44,19 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
-- Add SonarCloud configuration via `sonar-project.properties` with CPD exclusions for test files and `PlayerRequestModelValidator` (#426)
+### Changed
+
+### Fixed
+
+### Removed
+
+---
+
+## [2.1.0 - dusseldorf] - 2026-03-29
+
+### Added
+
+- Add SonarCloud configuration via `.sonarcloud.properties` with explicit CPD exclusions for migrations, generated code, test files, and structurally repetitive production files (#426, #435)
 - Add bug report issue template (`.github/ISSUE_TEMPLATE/bug_report.md`) (#426)
 
 ### Changed
@@ -198,7 +210,8 @@ The CD workflow automatically:
 
 ---
 
-[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.0.0-centenario...HEAD
+[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.0-dusseldorf...HEAD
+[2.1.0 - dusseldorf]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.0.0-centenario...v2.1.0-dusseldorf
 [2.0.0 - centenario]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.1.0-bernabeu...v2.0.0-centenario
 [1.1.0 - bernabeu]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.0.0-azteca...v1.1.0-bernabeu
 [1.0.0 - azteca]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/releases/tag/v1.0.0-azteca
