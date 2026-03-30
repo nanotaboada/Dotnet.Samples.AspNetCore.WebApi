@@ -42,9 +42,13 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ## [Unreleased]
 
+---
+
+## [2.1.0 - dusseldorf] - 2026-03-29
+
 ### Added
 
-- Add SonarCloud configuration via `sonar-project.properties` with CPD exclusions for test files and `PlayerRequestModelValidator` (#426)
+- Add SonarCloud configuration via `.sonarcloud.properties` with explicit CPD exclusions for migrations, generated code, test files, and structurally repetitive production files (#426, #435)
 - Add bug report issue template (`.github/ISSUE_TEMPLATE/bug_report.md`) (#426)
 
 ### Changed
