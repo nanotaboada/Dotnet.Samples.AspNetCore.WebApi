@@ -44,7 +44,19 @@ We enforce quality via CI on every push and PR:
 
 Failures must be fixed before review.
 
-## 6. Code of Conduct & Support
+## 6. Architecture Decision Records
+
+When proposing changes that affect:
+
+- Project structure or overall architecture
+- Technology choices or dependencies
+- API contracts or data model design
+- Non-functional requirements (performance, security, scalability)
+- Development workflows or processes
+
+Please create an ADR in the `adr/` directory following the existing template. See [`adr/README.md`](adr/README.md) for the template and index.
+
+## 7. Code of Conduct & Support
 
 - Please see `CODE_OF_CONDUCT.md` for behavioral expectations and reporting.
 - For quick questions or discussions, open an issue with the `discussion` label or mention a maintainer.
