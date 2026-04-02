@@ -28,6 +28,7 @@ public class PlayerMappingProfile : Profile
 
         // Player → PlayerResponseModel
         CreateMap<Player, PlayerResponseModel>()
+            .ForSourceMember(source => source.Id, options => options.DoNotValidate())
             .ForMember(
                 destination => destination.FullName,
                 options =>

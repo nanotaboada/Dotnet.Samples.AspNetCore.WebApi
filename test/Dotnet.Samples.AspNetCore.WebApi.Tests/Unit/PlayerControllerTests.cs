@@ -183,7 +183,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Get_Players_NonExisting_Returns404NotFound()
+    public async Task Get_Players_Empty_Returns200OkWithEmptyList()
     {
         // Arrange
         var (service, logger, validator) = PlayerMocks.InitControllerMocks();
@@ -196,8 +196,9 @@ public class PlayerControllerTests : IDisposable
 
         // Assert
         service.Verify(service => service.RetrieveAsync(), Times.Once);
-        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
-        httpResult.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        var httpResult = result.Should().BeOfType<Ok<List<PlayerResponseModel>>>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+        httpResult.Value.Should().NotBeNull().And.BeEmpty();
     }
 
     [Fact]

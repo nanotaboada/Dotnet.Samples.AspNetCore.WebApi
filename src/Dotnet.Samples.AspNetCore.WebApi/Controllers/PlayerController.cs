@@ -69,7 +69,7 @@ public class PlayerController(
                     Title = "Conflict",
                     Status = StatusCodes.Status409Conflict,
                     Detail = $"Player with Squad Number '{player.SquadNumber}' already exists.",
-                    Instance = HttpContext?.Request?.Path.ToString()
+                    Instance = HttpContext?.Request?.Path.ToString(),
                 }
             );
         }
@@ -92,29 +92,15 @@ public class PlayerController(
     /// Retrieves all Players
     /// </summary>
     /// <response code="200">OK</response>
-    /// <response code="404">Not Found</response>
     [HttpGet(Name = "Retrieve")]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetAsync()
     {
         var players = await playerService.RetrieveAsync();
 
-        if (players.Count > 0)
-        {
-            logger.LogInformation("GET /players retrieved");
-            return TypedResults.Ok(players);
-        }
-        else
-        {
-            logger.LogWarning("GET /players not found");
-            return TypedResults.Problem(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotFoundTitle,
-                detail: "No players were found.",
-                instance: HttpContext?.Request?.Path.ToString()
-            );
-        }
+        logger.LogInformation("GET /players retrieved {Count} player(s)", players.Count);
+
+        return TypedResults.Ok(players);
     }
 
     /// <summary>
