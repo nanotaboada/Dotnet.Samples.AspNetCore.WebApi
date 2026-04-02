@@ -92,7 +92,6 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
             migrationBuilder.Sql(
                 "UPDATE Players SET Id = '79c96f29-c59f-5f98-96b8-3a5946246624' WHERE SquadNumber = 22"
             );
-
         }
 
         /// <inheritdoc />

@@ -30,20 +30,21 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Players", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Players_SquadNumber",
                 table: "Players",
                 column: "SquadNumber",
-                unique: true);
+                unique: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Players");
+            migrationBuilder.DropTable(name: "Players");
         }
     }
 }

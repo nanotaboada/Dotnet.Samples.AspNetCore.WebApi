@@ -912,8 +912,6 @@ public static class PlayerData
         return players;
     }
 
-    private static readonly JsonSerializerOptions options = new()
-    {
-        PropertyNameCaseInsensitive = true,
-    };
+    private static readonly JsonSerializerOptions options =
+        new() { PropertyNameCaseInsensitive = true, };
 }
