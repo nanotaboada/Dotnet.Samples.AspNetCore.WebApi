@@ -48,6 +48,9 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Fixed
 
+- `GET /players` now returns `200 OK` with an empty list `[]` when no players exist, instead of `404 Not Found` (#425)
+- AutoMapper `Player → PlayerResponseModel` profile now explicitly ignores the `Id` source member via `ForSourceMember`, making the exclusion intentional rather than implicit (#425)
+
 ### Removed
 
 ---
