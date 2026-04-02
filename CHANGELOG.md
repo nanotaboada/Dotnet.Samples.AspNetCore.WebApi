@@ -44,6 +44,12 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+- Add `adr/` directory with 12 Architecture Decision Records documenting architectural choices, technology decisions, and design trade-offs (#372)
+- Add ADR index and template at `adr/README.md` (#372)
+- Add Architecture Decisions section to `README.md` referencing the ADR index (#372)
+- Add ADR guidance section to `CONTRIBUTING.md` (#372)
+- Add ADR context loading instructions to `.github/copilot-instructions.md` (#372)
+
 ### Changed
 
 ### Fixed

@@ -20,6 +20,7 @@ Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Ma
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Architecture](#architecture)
+- [Architecture Decisions](#architecture-decisions)
 - [API Reference](#api-reference)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
@@ -216,6 +217,10 @@ Framework and third-party packages are placed inside the subgraph of the layer t
 Blue = core application packages, yellow = Microsoft platform packages, red = third-party libraries, green = tests.
 
 *Simplified, conceptual view — not all components or dependencies are shown.*
+
+## Architecture Decisions
+
+See [Architecture Decision Records (ADRs)](adr/README.md) for documented decisions about this project's architecture, technology choices, and development practices.
 
 ## API Reference
 

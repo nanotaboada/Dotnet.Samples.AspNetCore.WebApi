@@ -208,6 +208,15 @@ This project uses Spec-Driven Development (SDD): discuss in Plan mode first, cre
 
 **Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → reset `Storage/players.db` → update tests → run `dotnet test`.
 
+## Architecture Decision Records (ADRs)
+
+Load `#file:adr/README.md` when:
+- The user asks about architectural choices or "why we use X"
+- Proposing changes to core architecture or dependencies
+- Historical context for past decisions is needed
+
+ADRs are in `adr/` (0001–0012). Each file is self-contained.
+
 **After completing work**: Suggest a branch name (e.g. `feat/add-player-search`) and a commit message following Conventional Commits including co-author line:
 
 ```text
