@@ -52,6 +52,8 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- Add "Verify tag commit is reachable from master" step to CD workflow using `git merge-base --is-ancestor` before any build or publish steps (#439)
+
 ### Fixed
 
 - `GET /players` now returns `200 OK` with an empty list `[]` when no players exist, instead of `404 Not Found` (#425)
