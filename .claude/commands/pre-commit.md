@@ -5,7 +5,8 @@ Run the pre-commit checklist for this project:
 1. Update `CHANGELOG.md` `[Unreleased]` section — add an entry under the appropriate subsection (Added / Changed / Fixed / Removed) describing the changes made, referencing the issue number.
 2. Run `dotnet build --configuration Release` — must succeed.
 3. Run `dotnet test --settings .runsettings` — all tests must pass.
-4. Run `dotnet csharpier --check .` — must pass (run `dotnet csharpier .` to auto-fix).
+4. If `dotnet csharpier` is available, run `dotnet csharpier --check .` — must pass
+   (run `dotnet csharpier .` to auto-fix). Skip this step with a note if not installed.
 5. If `coderabbit` CLI is installed, run `coderabbit review --type uncommitted --prompt-only`:
    - If actionable/serious findings are reported, stop and address them before proposing the commit.
    - If only nitpick-level findings, report them and continue to the commit proposal.
