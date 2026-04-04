@@ -44,6 +44,8 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+- Add `ValidateAsync_SquadNumberNegative_ReturnsValidationError` test to exercise the `GreaterThan(0)` rule with a negative value, which passes `NotEmpty()` but fails the greater-than rule (#427)
+- Add `ValidateAsync_FirstNameEmptyInUpdateRuleSet_ReturnsValidationError` test to verify the `"Update"` rule set enforces structural field validation (#427)
 - Add `adr/` directory with 12 Architecture Decision Records documenting architectural choices, technology decisions, and design trade-offs (#372)
 - Add ADR index and template at `adr/README.md` (#372)
 - Add Architecture Decisions section to `README.md` referencing the ADR index (#372)
@@ -52,6 +54,8 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- Rename `ValidateAsync_SquadNumber_BelongsToPlayerBeingUpdated_ReturnsNoErrors` to `ValidateAsync_SquadNumberBelongsToPlayerBeingUpdated_ReturnsNoErrors` to align with the 3-segment naming convention for service/validator tests (#427)
+- Make CSharpier step in `/pre-commit` conditional (skip with a note if not installed), consistent with the Docker and CodeRabbit steps (#427)
 - Add "Verify tag commit is reachable from master" step to CD workflow using `git merge-base --is-ancestor` before any build or publish steps (#439)
 
 ### Fixed

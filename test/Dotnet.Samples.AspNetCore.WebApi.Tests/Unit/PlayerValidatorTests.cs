@@ -125,6 +125,30 @@ public class PlayerValidatorTests
 
     [Fact]
     [Trait("Category", "Unit")]
+    public async Task ValidateAsync_SquadNumberNegative_ReturnsValidationError()
+    {
+        // Arrange
+        var request = PlayerFakes.MakeRequestModelForCreate();
+        request.SquadNumber = -5;
+        var validator = CreateValidator();
+
+        // Act
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Create")
+        );
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result
+            .Errors.Should()
+            .Contain(error =>
+                error.PropertyName == "SquadNumber" && error.ErrorMessage.Contains("greater than 0")
+            );
+    }
+
+    [Fact]
+    [Trait("Category", "Unit")]
     public async Task ValidateAsync_SquadNumberNotUnique_ReturnsValidationError()
     {
         // Arrange
@@ -153,7 +177,7 @@ public class PlayerValidatorTests
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task ValidateAsync_SquadNumber_BelongsToPlayerBeingUpdated_ReturnsNoErrors()
+    public async Task ValidateAsync_SquadNumberBelongsToPlayerBeingUpdated_ReturnsNoErrors()
     {
         // Arrange
         // Simulate a PUT request for an existing player: the squad number in the
@@ -176,6 +200,26 @@ public class PlayerValidatorTests
         // Assert
         result.IsValid.Should().BeTrue();
         result.Errors.Should().BeEmpty();
+    }
+
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task ValidateAsync_FirstNameEmptyInUpdateRuleSet_ReturnsValidationError()
+    {
+        // Arrange
+        var request = PlayerFakes.MakeRequestModelForUpdate(10);
+        request.FirstName = string.Empty;
+        var validator = CreateValidator();
+
+        // Act
+        var result = await validator.ValidateAsync(
+            request,
+            options => options.IncludeRuleSets("Update")
+        );
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(error => error.PropertyName == "FirstName");
     }
 
     /* -------------------------------------------------------------------------
