@@ -26,6 +26,16 @@ git push origin release/v1.0.0-azteca
 # Open a PR, get it reviewed, and merge into master
 ```
 
+### Pre-release Checklist
+
+Before creating the tag, verify all of the following:
+
+- [ ] `CHANGELOG.md` `[Unreleased]` section is moved to a new versioned release entry
+- [ ] `dotnet build --configuration Release` passes
+- [ ] `dotnet test --settings .runsettings` passes
+- [ ] Stadium name is valid and follows alphabetical order (see [stadium list](CHANGELOG.md#stadium-release-names))
+- [ ] All CI checks on `master` are green
+
 ### 3. Create and Push Tag
 
 After the PR is merged, create and push the version tag from `master`:

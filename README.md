@@ -131,7 +131,7 @@ graph RL
     class AspNetCore,EFCore,MemoryCache feat;
 ```
 
-> *Arrows follow the injection direction (A → B means A depends on B). Solid = runtime dependency, dotted = structural. Blue = core domain, red = third-party, green = tests.*
+> *Arrows follow the injection direction (A → B means A is injected into B). Solid = runtime dependency, dotted = structural. Blue = core domain, red = third-party, green = tests. Controllers call Services; Services call Repositories — bypassing layers is not permitted.*
 >
 > *Significant design decisions are documented as ADRs in [`adr/`](adr/README.md).*
 
