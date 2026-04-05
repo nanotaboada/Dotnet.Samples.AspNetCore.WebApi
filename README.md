@@ -14,34 +14,14 @@
 
 Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Manage football player data with SQLite, Entity Framework Core, Swagger documentation, and in-memory caching.
 
-## Table of Contents
-
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Architecture](#architecture)
-- [Architecture Decisions](#architecture-decisions)
-- [API Reference](#api-reference)
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Testing](#testing)
-- [Containers](#containers)
-- [Releases](#releases)
-- [Environment Variables](#environment-variables)
-- [Command Summary](#command-summary)
-- [Contributing](#contributing)
-- [Legal](#legal)
-
 ## Features
 
 - 🏗️ **Clean layered architecture** - Repository pattern, dependency injection, and async operations throughout
 - 📚 **Interactive API exploration** - Swagger UI documentation with health monitoring endpoints
 - ⚡ **Performance optimizations** - In-memory caching, rate limiting, and efficient database queries
 - 🧪 **High test coverage** - xUnit tests with automated reporting to Codecov and SonarCloud
-- 📖 **Token-efficient documentation** - Custom instructions with coding guidelines, architecture rules, and agent workflows for AI-assisted development
 - 🐳 **Full containerization** - Multi-stage Docker builds with Docker Compose orchestration
 - 🔄 **Complete CI/CD pipeline** - Automated testing, code quality checks, Docker publishing, and GitHub releases
-- 🏟️ **Stadium-themed semantic versioning** - Memorable, alphabetical release names from World Cup venues
 
 ## Tech Stack
 
@@ -57,51 +37,6 @@ Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Ma
 | **Logging** | [Serilog 9](https://github.com/serilog/serilog) |
 | **Testing** | [xUnit](https://github.com/xunit/xunit), [Moq](https://github.com/devlooped/moq), [FluentAssertions](https://github.com/fluentassertions/fluentassertions) |
 | **Containerization** | [Docker](https://github.com/docker) & [Docker Compose](https://github.com/docker/compose) |
-
-## Project Structure
-
-```text
-src/Dotnet.Samples.AspNetCore.WebApi/
-├── Program.cs                  # Entry point: DI setup, middleware pipeline
-├── Controllers/                # HTTP handlers (request/response logic)
-│   └── PlayerController.cs
-├── Services/                   # Business logic + caching layer
-│   ├── IPlayerService.cs
-│   └── PlayerService.cs
-├── Repositories/               # Data access abstraction
-│   ├── IPlayerRepository.cs
-│   ├── IRepository.cs
-│   ├── PlayerRepository.cs
-│   └── Repository.cs
-├── Models/                     # Domain entities and DTOs
-│   ├── Player.cs
-│   ├── PlayerRequestModel.cs
-│   └── PlayerResponseModel.cs
-├── Data/                       # EF Core DbContext and migrations
-│   └── PlayerDbContext.cs
-├── Mappings/                   # AutoMapper profiles
-│   └── PlayerMappingProfile.cs
-├── Validators/                 # FluentValidation rules
-│   └── PlayerRequestModelValidator.cs
-├── Configurations/             # Swagger, rate limiting config
-├── Enums/                      # Domain enumerations (e.g. Position)
-├── Extensions/                 # Service registration extensions
-├── Middlewares/                # Custom ASP.NET Core middleware
-├── Utilities/                  # Helper classes
-├── Migrations/                 # EF Core migrations
-└── storage/                    # Pre-seeded SQLite database
-
-test/Dotnet.Samples.AspNetCore.WebApi.Tests/
-├── Unit/                       # Unit tests with xUnit
-│   ├── PlayerControllerTests.cs
-│   ├── PlayerServiceTests.cs
-│   └── PlayerValidatorTests.cs
-└── Utilities/                  # Shared test helpers
-    ├── DatabaseFakes.cs
-    ├── PlayerFakes.cs
-    ├── PlayerMocks.cs
-    └── PlayerStubs.cs
-```
 
 ## Architecture
 
@@ -196,31 +131,9 @@ graph RL
     class AspNetCore,EFCore,MemoryCache feat;
 ```
 
-### Arrow Semantics
-
-Arrows follow the injection direction: `A --> B` means A is injected into B. Solid arrows (`-->`) represent active ASP.NET Core dependencies — services registered with the IoC container and invoked at runtime. Dotted arrows (`-.->`) represent test dependencies — test classes reference the types they exercise but are not injected into them.
-
-### Composition Root Pattern
-
-`Program` is the composition root: it registers all services, repositories, DbContext, mappers, validators, and middleware with the ASP.NET Core IoC container, which resolves them at runtime via constructor injection.
-
-### Layered Architecture
-
-Four layers: Initialization (`Program`), HTTP (`Controllers`, `Validators`), Business (`Services`, `Mappings`), and Data (`Repositories`, `Data`).
-
-Framework and third-party packages are placed inside the subgraph of the layer that uses them — `Serilog` and `Swashbuckle` in Initialization, `ASP.NET Core` and `FluentValidation` in HTTP, `AutoMapper` in Business, `EF Core` in Data.
-
-`Models` is a cross-cutting type concern — shared entities and DTOs consumed across all layers, with no logic of its own.
-
-### Color Coding
-
-Blue = core application packages, yellow = Microsoft platform packages, red = third-party libraries, green = tests.
-
-*Simplified, conceptual view — not all components or dependencies are shown.*
-
-## Architecture Decisions
-
-See [Architecture Decision Records (ADRs)](adr/README.md) for documented decisions about this project's architecture, technology choices, and development practices.
+> *Arrows follow the injection direction (A → B means A is injected into B). Solid = runtime dependency, dotted = structural. Blue = core domain, red = third-party, green = tests. Controllers call Services; Services call Repositories — bypassing layers is not permitted.*
+>
+> *Significant design decisions are documented as ADRs in [`adr/`](adr/README.md).*
 
 ## API Reference
 
@@ -228,15 +141,17 @@ Interactive API documentation is available via Swagger UI at `https://localhost:
 
 > 💡 Swagger documentation is only available in development mode for security reasons.
 
-**Quick Reference:**
+| Method | Endpoint | Description | Status |
+| ------ | -------- | ----------- | ------ |
+| `GET` | `/players` | List all players | `200 OK` |
+| `GET` | `/players/{id:Guid}` | Get player by ID *(requires authentication)* | `200 OK` |
+| `GET` | `/players/squadNumber/{squadNumber:int}` | Get player by squad number | `200 OK` |
+| `POST` | `/players` | Create new player | `201 Created` |
+| `PUT` | `/players/squadNumber/{squadNumber:int}` | Update player by squad number | `200 OK` |
+| `DELETE` | `/players/squadNumber/{squadNumber:int}` | Remove player by squad number | `204 No Content` |
+| `GET` | `/health` | Health check | `200 OK` |
 
-- `GET /players` - List all players
-- `GET /players/{id:Guid}` - Get player by ID (requires authentication)
-- `GET /players/squadNumber/{squadNumber:int}` - Get player by squad number
-- `POST /players` - Create new player
-- `PUT /players/squadNumber/{squadNumber:int}` - Update player
-- `DELETE /players/squadNumber/{squadNumber:int}` - Remove player
-- `GET /health` - Health check
+Error codes: `400 Bad Request` (validation failed) · `404 Not Found` (player not found) · `409 Conflict` (duplicate squad number on `POST`)
 
 For complete endpoint documentation with request/response schemas, explore the [interactive Swagger UI](https://localhost:9000/swagger/index.html).
 
@@ -275,24 +190,6 @@ The server will start on `https://localhost:9000`.
 - Swagger Documentation: `https://localhost:9000/swagger/index.html`
 - Health Check: `https://localhost:9000/health`
 
-## Testing
-
-Run the test suite with xUnit:
-
-```bash
-# Run all tests
-dotnet test
-
-# Run tests with coverage report
-dotnet test --results-directory "coverage" --collect:"XPlat Code Coverage" --settings .runsettings
-
-# View coverage report
-dotnet tool install --global dotnet-reportgenerator-globaltool
-reportgenerator -reports:coverage/**/coverage.cobertura.xml -targetdir:coverage -reporttypes:Html
-```
-
-Tests are located in the `test/` directory and use xUnit for unit testing. Coverage reports are generated for controllers and services only.
-
 ## Containers
 
 This project includes full Docker support with multi-stage builds and Docker Compose for easy deployment.
@@ -327,56 +224,7 @@ docker compose down -v
 
 The containerized application runs on port 9000 and includes health checks that monitor the `/health` endpoint.
 
-## Releases
-
-This project uses **stadium-themed release names** inspired by famous football stadiums that hosted FIFA World Cup matches. Each release is named after a stadium (A-Z alphabetically), making versions memorable and fun.
-
-### Release Naming Convention
-
-Releases follow the pattern: `v{SEMVER}-{STADIUM}` (e.g., `v1.0.0-azteca`)
-
-- **Semantic Version**: Standard versioning (MAJOR.MINOR.PATCH)
-- **Stadium Name**: Alphabetically ordered codename from the [stadium list](CHANGELOG.md#stadium-release-names)
-
-### Create a Release
-
-To create a new release, follow this workflow:
-
-#### 1. Update CHANGELOG.md
-
-First, create a `release/` branch and document your changes in [CHANGELOG.md](CHANGELOG.md):
-
-```bash
-git checkout -b release/1.0.0-azteca
-# Move items from [Unreleased] to new release section
-# Example: [1.0.0 - azteca] - 2026-01-22
-git add CHANGELOG.md
-git commit -m "docs: prepare changelog for v1.0.0-azteca release"
-git push origin release/1.0.0-azteca
-# Open a PR, get it reviewed, and merge into master
-```
-
-#### 2. Create and Push Tag
-
-Then create and push the version tag:
-
-```bash
-git tag -a v1.0.0-azteca -m "Release 1.0.0 - Azteca"
-git push origin v1.0.0-azteca
-```
-
-#### 3. Automated CD Workflow
-
-This triggers the CD workflow which automatically:
-
-1. Validates the stadium name
-2. Builds and tests the project in Release configuration
-3. Publishes Docker images to GitHub Container Registry with three tags
-4. Creates a GitHub Release with auto-generated changelog from commits
-
-> 💡 Always update CHANGELOG.md before creating the tag. See [CHANGELOG.md](CHANGELOG.md#how-to-release) for detailed release instructions.
-
-### Pull Docker Images
+### Pull Docker images
 
 Each release publishes multiple tags for flexibility:
 
@@ -390,8 +238,6 @@ docker pull ghcr.io/nanotaboada/dotnet-samples-aspnetcore-webapi:azteca
 # Latest release
 docker pull ghcr.io/nanotaboada/dotnet-samples-aspnetcore-webapi:latest
 ```
-
-> 💡 See [CHANGELOG.md](CHANGELOG.md) for the complete stadium list (A-Z) and release history.
 
 ## Environment Variables
 
@@ -427,6 +273,29 @@ STORAGE_PATH=/storage/players-sqlite3.db
 
 > 💡 Additional environment variables (`ASPNETCORE_ENVIRONMENT=Production` and `ASPNETCORE_URLS=http://+:9000`) are set in the `Dockerfile`.
 
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the code of conduct and the process for submitting pull requests.
+
+**Key guidelines:**
+
+- Follow [Conventional Commits](https://www.conventionalcommits.org/) for commit messages
+- Ensure all tests pass (`dotnet test`)
+- Keep changes small and focused
+- Review [.github/copilot-instructions.md](.github/copilot-instructions.md) for architectural patterns
+
+**Testing:**
+
+Run the test suite with xUnit:
+
+```bash
+# Run all tests
+dotnet test
+
+# Run tests with coverage report
+dotnet test --results-directory "coverage" --collect:"XPlat Code Coverage" --settings .runsettings
+```
+
 ## Command Summary
 
 | Command | Description |
@@ -443,17 +312,9 @@ STORAGE_PATH=/storage/players-sqlite3.db
 | `docker compose up` | Start Docker container |
 | `docker compose down` | Stop Docker container |
 | `docker compose down -v` | Stop and remove Docker volume |
-
-## Contributing
-
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the code of conduct and the process for submitting pull requests.
-
-**Key guidelines:**
-
-- Follow [Conventional Commits](https://www.conventionalcommits.org/) for commit messages
-- Ensure all tests pass (`dotnet test`)
-- Keep changes small and focused
-- Review [.github/copilot-instructions.md](.github/copilot-instructions.md) for architectural patterns
+| **AI Commands** | |
+| `/pre-commit` | Runs linting, tests, and quality checks before committing |
+| `/pre-release` | Runs pre-release validation workflow |
 
 ## Legal
 
