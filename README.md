@@ -19,7 +19,7 @@ Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Ma
 - 🏗️ **Clean layered architecture** - Repository pattern, dependency injection, and async operations throughout
 - 📚 **Interactive API exploration** - Swagger UI documentation with health monitoring endpoints
 - ⚡ **Performance optimizations** - In-memory caching, rate limiting, and efficient database queries
-- 🧪 **High test coverage** - xUnit tests with automated reporting to Codecov and SonarCloud
+- ✅ **Input Validation** - FluentValidation rule sets with CRUD-scoped constraints and RFC 7807 error responses
 - 🐳 **Full containerization** - Multi-stage Docker builds with Docker Compose orchestration
 - 🔄 **Complete CI/CD pipeline** - Automated testing, code quality checks, Docker publishing, and GitHub releases
 
@@ -147,7 +147,7 @@ Interactive API documentation is available via Swagger UI at `https://localhost:
 | `GET` | `/players/{id:Guid}` | Get player by ID *(requires authentication)* | `200 OK` |
 | `GET` | `/players/squadNumber/{squadNumber:int}` | Get player by squad number | `200 OK` |
 | `POST` | `/players` | Create new player | `201 Created` |
-| `PUT` | `/players/squadNumber/{squadNumber:int}` | Update player by squad number | `200 OK` |
+| `PUT` | `/players/squadNumber/{squadNumber:int}` | Update player by squad number | `204 No Content` |
 | `DELETE` | `/players/squadNumber/{squadNumber:int}` | Remove player by squad number | `204 No Content` |
 | `GET` | `/health` | Health check | `200 OK` |
 
