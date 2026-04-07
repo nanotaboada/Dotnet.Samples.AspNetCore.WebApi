@@ -57,6 +57,8 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 - Rename `ValidateAsync_SquadNumber_BelongsToPlayerBeingUpdated_ReturnsNoErrors` to `ValidateAsync_SquadNumberBelongsToPlayerBeingUpdated_ReturnsNoErrors` to align with the 3-segment naming convention for service/validator tests (#427)
 - Make CSharpier step in `/pre-commit` conditional (skip with a note if not installed), consistent with the Docker and CodeRabbit steps (#427)
 - Add "Verify tag commit is reachable from master" step to CD workflow using `git merge-base --is-ancestor` before any build or publish steps (#439)
+- Rename five controller test methods to normalize data-state vocabulary: `NonExisting` → `Nonexistent` for the POST 201 scenario, `NonExisting` → `Unknown` for the four 404-by-lookup scenarios (#452)
+- Add XML doc `<remarks>` block to `PlayerFakes` documenting the three-term data-state vocabulary (`existing`, `nonexistent`, `unknown`) (#452)
 
 ### Fixed
 

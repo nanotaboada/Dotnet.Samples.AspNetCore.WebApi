@@ -12,6 +12,14 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities;
 /// useful when you need behavior that's closer to reality but still want
 /// to avoid external dependencies.
 /// </summary>
+/// <remarks>
+/// Data-state vocabulary used across controller tests:
+/// <list type="bullet">
+///   <item><term>existing</term><description>Player is present in the database.</description></item>
+///   <item><term>nonexistent</term><description>Player is absent, valid shape for creation (POST scenarios).</description></item>
+///   <item><term>unknown</term><description>Valid ID format, absent from database (404-by-lookup scenarios).</description></item>
+/// </list>
+/// </remarks>
 public static class PlayerFakes
 {
     private static string? FormatBirth(DateTime? dateOfBirth) =>
