@@ -109,7 +109,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Post_Players_NonExisting_Returns201Created()
+    public async Task Post_Players_Nonexistent_Returns201Created()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -203,7 +203,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Get_PlayerById_NonExisting_Returns404NotFound()
+    public async Task Get_PlayerById_Unknown_Returns404NotFound()
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -248,7 +248,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Get_PlayerBySquadNumber_NonExisting_Returns404NotFound()
+    public async Task Get_PlayerBySquadNumber_Unknown_Returns404NotFound()
     {
         // Arrange
         var squadNumber = 999;
@@ -345,7 +345,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Put_PlayerBySquadNumber_NonExisting_Returns404NotFound()
+    public async Task Put_PlayerBySquadNumber_Unknown_Returns404NotFound()
     {
         // Arrange
         var squadNumber = 999;
@@ -461,7 +461,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Delete_PlayerBySquadNumber_NonExisting_Returns404NotFound()
+    public async Task Delete_PlayerBySquadNumber_Unknown_Returns404NotFound()
     {
         // Arrange
         var squadNumber = 999;
