@@ -22,13 +22,12 @@ RUN dotnet publish -c Release -o /app/publish
 # Stage 2: Runtime
 # This stage creates the final, minimal image to run the application.
 # ------------------------------------------------------------------------------
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS runtime
 
 WORKDIR /app
 
 # Install curl for health check
-RUN apt-get update && apt-get install -y --no-install-recommends curl && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl
 
 # Metadata labels for the image. These are useful for registries and inspection.
 LABEL org.opencontainers.image.title="🧪 Web API made with .NET 10 (LTS) and ASP.NET Core"
@@ -39,6 +38,9 @@ LABEL org.opencontainers.image.source="https://github.com/nanotaboada/Dotnet.Sam
 # Set environment variables
 ENV ASPNETCORE_URLS=http://+:9000
 ENV ASPNETCORE_ENVIRONMENT=Production
+# Alpine images default to invariant globalization mode. Explicitly opt in since
+# this API uses ISO-8601 dates and ASCII data — ICU is not required.
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 
 # Copy published app from builder
 COPY --from=builder     /app/publish/               .
@@ -57,7 +59,8 @@ COPY --chmod=555        scripts/healthcheck.sh      ./healthcheck.sh
 COPY --from=builder /src/Dotnet.Samples.AspNetCore.WebApi/storage/players-sqlite3.db ./hold/players-sqlite3.db
 
 # Add non-root user and make volume mount point writable
-RUN groupadd -r aspnetcore && useradd -r -g aspnetcore aspnetcore && \
+RUN addgroup -S aspnetcore && \
+    adduser -S -G aspnetcore aspnetcore && \
     mkdir -p /storage && \
     chown aspnetcore:aspnetcore /storage
 
