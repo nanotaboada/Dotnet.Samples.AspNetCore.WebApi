@@ -54,6 +54,13 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- Switch runtime base image from `mcr.microsoft.com/dotnet/aspnet:10.0` (Debian)
+  to `mcr.microsoft.com/dotnet/aspnet:10.0-alpine` (before: 113.4 MB →
+  after: 73.9 MB compressed; measured via `docker manifest inspect` and
+  `docker save | wc -c`); replace `apt-get` with `apk` and
+  `useradd`/`groupadd` with `adduser`/`addgroup` accordingly (#456)
+- Refactor `scripts/entrypoint.sh`: add `log()` helper with timestamp prefix,
+  replace raw `echo` calls, and print API base URL on startup (#456)
 - Rename `ValidateAsync_SquadNumber_BelongsToPlayerBeingUpdated_ReturnsNoErrors` to `ValidateAsync_SquadNumberBelongsToPlayerBeingUpdated_ReturnsNoErrors` to align with the 3-segment naming convention for service/validator tests (#427)
 - Make CSharpier step in `/pre-commit` conditional (skip with a note if not installed), consistent with the Docker and CodeRabbit steps (#427)
 - Add "Verify tag commit is reachable from master" step to CD workflow using `git merge-base --is-ancestor` before any build or publish steps (#439)
