@@ -10,7 +10,6 @@ WORKDIR /src
 COPY src/Dotnet.Samples.AspNetCore.WebApi/*.csproj  ./Dotnet.Samples.AspNetCore.WebApi/
 RUN dotnet restore ./Dotnet.Samples.AspNetCore.WebApi
 
-# Copy source code and pre-seeded SQLite database
 COPY src/Dotnet.Samples.AspNetCore.WebApi/          ./Dotnet.Samples.AspNetCore.WebApi/
 
 WORKDIR /src/Dotnet.Samples.AspNetCore.WebApi
@@ -53,10 +52,6 @@ COPY --chmod=444        README.md                   ./
 # Copy entrypoint and healthcheck scripts
 COPY --chmod=555        scripts/entrypoint.sh       ./entrypoint.sh
 COPY --chmod=555        scripts/healthcheck.sh      ./healthcheck.sh
-# The 'hold' is our storage compartment within the image. Here, we copy a
-# pre-seeded SQLite database file, which Compose will mount as a persistent
-# 'storage' volume when the container starts up.
-COPY --from=builder /src/Dotnet.Samples.AspNetCore.WebApi/storage/players-sqlite3.db ./hold/players-sqlite3.db
 
 # Add non-root user and make volume mount point writable
 RUN addgroup -S aspnetcore && \

@@ -34,8 +34,8 @@ src/Dotnet.Samples.AspNetCore.WebApi/
 ├── Extensions/         — IServiceCollection extension methods (service registration)
 ├── Configurations/     — Options classes bound from appsettings.json
 ├── Middlewares/        — Custom ASP.NET Core middleware
-├── Data/               — DbContext + DbInitializer (seed data)
-└── Storage/            — SQLite database file (players.db)
+├── Data/               — DbContext; seed data via HasData() in OnModelCreating
+└── Storage/            — SQLite database file (created at runtime by MigrateAsync)
 
 test/Dotnet.Samples.AspNetCore.WebApi.Tests/
 ├── Unit/               — Unit tests (controllers, services, validators)
@@ -206,7 +206,7 @@ This project uses Spec-Driven Development (SDD): discuss in Plan mode first, cre
 
 **Add an endpoint**: Add DTO in `Models/` → update `PlayerMappingProfile` in `Mappings/` → add repository method(s) in `Repositories/` → add service method in `Services/` → add controller action in `Controllers/` → add/update validator rule set in `Validators/` → add tests in `test/.../Unit/` → run pre-commit checks.
 
-**Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → reset `Storage/players.db` → update tests → run `dotnet test`.
+**Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → update `HasData()` seed data in `OnModelCreating` if needed → run `dotnet ef migrations add <Name>` → update tests → run `dotnet test`.
 
 ## Architecture Decision Records (ADRs)
 

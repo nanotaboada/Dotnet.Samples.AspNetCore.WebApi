@@ -8,23 +8,15 @@ log() {
     return 0
 }
 
-IMAGE_STORAGE_PATH="/app/hold/players-sqlite3.db"
-VOLUME_STORAGE_PATH="/storage/players-sqlite3.db"
-
 log "✔ Starting container..."
+
+VOLUME_STORAGE_PATH="${STORAGE_PATH:-/storage/players-sqlite3.db}"
 
 if [ ! -f "$VOLUME_STORAGE_PATH" ]; then
     log "⚠️ No existing database file found in volume."
-    if [ -f "$IMAGE_STORAGE_PATH" ]; then
-        log "🔄 Copying database file to writable volume..."
-        cp "$IMAGE_STORAGE_PATH" "$VOLUME_STORAGE_PATH"
-        log "✔ Database initialized at $VOLUME_STORAGE_PATH"
-    else
-        log "⚠️ Database file missing at $IMAGE_STORAGE_PATH"
-        exit 1
-    fi
+    log "🗄️ EF Core migrations will initialize the database on first start."
 else
-    log "✔ Existing database file found. Skipping seed copy."
+    log "✔ Existing database file found at $VOLUME_STORAGE_PATH."
 fi
 
 log "✔ Ready!"

@@ -1,4 +1,6 @@
+using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 /* -----------------------------------------------------------------------------
@@ -48,6 +50,17 @@ builder.Services.RegisterPlayerRepository();
 builder.Services.AddDbContextPoolWithSqlite(builder.Environment);
 
 var app = builder.Build();
+
+/* -----------------------------------------------------------------------------
+ * Database Migration
+ * https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying#apply-migrations-at-runtime
+ * -------------------------------------------------------------------------- */
+
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PlayerDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 /* -----------------------------------------------------------------------------
  * Middlewares

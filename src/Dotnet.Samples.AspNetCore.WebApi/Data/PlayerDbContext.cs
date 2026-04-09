@@ -1,4 +1,5 @@
 ﻿using Dotnet.Samples.AspNetCore.WebApi.Models;
+using Dotnet.Samples.AspNetCore.WebApi.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Data;
@@ -33,6 +34,8 @@ public class PlayerDbContext(DbContextOptions<PlayerDbContext> options) : DbCont
             entity.HasKey(player => player.Id);
             entity.Property(player => player.Id).ValueGeneratedOnAdd();
             entity.HasIndex(player => player.SquadNumber).IsUnique();
+            entity.HasData(PlayerData.MakeStarting11WithId());
+            entity.HasData(PlayerData.GetSubstitutesWithId());
         });
     }
 }

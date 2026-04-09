@@ -14,14 +14,15 @@ The cross-language comparison set (Go/Gin, Java/Spring Boot, Python/FastAPI, Rus
 
 ## Decision
 
-We will use SQLite as the database engine, accessed through Entity Framework Core. The database file is stored at `storage/players-sqlite3.db` and is pre-seeded with sample data. Docker deployments mount the file into a named volume so data survives container restarts.
+We will use SQLite as the database engine, accessed through Entity Framework Core. The database file is created at `storage/players-sqlite3.db` at runtime: EF Core applies pending migrations (schema + seed data via `HasData()`) automatically at startup via `MigrateAsync()` before the first request is served. Docker deployments mount the file into a named volume so data survives container restarts.
 
 ## Consequences
 
 ### Positive
+
 - Zero-config: no server process, no connection string credentials, no Docker service dependency for local development.
-- The database file can be committed to the repository as seed data, making onboarding instant.
 - EF Core abstracts the SQL dialect, so migrating to another database requires changing only the provider registration.
+- `MigrateAsync()` at startup ensures the schema is always up to date, making onboarding instant without committing binary database files.
 
 ### Negative
 - SQLite does not support concurrent writes, making it unsuitable for multi-instance deployments or high-throughput scenarios.

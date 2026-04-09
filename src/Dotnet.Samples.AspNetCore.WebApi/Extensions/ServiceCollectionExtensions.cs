@@ -31,11 +31,16 @@ public static partial class ServiceCollectionExtensions
     {
         services.AddDbContextPool<PlayerDbContext>(options =>
         {
-            var dataSource = Path.Combine(
-                AppContext.BaseDirectory,
-                "storage",
-                "players-sqlite3.db"
-            );
+            var storagePath = Environment.GetEnvironmentVariable("STORAGE_PATH");
+            var dataSource = !string.IsNullOrWhiteSpace(storagePath)
+                ? storagePath
+                : Path.Combine(AppContext.BaseDirectory, "storage", "players-sqlite3.db");
+
+            var storageDir = Path.GetDirectoryName(dataSource);
+            if (!string.IsNullOrWhiteSpace(storageDir))
+            {
+                Directory.CreateDirectory(storageDir);
+            }
             options.UseSqlite($"Data Source={dataSource}");
 
             if (environment.IsDevelopment())
