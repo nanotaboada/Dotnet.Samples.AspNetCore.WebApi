@@ -54,10 +54,21 @@ public static partial class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds a default CORS policy that allows any origin, method, and header.
+    /// Adds a default CORS policy that allows any origin, method, and header,
+    /// restricted to the Development environment.
     /// <br />
     /// <see href="https://learn.microsoft.com/en-us/aspnet/core/security/cors"/>
     /// </summary>
+    /// <remarks>
+    /// The permissive wildcard policy (AllowAnyOrigin, AllowAnyMethod, AllowAnyHeader)
+    /// is intentional for local development, where Swagger UI and local frontends
+    /// need unrestricted cross-origin access. No CORS policy is registered in
+    /// Production or other environments, where the API is assumed to be consumed
+    /// server-to-server or to sit behind a reverse proxy on the same origin, making
+    /// CORS irrelevant. If a production frontend on a different domain is ever added,
+    /// replace this with a restrictive named policy that enumerates specific allowed
+    /// origins instead of using a wildcard.
+    /// </remarks>
     /// <param name="services">The IServiceCollection instance.</param>
     /// <param name="environment">The web host environment.</param>
     /// <returns>The IServiceCollection for method chaining.</returns>
