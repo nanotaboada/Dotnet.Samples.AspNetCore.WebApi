@@ -44,6 +44,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+- Add `test/.../Integration/PlayerRepositoryTests.cs` with 9 integration tests covering `Repository<T>` (`GetAllAsync`, `FindByIdAsync`, `RemoveAsync`) and `PlayerRepository` (`FindBySquadNumberAsync`, `SquadNumberExistsAsync`); all tests use `DatabaseFakes.MigrateAsync()` on in-memory SQLite and are tagged `[Trait("Category", "Integration")]` (#461)
 - Add `ValidateAsync_SquadNumberNegative_ReturnsValidationError` test to exercise the `GreaterThan(0)` rule with a negative value, which passes `NotEmpty()` but fails the greater-than rule (#427)
 - Add `ValidateAsync_FirstNameEmptyInUpdateRuleSet_ReturnsValidationError` test to verify the `"Update"` rule set enforces structural field validation (#427)
 - Add `adr/` directory with 12 Architecture Decision Records documenting architectural choices, technology decisions, and design trade-offs (#372)
