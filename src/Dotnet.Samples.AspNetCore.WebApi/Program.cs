@@ -89,11 +89,10 @@ app.UseExceptionHandling();
 // Redirects all plain HTTP requests to HTTPS, enforcing transport security.
 app.UseHttpsRedirection();
 
-// Intentionally registered before UseRateLimiter so that health check probes
-// always succeed regardless of rate-limiting thresholds, allowing monitoring
-// and orchestration systems to assess liveness and readiness without being
-// throttled.
-app.MapHealthChecks("/health");
+// DisableRateLimiting() exempts the health check endpoint from the global rate
+// limiter so that monitoring and orchestration systems can always assess
+// liveness and readiness without being throttled.
+app.MapHealthChecks("/health").DisableRateLimiting();
 
 // Enforces the fixed-window rate limiting policy defined during service
 // registration, returning 429 Too Many Requests when the limit is exceeded.
