@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
 {
     /// <summary>
-    /// A Fake is a working implementation that’s simpler than the real one.
-    /// It usually has some “real” logic but is not suitable for production
+    /// A Fake is a working implementation that's simpler than the real one.
+    /// It usually has some "real" logic but is not suitable for production
     /// (e.g., an in‑memory database instead of a full SQL Server). Fakes are
-    /// useful when you need behavior that’s closer to reality but still want
+    /// useful when you need behavior that's closer to reality but still want
     /// to avoid external dependencies.
     /// </summary>
     public static class DatabaseFakes
@@ -44,32 +44,13 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
         }
 
         /// <summary>
-        /// Creates the database schema for the test database.
+        /// Applies all pending EF Core migrations to the test database, including seed data.
         /// Extension method for PlayerDbContext.
         /// </summary>
         /// <param name="context">The PlayerDbContext instance.</param>
-        public static void CreateTable(this PlayerDbContext context)
+        public static async Task MigrateAsync(this PlayerDbContext context)
         {
-            using var cmd = context.Database.GetDbConnection().CreateCommand();
-            cmd.CommandText =
-                @"
-                CREATE TABLE players (
-                    id INTEGER PRIMARY KEY,
-                    firstName TEXT NOT NULL,
-                    /* ... other columns ... */
-                )";
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Seeds the test database with the starting 11 players.
-        /// Extension method for PlayerDbContext.
-        /// </summary>
-        /// <param name="context">The PlayerDbContext instance.</param>
-        public static void Seed(this PlayerDbContext context)
-        {
-            context.Players.AddRange(PlayerFakes.MakeStarting11());
-            context.SaveChanges();
+            await context.Database.MigrateAsync();
         }
     }
 }

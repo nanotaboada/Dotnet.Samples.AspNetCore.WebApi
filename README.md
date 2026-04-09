@@ -161,7 +161,7 @@ Before you begin, ensure you have the following installed:
 
 - .NET 10 SDK (LTS) or higher
 - Docker Desktop (optional, for containerized deployment)
-- dotnet-ef CLI tool (for database migrations)
+- dotnet-ef CLI tool (optional, for creating new migrations)
 
   ```bash
   dotnet tool install --global dotnet-ef
@@ -206,7 +206,7 @@ docker compose build
 docker compose up
 ```
 
-> 💡 On first run, the container copies a pre-seeded SQLite database into a persistent volume. On subsequent runs, that volume is reused and the data is preserved.
+> 💡 On first run, the app applies EF Core migrations and seeds the database automatically into a persistent volume. On subsequent runs, that volume is reused and the data is preserved.
 
 ### Stop the application
 
@@ -216,7 +216,7 @@ docker compose down
 
 ### Reset the database
 
-To remove the volume and reinitialize the database from the built-in seed file:
+To remove the volume and let the app re-create and re-seed the database on next startup:
 
 ```bash
 docker compose down -v
@@ -306,8 +306,7 @@ dotnet test --results-directory "coverage" --collect:"XPlat Code Coverage" --set
 | `dotnet test --collect:"XPlat Code Coverage"` | Run tests with coverage report |
 | `dotnet csharpier .` | Format source code |
 | `dotnet ef migrations add <Name>` | Create a new migration |
-| `dotnet ef database update` | Apply migrations |
-| `./scripts/run-migrations-and-copy-database.sh` | Regenerate database with seed data |
+| `dotnet ef database update` | Apply migrations manually |
 | `docker compose build` | Build Docker image |
 | `docker compose up` | Start Docker container |
 | `docker compose down` | Stop Docker container |
