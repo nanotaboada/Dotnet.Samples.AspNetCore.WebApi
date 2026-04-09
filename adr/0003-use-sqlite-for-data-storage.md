@@ -19,6 +19,7 @@ We will use SQLite as the database engine, accessed through Entity Framework Cor
 ## Consequences
 
 ### Positive
+
 - Zero-config: no server process, no connection string credentials, no Docker service dependency for local development.
 - EF Core abstracts the SQL dialect, so migrating to another database requires changing only the provider registration.
 - `MigrateAsync()` at startup ensures the schema is always up to date, making onboarding instant without committing binary database files.
