@@ -105,11 +105,16 @@ public class PlayerRepositoryTests : IAsyncLifetime
     [Trait("Category", "Integration")]
     public async Task RemoveAsync_UnknownId_NoExceptionThrown()
     {
+        // Arrange
+        var countBefore = (await _repository.GetAllAsync()).Count;
+
         // Act
         var act = async () => await _repository.RemoveAsync(Guid.NewGuid());
 
         // Assert
         await act.Should().NotThrowAsync();
+        var countAfter = (await _repository.GetAllAsync()).Count;
+        countAfter.Should().Be(countBefore);
     }
 
     /* -------------------------------------------------------------------------
@@ -120,20 +125,27 @@ public class PlayerRepositoryTests : IAsyncLifetime
     [Trait("Category", "Integration")]
     public async Task FindBySquadNumberAsync_ExistingSquadNumber_ReturnsPlayer()
     {
+        // Arrange
+        var expected = PlayerFakes.MakeFromStarting11(23);
+
         // Act
-        var player = await _repository.FindBySquadNumberAsync(23);
+        var player = await _repository.FindBySquadNumberAsync(expected.SquadNumber);
 
         // Assert
         player.Should().NotBeNull();
-        player!.SquadNumber.Should().Be(23);
+        player!.SquadNumber.Should().Be(expected.SquadNumber);
     }
 
     [Fact]
     [Trait("Category", "Integration")]
     public async Task FindBySquadNumberAsync_UnknownSquadNumber_ReturnsNull()
     {
+        // Arrange — derive a squad number guaranteed not to exist in the seeded data
+        var seeded = await _repository.GetAllAsync();
+        var unknownSquadNumber = seeded.Max(p => p.SquadNumber) + 1;
+
         // Act
-        var player = await _repository.FindBySquadNumberAsync(999);
+        var player = await _repository.FindBySquadNumberAsync(unknownSquadNumber);
 
         // Assert
         player.Should().BeNull();
@@ -147,8 +159,11 @@ public class PlayerRepositoryTests : IAsyncLifetime
     [Trait("Category", "Integration")]
     public async Task SquadNumberExistsAsync_ExistingSquadNumber_ReturnsTrue()
     {
+        // Arrange
+        var expected = PlayerFakes.MakeFromStarting11(23);
+
         // Act
-        var exists = await _repository.SquadNumberExistsAsync(23);
+        var exists = await _repository.SquadNumberExistsAsync(expected.SquadNumber);
 
         // Assert
         exists.Should().BeTrue();
@@ -158,8 +173,12 @@ public class PlayerRepositoryTests : IAsyncLifetime
     [Trait("Category", "Integration")]
     public async Task SquadNumberExistsAsync_UnknownSquadNumber_ReturnsFalse()
     {
+        // Arrange — derive a squad number guaranteed not to exist in the seeded data
+        var seeded = await _repository.GetAllAsync();
+        var unknownSquadNumber = seeded.Max(p => p.SquadNumber) + 1;
+
         // Act
-        var exists = await _repository.SquadNumberExistsAsync(999);
+        var exists = await _repository.SquadNumberExistsAsync(unknownSquadNumber);
 
         // Assert
         exists.Should().BeFalse();
