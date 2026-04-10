@@ -58,14 +58,15 @@ test/Dotnet.Samples.AspNetCore.WebApi.Tests/
 
 ### Test naming conventions
 
-Tests live under `test/.../Unit/`. Two naming patterns, strictly by layer:
+Two naming patterns, strictly by layer:
 
-| Layer                | Pattern                                                       | Example                                                          |
-|----------------------|---------------------------------------------------------------|------------------------------------------------------------------|
-| Controller           | `{HttpMethod}_{Resource}_{Condition}_Returns{Outcome}`        | `Get_Players_Existing_ReturnsPlayers`                            |
-| Service / Validator  | `{MethodName}_{StateUnderTest}_{ExpectedBehavior}`            | `RetrieveAsync_CacheMiss_QueriesRepositoryAndCachesResult`       |
+| Layer                | Location              | Pattern                                                       | Example                                                          |
+|----------------------|-----------------------|---------------------------------------------------------------|------------------------------------------------------------------|
+| Controller (unit)    | `test/.../Unit/`      | `{HttpMethod}_{Resource}_{Condition}_Returns{Outcome}`        | `Get_Players_Existing_ReturnsPlayers`                            |
+| Service / Validator  | `test/.../Unit/`      | `{MethodName}_{StateUnderTest}_{ExpectedBehavior}`            | `RetrieveAsync_CacheMiss_QueriesRepositoryAndCachesResult`       |
+| HTTP integration     | `test/.../Integration/` | `{HttpMethod}_{Resource}_{Condition}_Returns{Outcome}`      | `Get_Players_Existing_Returns200Ok`                              |
 
-Each pattern has exactly three underscore-delimited segments. Do not add a fourth segment.
+Each pattern has exactly three underscore-delimited segments where `{HttpMethod}_{Resource}` counts as the first segment. Do not add a fourth segment.
 
 ### FluentValidation rule sets
 
