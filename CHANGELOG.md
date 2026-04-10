@@ -44,6 +44,8 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+- Add `adr/0013-testing-strategy.md` documenting the decision to implement the full test pyramid as a deliberate educational choice (#421)
+- Add `test/.../Integration/PlayerWebApplicationTests.cs` with 14 HTTP-layer integration tests covering all player endpoints and `/health` via `WebApplicationFactory<Program>` backed by in-memory SQLite; includes `Utilities/TestAuthHandler.cs` to bypass `[Authorize]` on `GET /players/{id:Guid}`; expose `Program` to the test project via `public partial class Program {}` in `Program.cs`; add `Microsoft.AspNetCore.Mvc.Testing` to the test project (#421)
 - Add `test/.../Integration/PlayerRepositoryTests.cs` with 9 integration tests covering `Repository<T>` (`GetAllAsync`, `FindByIdAsync`, `RemoveAsync`) and `PlayerRepository` (`FindBySquadNumberAsync`, `SquadNumberExistsAsync`); all tests use `DatabaseFakes.MigrateAsync()` on in-memory SQLite and are tagged `[Trait("Category", "Integration")]` (#461)
 - Add `ValidateAsync_SquadNumberNegative_ReturnsValidationError` test to exercise the `GreaterThan(0)` rule with a negative value, which passes `NotEmpty()` but fails the greater-than rule (#427)
 - Add `ValidateAsync_FirstNameEmptyInUpdateRuleSet_ReturnsValidationError` test to verify the `"Update"` rule set enforces structural field validation (#427)

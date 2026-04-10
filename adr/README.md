@@ -18,6 +18,7 @@ This directory contains Architecture Decision Records (ADRs) for this project. A
 | [0010](0010-use-serilog-for-structured-logging.md) | Use Serilog for Structured Logging | Accepted |
 | [0011](0011-use-docker-for-containerization.md) | Use Docker for Containerization | Accepted |
 | [0012](0012-use-stadium-themed-semantic-versioning.md) | Use Stadium-Themed Semantic Versioning | Accepted |
+| [0013](0013-testing-strategy.md) | Testing Strategy | Accepted |
 
 ## When to Create an ADR
 
