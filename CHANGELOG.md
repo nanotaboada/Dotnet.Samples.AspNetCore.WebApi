@@ -44,6 +44,14 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+- Extract `test` job from `release` in CD pipeline so tests run in isolation
+  before any publish step; add `linux/arm64` to build platforms; add
+  `id-token: write` and `attestations: write` permissions to `release`; set
+  `provenance: mode=max` and attest the image digest with
+  `actions/attest-build-provenance@v4.1.0` (`push-to-registry: true`); add
+  `--no-merges` to the changelog `git log` command; add empty changelog guard;
+  normalize first-release message to `"No changes (first release)"` (#465)
+
 - Add `adr/0013-testing-strategy.md` documenting the decision to implement the full test pyramid as a deliberate educational choice (#421)
 - Add `test/.../Integration/PlayerWebApplicationTests.cs` with 14 HTTP-layer integration tests covering all player endpoints and `/health` via `WebApplicationFactory<Program>` backed by in-memory SQLite; includes `Utilities/TestAuthHandler.cs` to bypass `[Authorize]` on `GET /players/{id:Guid}`; expose `Program` to the test project via `public partial class Program {}` in `Program.cs`; add `Microsoft.AspNetCore.Mvc.Testing` to the test project (#421)
 - Add `test/.../Integration/PlayerRepositoryTests.cs` with 9 integration tests covering `Repository<T>` (`GetAllAsync`, `FindByIdAsync`, `RemoveAsync`) and `PlayerRepository` (`FindBySquadNumberAsync`, `SquadNumberExistsAsync`); all tests use `DatabaseFakes.MigrateAsync()` on in-memory SQLite and are tagged `[Trait("Category", "Integration")]` (#461)
