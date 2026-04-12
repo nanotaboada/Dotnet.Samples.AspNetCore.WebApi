@@ -44,6 +44,18 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+---
+
+## [2.1.1 - ekaterinburg] - 2026-04-12
+
+### Added
+
 - Extract `test` job from `release` in CD pipeline so tests run in isolation
   before any publish step; add `linux/arm64` to build platforms; add
   `id-token: write` and `attestations: write` permissions to `release`; set
@@ -250,7 +262,8 @@ The CD workflow automatically:
 
 ---
 
-[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.0-dusseldorf...HEAD
+[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.1-ekaterinburg...HEAD
+[2.1.1 - ekaterinburg]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.0-dusseldorf...v2.1.1-ekaterinburg
 [2.1.0 - dusseldorf]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.0.0-centenario...v2.1.0-dusseldorf
 [2.0.0 - centenario]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.1.0-bernabeu...v2.0.0-centenario
 [1.1.0 - bernabeu]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.0.0-azteca...v1.1.0-bernabeu
