@@ -80,7 +80,7 @@ jobs:
         run: cat coverage/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Cobertura coverage report artifact
-        uses: actions/upload-artifact@v7.0.0
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: cobertura.xml
           path: coverage/cobertura.xml
