@@ -206,7 +206,7 @@ public class PlayerWebApplicationTests : IAsyncLifetime
 
     [Fact]
     [Trait("Category", "Integration")]
-    public async Task Post_Players_ValidationError_Returns400BadRequest()
+    public async Task Post_Players_ValidationError_Returns422UnprocessableEntity()
     {
         // Arrange — SquadNumber 0 is the int default, fails NotEmpty
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -216,9 +216,9 @@ public class PlayerWebApplicationTests : IAsyncLifetime
         var response = await _client.PostAsJsonAsync("/players", request);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-        problem!.Status.Should().Be(StatusCodes.Status400BadRequest);
+        problem!.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
     }
 
     /* -------------------------------------------------------------------------
@@ -259,7 +259,7 @@ public class PlayerWebApplicationTests : IAsyncLifetime
 
     [Fact]
     [Trait("Category", "Integration")]
-    public async Task Put_PlayerBySquadNumber_ValidationError_Returns400BadRequest()
+    public async Task Put_PlayerBySquadNumber_ValidationError_Returns422UnprocessableEntity()
     {
         // Arrange — SquadNumber -1 fails GreaterThan(0)
         var request = PlayerFakes.MakeRequestModelForUpdate(23);
@@ -269,9 +269,9 @@ public class PlayerWebApplicationTests : IAsyncLifetime
         var response = await _client.PutAsJsonAsync("/players/squadNumber/23", request);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-        problem!.Status.Should().Be(StatusCodes.Status400BadRequest);
+        problem!.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
     }
 
     [Fact]

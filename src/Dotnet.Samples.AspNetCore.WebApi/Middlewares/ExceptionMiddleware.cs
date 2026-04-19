@@ -88,7 +88,7 @@ public class ExceptionMiddleware(
     {
         return exception switch
         {
-            ValidationException => (StatusCodes.Status400BadRequest, "Validation Error"),
+            ValidationException => (StatusCodes.Status422UnprocessableEntity, "Validation Error"),
             ArgumentException
             or ArgumentNullException
                 => (StatusCodes.Status400BadRequest, "Bad Request"),
