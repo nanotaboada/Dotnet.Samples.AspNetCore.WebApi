@@ -4,9 +4,9 @@
     "net10.0": {
       "coverlet.collector": {
         "type": "Direct",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "heVQl5tKYnnIDYlR1QMVGueYH6iriZTcZB6AjDczQNwZzxkjDIt9C84Pt4cCiZYrbo7jkZOYGWbs6Lo9wAtVLg=="
+        "requested": "[10.0.0, )",
+        "resolved": "10.0.0",
+        "contentHash": "WFejCcOUR6k8UYyDnnR6Gk+obFYMsWrZuNqPJnsVFGVhpPSN0y20D4qbdKJnXinYGx9PQ397Hf9TnU1NBST8vA=="
       },
       "FluentAssertions": {
         "type": "Direct",
@@ -95,8 +95,8 @@
       },
       "Microsoft.AspNetCore.OpenApi": {
         "type": "Transitive",
-        "resolved": "10.0.5",
-        "contentHash": "vTcxIfOPyfFbYk1g8YcXJfkMnlEWVkSnnjxcZLy60zgwiHMRf2SnZR+9E4HlpwKxgE3yfKMOti8J6WfKuKsw6w==",
+        "resolved": "10.0.6",
+        "contentHash": "WTAQe7MAbbKztRyeCRGZOqqlIqpMHDBz+jKo7LLY6hp4qRqn7iucR24u32KJVxV7mF3tSEfwXH96NgGSiDBw7A==",
         "dependencies": {
           "Microsoft.OpenApi": "2.0.0"
         }
@@ -734,7 +734,7 @@
           "AutoMapper": "[16.1.1, 17.0.0)",
           "FluentValidation": "[12.1.1, )",
           "FluentValidation.DependencyInjectionExtensions": "[12.1.1, )",
-          "Microsoft.AspNetCore.OpenApi": "[10.0.5, )",
+          "Microsoft.AspNetCore.OpenApi": "[10.0.6, )",
           "Microsoft.EntityFrameworkCore.Sqlite": "[10.0.6, )",
           "Serilog.AspNetCore": "[10.0.0, )",
           "Serilog.Settings.Configuration": "[10.0.0, )",
