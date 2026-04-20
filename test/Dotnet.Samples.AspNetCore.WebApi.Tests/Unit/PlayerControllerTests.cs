@@ -26,7 +26,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Post_Players_ValidationError_Returns400BadRequest()
+    public async Task Post_Players_ValidationError_Returns422UnprocessableEntity()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -63,8 +63,8 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        var httpResult = result.Should().BeOfType<ValidationProblem>().Subject;
-        httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status422UnprocessableEntity);
     }
 
     [Fact]
@@ -299,7 +299,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Put_PlayerBySquadNumber_ValidationError_Returns400BadRequest()
+    public async Task Put_PlayerBySquadNumber_ValidationError_Returns422UnprocessableEntity()
     {
         // Arrange
         var squadNumber = 20;
@@ -339,8 +339,8 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        var httpResult = result.Should().BeOfType<ValidationProblem>().Subject;
-        httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status422UnprocessableEntity);
     }
 
     [Fact]
