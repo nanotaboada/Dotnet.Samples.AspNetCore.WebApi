@@ -65,6 +65,16 @@ public class PlayerControllerTests : IDisposable
         );
         var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
         httpResult.StatusCode.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        var problemDetails = httpResult
+            .ProblemDetails.Should()
+            .BeOfType<HttpValidationProblemDetails>()
+            .Subject;
+        problemDetails.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        problemDetails
+            .Errors.Should()
+            .ContainKey("SquadNumber")
+            .WhoseValue.Should()
+            .Contain("SquadNumber must be greater than 0.");
     }
 
     [Fact]
@@ -341,6 +351,16 @@ public class PlayerControllerTests : IDisposable
         );
         var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
         httpResult.StatusCode.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        var problemDetails = httpResult
+            .ProblemDetails.Should()
+            .BeOfType<HttpValidationProblemDetails>()
+            .Subject;
+        problemDetails.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        problemDetails
+            .Errors.Should()
+            .ContainKey("SquadNumber")
+            .WhoseValue.Should()
+            .Contain("SquadNumber must be greater than 0.");
     }
 
     [Fact]

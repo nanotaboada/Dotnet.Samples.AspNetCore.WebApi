@@ -199,10 +199,10 @@ public class PlayerWebApplicationTests : IAsyncLifetime
 
     // Note: the controller's 409 Conflict branch (squad number already exists) is
     // unreachable via the HTTP pipeline. The "Create" validation rule set includes
-    // BeUniqueSquadNumber, which returns a 400 validation error before the
-    // controller's own duplicate check ever runs. The 409 path is covered by the
-    // unit test Post_Players_Existing_Returns409Conflict, where validation is mocked
-    // to pass so the controller logic can be exercised in isolation.
+    // BeUniqueSquadNumber, which returns a 422 validation error (Unprocessable Entity)
+    // before the controller's own duplicate check ever runs. The 409 path is covered
+    // by the unit test Post_Players_Existing_Returns409Conflict, where validation is
+    // mocked to pass so the controller logic can be exercised in isolation.
 
     [Fact]
     [Trait("Category", "Integration")]
