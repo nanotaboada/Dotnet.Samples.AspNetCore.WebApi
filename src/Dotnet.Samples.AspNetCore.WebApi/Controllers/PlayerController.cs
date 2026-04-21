@@ -27,13 +27,13 @@ public class PlayerController(
     /// </summary>
     /// <param name="player">The PlayerRequestModel</param>
     /// <response code="201">Created</response>
-    /// <response code="400">Bad Request</response>
     /// <response code="409">Conflict</response>
+    /// <response code="422">Unprocessable Entity</response>
     [HttpPost(Name = "Create")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType<PlayerResponseModel>(StatusCodes.Status201Created)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IResult> PostAsync([FromBody] PlayerRequestModel player)
     {
         // Use the "Create" rule set, which includes BeUniqueSquadNumber.
@@ -49,10 +49,13 @@ public class PlayerController(
                 .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
 
             logger.LogWarning("POST /players validation failed: {@Errors}", errors);
-            return TypedResults.ValidationProblem(
-                errors,
-                detail: "See the errors field for details.",
-                instance: HttpContext?.Request?.Path.ToString()
+            return TypedResults.Problem(
+                new HttpValidationProblemDetails(errors)
+                {
+                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Detail = "See the errors field for details.",
+                    Instance = HttpContext?.Request?.Path.ToString(),
+                }
             );
         }
 
@@ -177,13 +180,15 @@ public class PlayerController(
     /// <param name="player">The PlayerRequestModel</param>
     /// <param name="squadNumber">The Squad Number of the Player</param>
     /// <response code="204">No Content</response>
-    /// <response code="400">Bad Request</response>
+    /// <response code="400">Bad Request (route/body squad number mismatch)</response>
     /// <response code="404">Not Found</response>
+    /// <response code="422">Unprocessable Entity (field validation failure)</response>
     [HttpPut("squadNumber/{squadNumber:int}", Name = "Update")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IResult> PutAsync(
         [FromRoute] int squadNumber,
         [FromBody] PlayerRequestModel player
@@ -207,10 +212,13 @@ public class PlayerController(
                 squadNumber,
                 errors
             );
-            return TypedResults.ValidationProblem(
-                errors,
-                detail: "See the errors field for details.",
-                instance: HttpContext?.Request?.Path.ToString()
+            return TypedResults.Problem(
+                new HttpValidationProblemDetails(errors)
+                {
+                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Detail = "See the errors field for details.",
+                    Instance = HttpContext?.Request?.Path.ToString(),
+                }
             );
         }
         if (player.SquadNumber != squadNumber)

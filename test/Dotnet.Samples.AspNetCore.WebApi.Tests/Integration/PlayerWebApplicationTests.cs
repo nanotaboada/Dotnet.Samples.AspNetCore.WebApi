@@ -199,14 +199,14 @@ public class PlayerWebApplicationTests : IAsyncLifetime
 
     // Note: the controller's 409 Conflict branch (squad number already exists) is
     // unreachable via the HTTP pipeline. The "Create" validation rule set includes
-    // BeUniqueSquadNumber, which returns a 400 validation error before the
-    // controller's own duplicate check ever runs. The 409 path is covered by the
-    // unit test Post_Players_Existing_Returns409Conflict, where validation is mocked
-    // to pass so the controller logic can be exercised in isolation.
+    // BeUniqueSquadNumber, which returns a 422 validation error (Unprocessable Entity)
+    // before the controller's own duplicate check ever runs. The 409 path is covered
+    // by the unit test Post_Players_Existing_Returns409Conflict, where validation is
+    // mocked to pass so the controller logic can be exercised in isolation.
 
     [Fact]
     [Trait("Category", "Integration")]
-    public async Task Post_Players_ValidationError_Returns400BadRequest()
+    public async Task Post_Players_ValidationError_Returns422UnprocessableEntity()
     {
         // Arrange — SquadNumber 0 is the int default, fails NotEmpty
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -216,9 +216,9 @@ public class PlayerWebApplicationTests : IAsyncLifetime
         var response = await _client.PostAsJsonAsync("/players", request);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-        problem!.Status.Should().Be(StatusCodes.Status400BadRequest);
+        problem!.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
     }
 
     /* -------------------------------------------------------------------------
@@ -259,7 +259,7 @@ public class PlayerWebApplicationTests : IAsyncLifetime
 
     [Fact]
     [Trait("Category", "Integration")]
-    public async Task Put_PlayerBySquadNumber_ValidationError_Returns400BadRequest()
+    public async Task Put_PlayerBySquadNumber_ValidationError_Returns422UnprocessableEntity()
     {
         // Arrange — SquadNumber -1 fails GreaterThan(0)
         var request = PlayerFakes.MakeRequestModelForUpdate(23);
@@ -269,9 +269,9 @@ public class PlayerWebApplicationTests : IAsyncLifetime
         var response = await _client.PutAsJsonAsync("/players/squadNumber/23", request);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-        problem!.Status.Should().Be(StatusCodes.Status400BadRequest);
+        problem!.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
     }
 
     [Fact]

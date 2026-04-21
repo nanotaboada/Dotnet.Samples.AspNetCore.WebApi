@@ -26,7 +26,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Post_Players_ValidationError_Returns400BadRequest()
+    public async Task Post_Players_ValidationError_Returns422UnprocessableEntity()
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
@@ -63,8 +63,18 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        var httpResult = result.Should().BeOfType<ValidationProblem>().Subject;
-        httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        var problemDetails = httpResult
+            .ProblemDetails.Should()
+            .BeOfType<HttpValidationProblemDetails>()
+            .Subject;
+        problemDetails.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        problemDetails
+            .Errors.Should()
+            .ContainKey("SquadNumber")
+            .WhoseValue.Should()
+            .Contain("SquadNumber must be greater than 0.");
     }
 
     [Fact]
@@ -299,7 +309,7 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Put_PlayerBySquadNumber_ValidationError_Returns400BadRequest()
+    public async Task Put_PlayerBySquadNumber_ValidationError_Returns422UnprocessableEntity()
     {
         // Arrange
         var squadNumber = 20;
@@ -339,8 +349,18 @@ public class PlayerControllerTests : IDisposable
                 ),
             Times.Once
         );
-        var httpResult = result.Should().BeOfType<ValidationProblem>().Subject;
-        httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        var httpResult = result.Should().BeOfType<ProblemHttpResult>().Subject;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        var problemDetails = httpResult
+            .ProblemDetails.Should()
+            .BeOfType<HttpValidationProblemDetails>()
+            .Subject;
+        problemDetails.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        problemDetails
+            .Errors.Should()
+            .ContainKey("SquadNumber")
+            .WhoseValue.Should()
+            .Contain("SquadNumber must be greater than 0.");
     }
 
     [Fact]

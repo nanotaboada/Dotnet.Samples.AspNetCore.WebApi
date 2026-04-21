@@ -46,6 +46,8 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- Field validation failures now return `422 Unprocessable Entity` (RFC 4918) instead of `400 Bad Request`; `400 Bad Request` is now reserved for malformed requests (unparseable JSON, route/body mismatch); unsupported media types return `415 Unsupported Media Type` (RFC 9110 §15.5.16) via the `[Consumes]` attribute. Error responses follow the Problem Details format (RFC 9457).
+
 ### Fixed
 
 ### Removed
