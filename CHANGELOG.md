@@ -52,9 +52,11 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Removed
 
+- Remove `## How to Release` section from `CHANGELOG.md`; capitalize release codenames in `##` version headers and reference links (#468)
+
 ---
 
-## [2.1.1 - ekaterinburg] - 2026-04-12
+## [2.1.1 - Ekaterinburg] - 2026-04-12
 
 ### Added
 
@@ -106,7 +108,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ---
 
-## [2.1.0 - dusseldorf] - 2026-03-29
+## [2.1.0 - Dusseldorf] - 2026-03-29
 
 ### Added
 
@@ -125,7 +127,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ---
 
-## [2.0.0 - centenario] - 2026-03-18
+## [2.0.0 - Centenario] - 2026-03-18
 
 ### Changed
 
@@ -153,7 +155,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ---
 
-## [1.1.0 - bernabeu] - 2026-02-09
+## [1.1.0 - Bernabeu] - 2026-02-09
 
 ### Changed
 
@@ -173,68 +175,9 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ---
 
-## [1.0.0 - azteca] - 2026-01-22
+## [1.0.0 - Azteca] - 2026-01-22
 
 Initial release. See [README.md](README.md) for complete feature list and documentation.
-
----
-
-## How to Release
-
-To create a new release, follow these steps in order:
-
-### 1. Update CHANGELOG.md
-
-Move items from the `[Unreleased]` section to a new release section:
-
-```markdown
-## [X.Y.Z - STADIUM_NAME] - YYYY-MM-DD
-
-### Added
-- New features here
-
-### Changed
-- Changes here
-
-### Fixed
-- Bug fixes here
-
-### Removed
-- Removed features here
-```
-
-**Important:** Commit and push this change before creating the tag.
-
-### 2. Create and Push Version Tag
-
-```bash
-git tag -a vX.Y.Z-stadium -m "Release X.Y.Z - Stadium"
-git push origin vX.Y.Z-stadium
-```
-
-Example:
-
-```bash
-git tag -a v1.0.0-azteca -m "Release 1.0.0 - Azteca"
-git push origin v1.0.0-azteca
-```
-
-### 3. Automated CD Workflow
-
-The CD workflow automatically:
-
-- ✅ Validates the stadium name against the A-Z list
-- ✅ Builds and tests the project in Release configuration
-- ✅ Publishes Docker images to GHCR with three tags (`:X.Y.Z`, `:stadium`, `:latest`)
-- ✅ Creates a GitHub Release with auto-generated notes from commits
-
-### Pre-Release Checklist
-
-- [ ] CHANGELOG.md updated with release notes
-- [ ] CHANGELOG.md changes committed and pushed
-- [ ] Tag created with correct format: `vX.Y.Z-stadium`
-- [ ] Stadium name is valid (A-Z from table above)
-- [ ] Tag pushed to trigger CD workflow
 
 ---
 
@@ -265,8 +208,8 @@ The CD workflow automatically:
 ---
 
 [unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.1-ekaterinburg...HEAD
-[2.1.1 - ekaterinburg]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.0-dusseldorf...v2.1.1-ekaterinburg
-[2.1.0 - dusseldorf]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.0.0-centenario...v2.1.0-dusseldorf
-[2.0.0 - centenario]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.1.0-bernabeu...v2.0.0-centenario
-[1.1.0 - bernabeu]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.0.0-azteca...v1.1.0-bernabeu
-[1.0.0 - azteca]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/releases/tag/v1.0.0-azteca
+[2.1.1 - Ekaterinburg]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.0-dusseldorf...v2.1.1-ekaterinburg
+[2.1.0 - Dusseldorf]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.0.0-centenario...v2.1.0-dusseldorf
+[2.0.0 - Centenario]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.1.0-bernabeu...v2.0.0-centenario
+[1.1.0 - Bernabeu]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.0.0-azteca...v1.1.0-bernabeu
+[1.0.0 - Azteca]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/releases/tag/v1.0.0-azteca
