@@ -46,9 +46,17 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
-- Field validation failures now return `422 Unprocessable Entity` (RFC 4918) instead of `400 Bad Request`; `400 Bad Request` is now reserved for malformed requests (unparseable JSON, route/body mismatch); unsupported media types return `415 Unsupported Media Type` (RFC 9110 §15.5.16) via the `[Consumes]` attribute. Error responses follow the Problem Details format (RFC 9457).
-
 ### Fixed
+
+### Removed
+
+---
+
+## [2.1.2 - Frankfurt] - 2026-04-26
+
+### Changed
+
+- Field validation failures now return `422 Unprocessable Entity` (RFC 4918) instead of `400 Bad Request`; `400 Bad Request` is now reserved for malformed requests (unparseable JSON, route/body mismatch); unsupported media types return `415 Unsupported Media Type` (RFC 9110 §15.5.16) via the `[Consumes]` attribute. Error responses follow the Problem Details format (RFC 9457).
 
 ### Removed
 
@@ -207,7 +215,8 @@ Initial release. See [README.md](README.md) for complete feature list and docume
 
 ---
 
-[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.1-ekaterinburg...HEAD
+[unreleased]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.2-frankfurt...HEAD
+[2.1.2 - Frankfurt]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.1-ekaterinburg...v2.1.2-frankfurt
 [2.1.1 - Ekaterinburg]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.1.0-dusseldorf...v2.1.1-ekaterinburg
 [2.1.0 - Dusseldorf]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v2.0.0-centenario...v2.1.0-dusseldorf
 [2.0.0 - Centenario]: https://github.com/nanotaboada/Dotnet.Samples.AspNetCore.WebApi/compare/v1.1.0-bernabeu...v2.0.0-centenario
