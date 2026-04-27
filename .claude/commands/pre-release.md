@@ -74,15 +74,17 @@ proceeding. Never create a branch, commit, tag, or push without approval.
 
    **Wait for explicit approval before committing.**
 
-6. Run `/pre-commit`, manually skipping step 1 and step 5 — the CHANGELOG update
-   and CodeRabbit review were already completed above. Open with: "Skip step 1
-   (CHANGELOG already updated) and step 5 (CodeRabbit already run) — proceeding
-   with steps 2–4."
+6. Run `dotnet build --configuration Release` — must succeed.
 
-7. Propose opening a PR from `release/vX.Y.Z-{stadium}` into `master`.
+7. Run `dotnet test --settings .runsettings` — all tests must pass.
+
+8. If `dotnet csharpier` is available, run `dotnet csharpier --check .` — must pass
+   (run `dotnet csharpier .` to auto-fix). Skip with a note if not installed.
+
+9. Propose opening a PR from `release/vX.Y.Z-{stadium}` into `master`.
    **Wait for explicit approval before opening.**
 
-8. Open the PR with:
+10. Open the PR with:
    - Title: `docs(changelog): prepare release notes for vX.Y.Z-{stadium}`
    - Body summarising what is included in this release.
 
