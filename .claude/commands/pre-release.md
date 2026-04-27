@@ -58,7 +58,15 @@ proceeding. Never create a branch, commit, tag, or push without approval.
      - `[unreleased]` → `.../compare/vX.Y.Z-{stadium}...HEAD`
      - Add `[X.Y.Z - StadiumName]` → `.../compare/v{prev-tag}...vX.Y.Z-{stadium}`
 
-3. Show the full diff of `CHANGELOG.md` and propose this commit message:
+3. Show the full diff of `CHANGELOG.md`.
+
+4. If `coderabbit` CLI is installed, run `coderabbit review --type uncommitted --prompt-only`
+   on the uncommitted CHANGELOG changes:
+   - If actionable/serious findings are reported, stop and address them before proceeding.
+   - If only nitpick-level findings, report them and continue.
+   - If `coderabbit` is not installed, skip with a note.
+
+5. Propose this commit message:
 
    ```text
    docs(changelog): prepare release notes for vX.Y.Z-{stadium} (#issue)
@@ -66,15 +74,15 @@ proceeding. Never create a branch, commit, tag, or push without approval.
 
    **Wait for explicit approval before committing.**
 
-4. Run `/pre-commit`, manually skipping step 1 — do not re-run or re-attempt
-   the CHANGELOG update; it was already completed above. Open with: "Skip
-   step 1 — CHANGELOG was already updated as part of this release branch."
-   Proceed directly with steps 2–5.
+6. Run `/pre-commit`, manually skipping step 1 and step 5 — the CHANGELOG update
+   and CodeRabbit review were already completed above. Open with: "Skip step 1
+   (CHANGELOG already updated) and step 5 (CodeRabbit already run) — proceeding
+   with steps 2–4."
 
-5. Propose opening a PR from `release/vX.Y.Z-{stadium}` into `master`.
+7. Propose opening a PR from `release/vX.Y.Z-{stadium}` into `master`.
    **Wait for explicit approval before opening.**
 
-6. Open the PR with:
+8. Open the PR with:
    - Title: `docs(changelog): prepare release notes for vX.Y.Z-{stadium}`
    - Body summarising what is included in this release.
 
