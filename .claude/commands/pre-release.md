@@ -81,10 +81,12 @@ proceeding. Never create a branch, commit, tag, or push without approval.
 8. If `dotnet csharpier` is available, run `dotnet csharpier --check .` — must pass
    (run `dotnet csharpier .` to auto-fix). Skip with a note if not installed.
 
-9. Propose opening a PR from `release/vX.Y.Z-{stadium}` into `master`.
-   **Wait for explicit approval before opening.**
+9. Stage `CHANGELOG.md` and commit using the approved message from step 5.
 
-10. Open the PR with:
+10. Propose opening a PR from `release/vX.Y.Z-{stadium}` into `master`.
+    **Wait for explicit approval before opening.**
+
+11. Open the PR with:
    - Title: `docs(changelog): prepare release notes for vX.Y.Z-{stadium}`
    - Body summarising what is included in this release.
 
