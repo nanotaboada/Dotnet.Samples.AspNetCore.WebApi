@@ -22,14 +22,14 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Extensions;
 public static partial class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds DbContextPool for PlayerDbContext, selecting the database provider based on the
+    /// Adds PlayerDbContext, selecting the database provider based on the
     /// <c>DATABASE_PROVIDER</c> environment variable (<c>sqlite</c> by default, <c>postgres</c>
     /// to opt in to PostgreSQL).
     /// </summary>
     /// <param name="services">The IServiceCollection instance.</param>
     /// <param name="environment">The web host environment.</param>
     /// <returns>The IServiceCollection for method chaining.</returns>
-    public static IServiceCollection AddDbContextPool(
+    public static IServiceCollection AddPlayerDbContext(
         this IServiceCollection services,
         IWebHostEnvironment environment
     )
@@ -48,7 +48,7 @@ public static partial class ServiceCollectionExtensions
                         throw new InvalidOperationException(
                             "DATABASE_URL is required when DATABASE_PROVIDER=postgres."
                         );
-                    options.UseNpgsql(connectionString);
+                    options.UseNpgsql(connectionString, npgsql => npgsql.EnableRetryOnFailure());
                     // Hand-crafted designer files cannot replicate Npgsql-injected runtime
                     // annotations (Relational:MaxIdentifierLength, UseIdentityByDefaultColumn),
                     // causing a false-positive PendingModelChangesWarning. Suppressed here;

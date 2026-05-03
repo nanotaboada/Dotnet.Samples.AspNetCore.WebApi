@@ -54,7 +54,7 @@ builder.Services.RegisterPlayerRepository();
 
 /* Data --------------------------------------------------------------------- */
 
-builder.Services.AddDbContextPool(builder.Environment);
+builder.Services.AddPlayerDbContext(builder.Environment);
 
 var app = builder.Build();
 
