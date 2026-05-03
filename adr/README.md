@@ -8,7 +8,7 @@ This directory contains Architecture Decision Records (ADRs) for this project. A
 |-----|-------|--------|
 | [0001](0001-adopt-traditional-layered-architecture.md) | Adopt Traditional Layered Architecture | Accepted (Under Reconsideration) |
 | [0002](0002-use-mvc-controllers-over-minimal-api.md) | Use MVC Controllers over Minimal API | Accepted |
-| [0003](0003-use-sqlite-for-data-storage.md) | Use SQLite for Data Storage | Accepted |
+| [0003](0003-use-sqlite-for-data-storage.md) | Use SQLite for Data Storage | Superseded by ADR-0014 |
 | [0004](0004-use-uuid-as-database-primary-key.md) | Use UUID as Database Primary Key | Accepted |
 | [0005](0005-use-squad-number-as-api-mutation-key.md) | Use Squad Number as API Mutation Key | Accepted |
 | [0006](0006-use-rfc-7807-problem-details-for-errors.md) | Use RFC 7807 Problem Details for Errors | Accepted |
@@ -19,6 +19,7 @@ This directory contains Architecture Decision Records (ADRs) for this project. A
 | [0011](0011-use-docker-for-containerization.md) | Use Docker for Containerization | Accepted |
 | [0012](0012-use-stadium-themed-semantic-versioning.md) | Use Stadium-Themed Semantic Versioning | Accepted |
 | [0013](0013-testing-strategy.md) | Testing Strategy | Accepted |
+| [0014](0014-configurable-database-provider.md) | Configurable Database Provider | Accepted |
 
 ## When to Create an ADR
 

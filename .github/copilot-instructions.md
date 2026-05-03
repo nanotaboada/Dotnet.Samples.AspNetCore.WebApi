@@ -2,7 +2,7 @@
 
 ## Overview
 
-REST API for managing football players built with ASP.NET Core 10. Implements CRUD operations with a layered architecture, EF Core + SQLite persistence, FluentValidation, AutoMapper, and in-memory caching. Part of a cross-language comparison study (Go, Java, Python, Rust, TypeScript). Primarily a learning and reference project — clarity and educational value take precedence over brevity.
+REST API for managing football players built with ASP.NET Core 10. Implements CRUD operations with a layered architecture, EF Core persistence (SQLite by default, PostgreSQL opt-in via `DATABASE_PROVIDER`), FluentValidation, AutoMapper, and in-memory caching. Part of a cross-language comparison study (Go, Java, Python, Rust, TypeScript). Primarily a learning and reference project — clarity and educational value take precedence over brevity.
 
 ## Tech Stack
 
@@ -11,7 +11,7 @@ REST API for managing football players built with ASP.NET Core 10. Implements CR
 | Language        | C# (.NET 10 LTS)                    |
 | Framework       | ASP.NET Core (MVC controllers)      |
 | ORM             | Entity Framework Core 10            |
-| Database        | SQLite                              |
+| Database        | SQLite (default) · PostgreSQL 17 (opt-in) |
 | Mapping         | AutoMapper                          |
 | Validation      | FluentValidation                    |
 | Caching         | `IMemoryCache` (1-hour TTL)         |
@@ -181,7 +181,7 @@ Example: `feat(api): add player search endpoint (#123)`
 - Production configurations or deployment secrets
 - `.runsettings` coverage thresholds
 - Port configuration (9000)
-- Database type (SQLite — demo/dev only)
+- Migration namespace constants in `ProviderSpecificMigrationsAssembly` — renaming breaks runtime provider filtering for one or both providers
 - CD pipeline tag format (`vX.Y.Z-stadium`) or the stadium name sequence — names are assigned sequentially A→Z from the list in `CHANGELOG.md`; the next name is always the next unused letter
 
 ### Creating Issues
@@ -207,7 +207,9 @@ This project uses Spec-Driven Development (SDD): discuss in Plan mode first, cre
 
 **Add an endpoint**: Add DTO in `Models/` → update `PlayerMappingProfile` in `Mappings/` → add repository method(s) in `Repositories/` → add service method in `Services/` → add controller action in `Controllers/` → add/update validator rule set in `Validators/` → add tests in `test/.../Unit/` → run pre-commit checks.
 
-**Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → update `HasData()` seed data in `OnModelCreating` if needed → run `dotnet ef migrations add <Name>` → update tests → run `dotnet test`.
+**Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → update `HasData()` seed data in `OnModelCreating` if needed → run `dotnet ef migrations add <Name>` twice (once for each provider: output goes to `Migrations/` for SQLite, `Migrations/Npgsql/` for PostgreSQL) → update tests → run `dotnet test`.
+
+**Switch database provider**: Set `DATABASE_PROVIDER=postgres` (plus `DATABASE_URL`) to use PostgreSQL, or leave unset for SQLite (default). `ProviderSpecificMigrationsAssembly` filters migration discovery to the active provider's namespace at runtime — no code changes needed to switch.
 
 ## Architecture Decision Records (ADRs)
 
@@ -216,7 +218,7 @@ Load `#file:adr/README.md` when:
 - Proposing changes to core architecture or dependencies
 - Historical context for past decisions is needed
 
-ADRs are in `adr/` (0001–0012). Each file is self-contained.
+ADRs are in `adr/` (0001–0014). Each file is self-contained.
 
 **After completing work**: Suggest a branch name (e.g. `feat/add-player-search`) and a commit message following Conventional Commits including co-author line:
 

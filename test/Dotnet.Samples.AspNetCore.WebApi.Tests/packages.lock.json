@@ -542,6 +542,24 @@
         "resolved": "13.0.3",
         "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
       },
+      "Npgsql": {
+        "type": "Transitive",
+        "resolved": "10.0.2",
+        "contentHash": "q5RfBI+wywJSFUNDE1L4ZbHEHCFTblo8Uf6A6oe4feOUFYiUQXyAf9GBh5qEZpvJaHiEbpBPkQumjEhXCJxdrg==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.0"
+        }
+      },
+      "Npgsql.EntityFrameworkCore.PostgreSQL": {
+        "type": "Transitive",
+        "resolved": "10.0.1",
+        "contentHash": "P6EwH0Q4xkaA264iNZDqCPhWt8pscfUGxXazDQg4noBfqjoOlk4hKWfvBjF9ZX3R/9JybRmmJfmxr2iBMj0EpA==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "[10.0.4, 11.0.0)",
+          "Microsoft.EntityFrameworkCore.Relational": "[10.0.4, 11.0.0)",
+          "Npgsql": "10.0.2"
+        }
+      },
       "Serilog": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -736,6 +754,7 @@
           "FluentValidation.DependencyInjectionExtensions": "[12.1.1, )",
           "Microsoft.AspNetCore.OpenApi": "[10.0.7, )",
           "Microsoft.EntityFrameworkCore.Sqlite": "[10.0.7, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.1, )",
           "Serilog.AspNetCore": "[10.0.0, )",
           "Serilog.Settings.Configuration": "[10.0.0, )",
           "Serilog.Sinks.Console": "[6.1.1, )",

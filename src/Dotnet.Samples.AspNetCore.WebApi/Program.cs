@@ -54,7 +54,7 @@ builder.Services.RegisterPlayerRepository();
 
 /* Data --------------------------------------------------------------------- */
 
-builder.Services.AddDbContextPoolWithSqlite(builder.Environment);
+builder.Services.AddDbContextPool(builder.Environment);
 
 var app = builder.Build();
 

@@ -4,7 +4,7 @@ Date: 2026-04-02
 
 ## Status
 
-Accepted
+Superseded by [ADR-0014](0014-configurable-database-provider.md)
 
 ## Context
 

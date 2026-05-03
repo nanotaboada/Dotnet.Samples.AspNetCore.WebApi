@@ -2,6 +2,7 @@ using System.Data.Common;
 using System.Net;
 using System.Net.Http.Json;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
+using Dotnet.Samples.AspNetCore.WebApi.Migrations;
 using Dotnet.Samples.AspNetCore.WebApi.Models;
 using Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities;
 using FluentAssertions;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Integration;
@@ -57,7 +59,11 @@ public class PlayerWebApplicationTests : IAsyncLifetime
                 foreach (var descriptor in descriptors)
                     services.Remove(descriptor);
 
-                services.AddDbContext<PlayerDbContext>(options => options.UseSqlite(_connection));
+                services.AddDbContext<PlayerDbContext>(options =>
+                    options
+                        .UseSqlite(_connection)
+                        .ReplaceService<IMigrationsAssembly, ProviderSpecificMigrationsAssembly>()
+                );
             });
         });
 

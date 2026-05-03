@@ -10,13 +10,19 @@ log() {
 
 log "✔ Starting container..."
 
-VOLUME_STORAGE_PATH="${STORAGE_PATH:-/storage/players-sqlite3.db}"
+DATABASE_PROVIDER=$(printf '%s' "${DATABASE_PROVIDER:-sqlite}" | tr '[:upper:]' '[:lower:]')
 
-if [ ! -f "$VOLUME_STORAGE_PATH" ]; then
-    log "⚠️ No existing database file found in volume."
-    log "🗄️ EF Core migrations will initialize the database on first start."
+if [ "$DATABASE_PROVIDER" = "postgres" ]; then
+    log "✔ Using PostgreSQL database."
 else
-    log "✔ Existing database file found at $VOLUME_STORAGE_PATH."
+    VOLUME_STORAGE_PATH="${STORAGE_PATH:-/storage/players-sqlite3.db}"
+
+    if [ ! -f "$VOLUME_STORAGE_PATH" ]; then
+        log "⚠️ No existing database file found in volume."
+        log "🗄️ EF Core migrations will initialize the database on first start."
+    else
+        log "✔ Existing database file found at $VOLUME_STORAGE_PATH."
+    fi
 fi
 
 log "✔ Ready!"

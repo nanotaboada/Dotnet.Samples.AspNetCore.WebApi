@@ -32,7 +32,7 @@ Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Ma
 | **API Documentation** | [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) (OpenAPI 3.0) |
 | **Validation** | [FluentValidation 12](https://github.com/FluentValidation/FluentValidation) |
 | **Mapping** | [AutoMapper 14](https://github.com/AutoMapper/AutoMapper) |
-| **Database** | [SQLite 3](https://github.com/sqlite/sqlite) |
+| **Database** | [SQLite 3](https://github.com/sqlite/sqlite) (default) · [PostgreSQL 17](https://github.com/postgres/postgres) (opt-in) |
 | **ORM** | [Entity Framework Core 10.0](https://github.com/dotnet/efcore) |
 | **Logging** | [Serilog 9](https://github.com/serilog/serilog) |
 | **Testing** | [xUnit](https://github.com/xunit/xunit), [Moq](https://github.com/devlooped/moq), [FluentAssertions](https://github.com/fluentassertions/fluentassertions) |
@@ -154,6 +154,41 @@ Interactive API documentation is available via Swagger UI at `https://localhost:
 Error codes: `400 Bad Request` (validation failed) · `404 Not Found` (player not found) · `409 Conflict` (duplicate squad number on `POST`)
 
 For complete endpoint documentation with request/response schemas, explore the [interactive Swagger UI](https://localhost:9000/swagger/index.html).
+
+## Database
+
+The database engine is selected via the `DATABASE_PROVIDER` environment variable.
+
+| Value | Engine | Requires |
+| ----- | ------ | -------- |
+| `sqlite` (default) | SQLite — file-based, zero infrastructure | Nothing — clone and run |
+| `postgres` | PostgreSQL 17 — server-based, production-parity | Docker |
+
+### SQLite mode (default)
+
+```bash
+# Local run — no setup required
+dotnet run --project src/Dotnet.Samples.AspNetCore.WebApi
+
+# Docker Compose
+docker compose up
+```
+
+### PostgreSQL mode (opt-in)
+
+```bash
+# Docker Compose with the postgres profile
+DATABASE_PROVIDER=postgres docker compose --profile postgres up
+```
+
+When using PostgreSQL you can override the connection string and password:
+
+```bash
+DATABASE_URL=Host=localhost;Database=players;Username=postgres;Password=P0579r35_p455W0rd!
+POSTGRES_PASSWORD=P0579r35_p455W0rd!
+```
+
+Copy `.env.example` to `.env` and edit as needed — `.env` is git-ignored.
 
 ## Prerequisites
 
