@@ -10,7 +10,7 @@ log() {
 
 log "✔ Starting container..."
 
-DATABASE_PROVIDER="${DATABASE_PROVIDER:-sqlite}"
+DATABASE_PROVIDER=$(printf '%s' "${DATABASE_PROVIDER:-sqlite}" | tr '[:upper:]' '[:lower:]')
 
 if [ "$DATABASE_PROVIDER" = "postgres" ]; then
     log "✔ Using PostgreSQL database."

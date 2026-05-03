@@ -2,7 +2,7 @@
 
 ## Overview
 
-REST API for managing football players built with ASP.NET Core 10. Implements CRUD operations with a layered architecture, EF Core + SQLite persistence, FluentValidation, AutoMapper, and in-memory caching. Part of a cross-language comparison study (Go, Java, Python, Rust, TypeScript). Primarily a learning and reference project — clarity and educational value take precedence over brevity.
+REST API for managing football players built with ASP.NET Core 10. Implements CRUD operations with a layered architecture, EF Core persistence (SQLite by default, PostgreSQL opt-in via `DATABASE_PROVIDER`), FluentValidation, AutoMapper, and in-memory caching. Part of a cross-language comparison study (Go, Java, Python, Rust, TypeScript). Primarily a learning and reference project — clarity and educational value take precedence over brevity.
 
 ## Tech Stack
 
@@ -181,7 +181,7 @@ Example: `feat(api): add player search endpoint (#123)`
 - Production configurations or deployment secrets
 - `.runsettings` coverage thresholds
 - Port configuration (9000)
-- Database type (SQLite — demo/dev only)
+- Migration namespace constants in `ProviderSpecificMigrationsAssembly` — renaming breaks runtime provider filtering for one or both providers
 - CD pipeline tag format (`vX.Y.Z-stadium`) or the stadium name sequence — names are assigned sequentially A→Z from the list in `CHANGELOG.md`; the next name is always the next unused letter
 
 ### Creating Issues

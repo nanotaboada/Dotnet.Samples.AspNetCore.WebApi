@@ -35,20 +35,25 @@ public static partial class ServiceCollectionExtensions
     {
         services.AddDbContextPool<PlayerDbContext>(options =>
         {
-            var provider = Environment.GetEnvironmentVariable("DATABASE_PROVIDER") ?? "sqlite";
+            var provider = (
+                Environment.GetEnvironmentVariable("DATABASE_PROVIDER") ?? ""
+            )
+                .Trim()
+                .ToLowerInvariant();
 
-            switch (provider.ToLowerInvariant())
+            switch (provider)
             {
                 case "postgres":
-                    var connectionString =
-                        Environment.GetEnvironmentVariable("DATABASE_URL")
-                        ?? throw new InvalidOperationException(
+                    var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+                    if (string.IsNullOrWhiteSpace(connectionString))
+                        throw new InvalidOperationException(
                             "DATABASE_URL is required when DATABASE_PROVIDER=postgres."
                         );
                     options.UseNpgsql(connectionString);
                     break;
 
-                default:
+                case "sqlite":
+                case "":
                     var storagePath = Environment.GetEnvironmentVariable("STORAGE_PATH");
                     var dataSource = !string.IsNullOrWhiteSpace(storagePath)
                         ? storagePath
@@ -61,6 +66,12 @@ public static partial class ServiceCollectionExtensions
                     }
                     options.UseSqlite($"Data Source={dataSource}");
                     break;
+
+                default:
+                    throw new InvalidOperationException(
+                        $"Unsupported DATABASE_PROVIDER value: '{provider}'. "
+                            + "Valid values are 'sqlite' (default) and 'postgres'."
+                    );
             }
 
             if (environment.IsDevelopment())
