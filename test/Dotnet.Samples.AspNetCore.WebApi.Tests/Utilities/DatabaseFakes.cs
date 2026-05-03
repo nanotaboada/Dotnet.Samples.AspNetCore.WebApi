@@ -1,7 +1,9 @@
 using System.Data.Common;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
+using Dotnet.Samples.AspNetCore.WebApi.Migrations;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
 {
@@ -26,6 +28,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
 
             var dbContextOptions = new DbContextOptionsBuilder<PlayerDbContext>()
                 .UseSqlite(dbConnection)
+                .ReplaceService<IMigrationsAssembly, ProviderSpecificMigrationsAssembly>()
                 .Options;
 
             return (dbConnection, dbContextOptions);

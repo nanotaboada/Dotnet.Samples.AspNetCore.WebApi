@@ -44,9 +44,29 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+- `DATABASE_PROVIDER` environment variable (`sqlite` default, `postgres` opt-in) to select the database engine at startup (issue #249).
+- PostgreSQL 17 support via `Npgsql.EntityFrameworkCore.PostgreSQL` 10.0.1; migrations in `Migrations/Npgsql/` use proper PostgreSQL column types (`uuid`, `boolean`, `timestamp with time zone`).
+- `ProviderSpecificMigrationsAssembly` that filters the EF Core migration set to the active provider's namespace, ensuring `MigrateAsync()` applies the correct migrations for both SQLite and PostgreSQL.
+- `postgres` Docker Compose profile and service (`postgres:17-alpine`), started only when `DATABASE_PROVIDER=postgres` is set; the API service uses `depends_on` with `required: false` so SQLite mode incurs no dependency on the postgres service.
+- `.env.example` documenting `DATABASE_PROVIDER`, `DATABASE_URL`, and `POSTGRES_PASSWORD`.
+- `.env` added to `.gitignore`.
+- ADR-0014 (`adr/0014-configurable-database-provider.md`) documenting the decision; supersedes ADR-0003.
+
 ### Changed
 
+- `AddDbContextPoolWithSqlite` renamed to `AddDbContextPool` in `ServiceCollectionExtensions`; now reads `DATABASE_PROVIDER` and wires either `UseSqlite` or `UseNpgsql` accordingly.
+- `compose.yaml`: `api` service receives `DATABASE_PROVIDER` and `DATABASE_URL` environment variables; `postgres-data` named volume added.
+- `scripts/entrypoint.sh`: SQLite file-presence check is skipped when `DATABASE_PROVIDER=postgres`.
+- ADR-0003 status updated to "Superseded by ADR-0014".
+- `README.md`: added Database section documenting SQLite and PostgreSQL modes.
+
 ### Fixed
+
+- Populate `BuildTargetModel` in Npgsql seed migration designer files so Npgsql's SQL generator can resolve column types when applying `InsertData` operations.
+- Suppress `PendingModelChangesWarning` for the postgres provider path — hand-crafted designer files cannot replicate Npgsql-injected runtime annotations (`Relational:MaxIdentifierLength`, `UseIdentityByDefaultColumn`), causing a false-positive that aborted `MigrateAsync()` at startup.
+- Normalize `DATABASE_PROVIDER` to lowercase in `entrypoint.sh` via `tr` so `POSTGRES`, `Postgres`, etc. are handled consistently with `AddDbContextPool`.
+- Trim and normalize `DATABASE_PROVIDER` in `AddDbContextPool` before the provider switch; add explicit `sqlite`/empty case; throw `InvalidOperationException` for unrecognized values so typos no longer silently fall through to SQLite.
+- Move `Npgsql.EntityFrameworkCore.PostgreSQL` package from the "Development dependencies" `ItemGroup` to "Runtime dependencies".
 
 ### Removed
 

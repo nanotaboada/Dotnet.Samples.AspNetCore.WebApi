@@ -3,4 +3,5 @@ bin/
 obj/
 TestResults/
 storage/*.db
+.env
 .claude/settings.local.json
