@@ -2,12 +2,14 @@ using System.Threading.RateLimiting;
 using Dotnet.Samples.AspNetCore.WebApi.Configurations;
 using Dotnet.Samples.AspNetCore.WebApi.Data;
 using Dotnet.Samples.AspNetCore.WebApi.Mappings;
+using Dotnet.Samples.AspNetCore.WebApi.Migrations;
 using Dotnet.Samples.AspNetCore.WebApi.Repositories;
 using Dotnet.Samples.AspNetCore.WebApi.Services;
 using Dotnet.Samples.AspNetCore.WebApi.Utilities;
 using Dotnet.Samples.AspNetCore.WebApi.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.OpenApi;
 using Serilog;
 
@@ -19,35 +21,55 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Extensions;
 public static partial class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds DbContextPool with SQLite configuration for PlayerDbContext.
+    /// Adds DbContextPool for PlayerDbContext, selecting the database provider based on the
+    /// <c>DATABASE_PROVIDER</c> environment variable (<c>sqlite</c> by default, <c>postgres</c>
+    /// to opt in to PostgreSQL).
     /// </summary>
     /// <param name="services">The IServiceCollection instance.</param>
     /// <param name="environment">The web host environment.</param>
     /// <returns>The IServiceCollection for method chaining.</returns>
-    public static IServiceCollection AddDbContextPoolWithSqlite(
+    public static IServiceCollection AddDbContextPool(
         this IServiceCollection services,
         IWebHostEnvironment environment
     )
     {
         services.AddDbContextPool<PlayerDbContext>(options =>
         {
-            var storagePath = Environment.GetEnvironmentVariable("STORAGE_PATH");
-            var dataSource = !string.IsNullOrWhiteSpace(storagePath)
-                ? storagePath
-                : Path.Combine(AppContext.BaseDirectory, "storage", "players-sqlite3.db");
+            var provider = Environment.GetEnvironmentVariable("DATABASE_PROVIDER") ?? "sqlite";
 
-            var storageDir = Path.GetDirectoryName(dataSource);
-            if (!string.IsNullOrWhiteSpace(storageDir))
+            switch (provider.ToLowerInvariant())
             {
-                Directory.CreateDirectory(storageDir);
+                case "postgres":
+                    var connectionString =
+                        Environment.GetEnvironmentVariable("DATABASE_URL")
+                        ?? throw new InvalidOperationException(
+                            "DATABASE_URL is required when DATABASE_PROVIDER=postgres."
+                        );
+                    options.UseNpgsql(connectionString);
+                    break;
+
+                default:
+                    var storagePath = Environment.GetEnvironmentVariable("STORAGE_PATH");
+                    var dataSource = !string.IsNullOrWhiteSpace(storagePath)
+                        ? storagePath
+                        : Path.Combine(AppContext.BaseDirectory, "storage", "players-sqlite3.db");
+
+                    var storageDir = Path.GetDirectoryName(dataSource);
+                    if (!string.IsNullOrWhiteSpace(storageDir))
+                    {
+                        Directory.CreateDirectory(storageDir);
+                    }
+                    options.UseSqlite($"Data Source={dataSource}");
+                    break;
             }
-            options.UseSqlite($"Data Source={dataSource}");
 
             if (environment.IsDevelopment())
             {
                 options.EnableSensitiveDataLogging();
                 options.LogTo(Log.Logger.Information, LogLevel.Information);
             }
+
+            options.ReplaceService<IMigrationsAssembly, ProviderSpecificMigrationsAssembly>();
         });
 
         return services;
