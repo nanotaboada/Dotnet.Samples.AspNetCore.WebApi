@@ -62,6 +62,12 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Fixed
 
+- Populate `BuildTargetModel` in Npgsql seed migration designer files so Npgsql's SQL generator can resolve column types when applying `InsertData` operations.
+- Suppress `PendingModelChangesWarning` for the postgres provider path — hand-crafted designer files cannot replicate Npgsql-injected runtime annotations (`Relational:MaxIdentifierLength`, `UseIdentityByDefaultColumn`), causing a false-positive that aborted `MigrateAsync()` at startup.
+- Normalize `DATABASE_PROVIDER` to lowercase in `entrypoint.sh` via `tr` so `POSTGRES`, `Postgres`, etc. are handled consistently with `AddDbContextPool`.
+- Trim and normalize `DATABASE_PROVIDER` in `AddDbContextPool` before the provider switch; add explicit `sqlite`/empty case; throw `InvalidOperationException` for unrecognized values so typos no longer silently fall through to SQLite.
+- Move `Npgsql.EntityFrameworkCore.PostgreSQL` package from the "Development dependencies" `ItemGroup` to "Runtime dependencies".
+
 ### Removed
 
 ---

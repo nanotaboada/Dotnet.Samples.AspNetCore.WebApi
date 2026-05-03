@@ -14,6 +14,55 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Migrations.Npgsql
     partial class SeedStarting11
     {
         /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder) { }
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.7");
+
+            modelBuilder.Entity("Dotnet.Samples.AspNetCore.WebApi.Models.Player", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AbbrPosition")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("League")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SquadNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Starting11")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Team")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SquadNumber")
+                        .IsUnique();
+
+                    b.ToTable("Players");
+                });
+#pragma warning restore 612, 618
+        }
     }
 }

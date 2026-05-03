@@ -9,6 +9,7 @@ using Dotnet.Samples.AspNetCore.WebApi.Utilities;
 using Dotnet.Samples.AspNetCore.WebApi.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.OpenApi;
 using Serilog;
@@ -35,9 +36,7 @@ public static partial class ServiceCollectionExtensions
     {
         services.AddDbContextPool<PlayerDbContext>(options =>
         {
-            var provider = (
-                Environment.GetEnvironmentVariable("DATABASE_PROVIDER") ?? ""
-            )
+            var provider = (Environment.GetEnvironmentVariable("DATABASE_PROVIDER") ?? "")
                 .Trim()
                 .ToLowerInvariant();
 
@@ -50,6 +49,13 @@ public static partial class ServiceCollectionExtensions
                             "DATABASE_URL is required when DATABASE_PROVIDER=postgres."
                         );
                     options.UseNpgsql(connectionString);
+                    // Hand-crafted designer files cannot replicate Npgsql-injected runtime
+                    // annotations (Relational:MaxIdentifierLength, UseIdentityByDefaultColumn),
+                    // causing a false-positive PendingModelChangesWarning. Suppressed here;
+                    // BuildTargetModel is still populated so InsertData SQL generation works.
+                    options.ConfigureWarnings(w =>
+                        w.Ignore(RelationalEventId.PendingModelChangesWarning)
+                    );
                     break;
 
                 case "sqlite":
