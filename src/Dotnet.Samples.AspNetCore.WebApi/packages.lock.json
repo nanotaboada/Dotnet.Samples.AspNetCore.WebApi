@@ -149,14 +149,14 @@
       },
       "Swashbuckle.AspNetCore": {
         "type": "Direct",
-        "requested": "[10.1.7, )",
-        "resolved": "10.1.7",
-        "contentHash": "vgef8DPT411JU5JjHiDbr0WOxsIVuAvegPGtqmm4Na4JRl/264dfBJcGkiPHsAr5P+Vda+qN1rZKRtBl1rF9aA==",
+        "requested": "[10.2.0, )",
+        "resolved": "10.2.0",
+        "contentHash": "Vnw4VReihHMkHj+wL1ZT4LbtQ/Ij4yj8qLu8Naq1/ZxCOJvBLixDTMrznHmMQRzVwbJVNZ85oxh6HRVdmMsUtg==",
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "10.0.0",
-          "Swashbuckle.AspNetCore.Swagger": "10.1.7",
-          "Swashbuckle.AspNetCore.SwaggerGen": "10.1.7",
-          "Swashbuckle.AspNetCore.SwaggerUI": "10.1.7"
+          "Swashbuckle.AspNetCore.Swagger": "10.2.0",
+          "Swashbuckle.AspNetCore.SwaggerGen": "10.2.0",
+          "Swashbuckle.AspNetCore.SwaggerUI": "10.2.0"
         }
       },
       "Humanizer": {
@@ -1184,24 +1184,24 @@
       },
       "Swashbuckle.AspNetCore.Swagger": {
         "type": "Transitive",
-        "resolved": "10.1.7",
-        "contentHash": "EjLibt/d/QuRv170GoihTbcPUpgzSFm2WKHhnGJFZQ03JYzfuitsM79azaAR8NBwRunU7yScSX6HRE5JUlrEMQ==",
+        "resolved": "10.2.0",
+        "contentHash": "w0hQ9UArc76YyM7DpGTmCg2Fu+Bw5dc1s1gcT2ays4e5V6svZvKcTxkI6Wicqj1h9MRn3OrBjKCDI5/tVjPgpA==",
         "dependencies": {
           "Microsoft.OpenApi": "2.4.1"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerGen": {
         "type": "Transitive",
-        "resolved": "10.1.7",
-        "contentHash": "PuubO9BjvNn6U3D9kLpuWKY1JtziWw7SsGBq0age1E50uQjQ8Fzl8s0EwzrLfANqYJNgDnJi9l7N1QxcGVB2Zw==",
+        "resolved": "10.2.0",
+        "contentHash": "ifpSxygUJ8/1LbNr2XCz3pXwwsVYJVmOW7Vt43rDBE6nCHCLut2z1QQslDGZtO22kOEWRZ49rB93/gHEZ4DcpA==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "10.1.7"
+          "Swashbuckle.AspNetCore.Swagger": "10.2.0"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerUI": {
         "type": "Transitive",
-        "resolved": "10.1.7",
-        "contentHash": "iJo3ODyUb/M8Vm8AH1r9y9iAba0w95xsCn3zFVl96ISRHbTDWxi+l7oFVCZqUEdjd97B8VMDPnMliWAdomR8uw=="
+        "resolved": "10.2.0",
+        "contentHash": "H06F6KJw+tsPro1QLSE9HagWZG5HCBj6tKdkRXxg2DT9GF7YVMT5W1osdE1qKT65QEbcDFzVry5PVzJLDlYvZg=="
       },
       "System.CodeDom": {
         "type": "Transitive",
