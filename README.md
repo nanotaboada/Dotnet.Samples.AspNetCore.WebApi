@@ -133,7 +133,7 @@ graph RL
 
 > *Arrows follow the injection direction (A → B means A is injected into B). Solid = runtime dependency, dotted = structural. Blue = core domain, red = third-party, green = tests. Controllers call Services; Services call Repositories — bypassing layers is not permitted.*
 >
-> *Significant design decisions are documented as ADRs in [`adr/`](adr/README.md).*
+> *Significant design decisions are documented as ADRs in [`docs/adr/`](docs/adr/README.md).*
 
 ## API Reference
 
