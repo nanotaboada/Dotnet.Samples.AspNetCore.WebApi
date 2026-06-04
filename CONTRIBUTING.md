@@ -54,7 +54,7 @@ When proposing changes that affect:
 - Non-functional requirements (performance, security, scalability)
 - Development workflows or processes
 
-Please create an ADR in the `adr/` directory following the existing template. See [`adr/README.md`](adr/README.md) for the template and index.
+Please create an ADR in the `docs/adr/` directory following the existing template. See [`docs/adr/README.md`](docs/adr/README.md) for the template and index.
 
 ## 7. Code of Conduct & Support
 
