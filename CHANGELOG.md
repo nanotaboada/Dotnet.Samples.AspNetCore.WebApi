@@ -44,16 +44,25 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Added
 
+- `CLAUDE.md` as the single source of truth for project guidance and AI-agent instructions (issue #505); consolidates content previously split between `CLAUDE.md` and `.github/copilot-instructions.md`.
+- `Invariants` section to `CLAUDE.md` documenting port, API contract, commit format, and CHANGELOG update requirements.
+- `Architecture Decision Records` section to `CLAUDE.md` referencing `docs/adr/` with guidance on when to load and when to create new ADRs.
+- Pre-commit step 6 to `CLAUDE.md`: update CLAUDE.md and create/amend the relevant ADR when a commit introduces or changes an architectural decision.
+- `docs/adr/` path instruction to `.coderabbit.yaml` covering `**/*.csproj` (DATABASE_PROVIDER runtime selection) and `.github/workflows/**` (explicit provider requirement in CI jobs that run migrations or integration tests).
 - `DATABASE_PROVIDER` environment variable (`sqlite` default, `postgres` opt-in) to select the database engine at startup (issue #249).
 - PostgreSQL 17 support via `Npgsql.EntityFrameworkCore.PostgreSQL` 10.0.1; migrations in `Migrations/Npgsql/` use proper PostgreSQL column types (`uuid`, `boolean`, `timestamp with time zone`).
 - `ProviderSpecificMigrationsAssembly` that filters the EF Core migration set to the active provider's namespace, ensuring `MigrateAsync()` applies the correct migrations for both SQLite and PostgreSQL.
 - `postgres` Docker Compose profile and service (`postgres:17-alpine`), started only when `DATABASE_PROVIDER=postgres` is set; the API service uses `depends_on` with `required: false` so SQLite mode incurs no dependency on the postgres service.
 - `.env.example` documenting `DATABASE_PROVIDER`, `DATABASE_URL`, and `POSTGRES_PASSWORD`.
 - `.env` added to `.gitignore`.
-- ADR-0014 (`adr/0014-configurable-database-provider.md`) documenting the decision; supersedes ADR-0003.
+- ADR-0014 (`docs/adr/0014-configurable-database-provider.md`) documenting the decision; supersedes ADR-0003.
 
 ### Changed
 
+- `adr/` directory moved to `docs/adr/`; all references in `README.md`, `CONTRIBUTING.md`, and `.coderabbit.yaml` updated to the new path (issue #505).
+- `.coderabbit.yaml` controller path instruction updated: status code list corrected from `(200, 201, 400, 404, 409, 500)` to `(200, 201, 404, 409, 500)` with explicit note that FluentValidation failures must return 422 via `TypedResults.Problem(new HttpValidationProblemDetails(...))` (issue #505).
+- `.coderabbit.yaml` knowledge base guidelines updated from `.github/copilot-instructions.md` to `CLAUDE.md` and `docs/adr/README.md` (issue #505).
+- `.coderabbit.yaml` caching description in Tech Stack corrected to reflect both 10-minute sliding and 1-hour absolute expiration (issue #505).
 - `AddDbContextPoolWithSqlite` renamed to `AddDbContextPool` in `ServiceCollectionExtensions`; now reads `DATABASE_PROVIDER` and wires either `UseSqlite` or `UseNpgsql` accordingly.
 - `compose.yaml`: `api` service receives `DATABASE_PROVIDER` and `DATABASE_URL` environment variables; `postgres-data` named volume added.
 - `scripts/entrypoint.sh`: SQLite file-presence check is skipped when `DATABASE_PROVIDER=postgres`.

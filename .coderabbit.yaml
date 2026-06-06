@@ -42,7 +42,10 @@ reviews:
     - path: "src/**/Controllers/**/*.cs"
       instructions: |
         - Controllers should be thin - delegate to services
-        - Verify proper HTTP status codes (200, 201, 400, 404, 409, 500)
+        - Verify proper HTTP status codes (200, 201, 404, 409, 500); payload
+          validation failures (FluentValidation) must return 422 Unprocessable
+          Entity via TypedResults.Problem(new HttpValidationProblemDetails(...))
+          — not 400 Bad Request. See ADR-0006 in docs/adr/.
         - Check that [ApiController] and route attributes are present
         - Ensure validation happens before processing
         - Confirm async controller actions return appropriate Result types
@@ -129,6 +132,16 @@ reviews:
         - Check that nullable reference types are enabled
         - Ensure package versions are up to date
         - Validate that ImplicitUsings is enabled
+        - DATABASE_PROVIDER selects the active DB engine at runtime: unset =
+          SQLite (default), DATABASE_PROVIDER=postgres = PostgreSQL. Do not
+          hardcode a provider. Both SQLite and PostgreSQL migration paths must
+          remain valid. See ADR-0014 in docs/adr/.
+
+    - path: ".github/workflows/**"
+      instructions: |
+        - Any CI job that runs migrations or integration tests must set
+          DATABASE_PROVIDER explicitly. Unset defaults to SQLite. See ADR-0014
+          in docs/adr/.
 
   path_filters:
     - "!**/bin/**"
@@ -182,10 +195,10 @@ reviews:
           If so, update the relevant sections of README.md to reflect the current state.
           Do not rewrite sections unrelated to the changes.
 
-          ## 3. .github/copilot-instructions.md
+          ## 3. CLAUDE.md
           If the PR introduces patterns, conventions, or architectural decisions that
           should guide future AI-assisted contributions, add or update the relevant
-          instructions in .github/copilot-instructions.md.
+          instructions in CLAUDE.md.
           Focus on things a developer (or AI assistant) unfamiliar with this specific
           stack implementation should know before writing code here.
 
@@ -344,7 +357,8 @@ knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - ".github/copilot-instructions.md"
+      - "CLAUDE.md"
+      - "docs/adr/README.md"
   learnings:
     scope: auto
   issues:
