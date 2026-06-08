@@ -214,7 +214,13 @@ DATABASE_PROVIDER=postgres DATABASE_URL="Host=localhost;..." \
   dotnet ef migrations add <Name> --project src/Dotnet.Samples.AspNetCore.WebApi --output-dir Migrations/Npgsql
 ```
 
-**Switch database provider**: Set `DATABASE_PROVIDER=postgres` (plus `DATABASE_URL`) to use PostgreSQL, or leave unset for SQLite (default). `DATABASE_URL` follows the Npgsql convention: `Host=...;Database=...;Username=...;Password=...`. For SQLite, `STORAGE_PATH` overrides the default database file path (`AppContext.BaseDirectory/storage/players-sqlite3.db`). `ProviderSpecificMigrationsAssembly` filters migration discovery to the active provider's namespace at runtime — no code changes needed to switch. Migrations run automatically at startup via `MigrateAsync()`; no manual `dotnet ef database update` is required.
+**Switch database provider**:
+
+- Set `DATABASE_PROVIDER=postgres` to use PostgreSQL, or leave unset for SQLite (default).
+- `DATABASE_URL` (required for PostgreSQL) follows the Npgsql convention: `Host=...;Database=...;Username=...;Password=...`.
+- For SQLite, `STORAGE_PATH` overrides the default file path (`AppContext.BaseDirectory/storage/players-sqlite3.db`).
+- `ProviderSpecificMigrationsAssembly` filters migration discovery to the active provider's namespace at runtime — no code changes needed to switch.
+- Migrations run automatically at startup via `MigrateAsync()`; no manual `dotnet ef database update` is required.
 
 ## Invariants (never change without explicit discussion)
 
