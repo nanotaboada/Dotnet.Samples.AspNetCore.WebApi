@@ -39,9 +39,12 @@ src/Dotnet.Samples.AspNetCore.WebApi/
 ├── Configurations/     — Options classes bound from appsettings.json
 ├── Middlewares/        — Custom ASP.NET Core middleware
 ├── Data/               — DbContext; seed data via HasData() in OnModelCreating
-└── Storage/            — SQLite database file (created at runtime by MigrateAsync)
+├── Migrations/         — EF Core migrations; Npgsql/ subdirectory for PostgreSQL provider
+├── Utilities/          — Internal helpers: HttpContext, Swagger, PlayerData seed source
+└── Storage/            — SQLite database file (runtime-generated, gitignored)
 
 test/Dotnet.Samples.AspNetCore.WebApi.Tests/
+├── Integration/        — Repository and WebApplication integration tests
 ├── Unit/               — Unit tests (controllers, services, validators)
 └── Utilities/          — Shared test helpers: PlayerFakes, PlayerMocks, PlayerStubs
 ```
@@ -193,28 +196,25 @@ Example: `feat(api): add player search endpoint (#123)`
 
 This project uses Spec-Driven Development (SDD): discuss in Plan mode first, create a GitHub Issue as the spec artifact, then implement. Always offer to draft an issue before writing code.
 
-**Feature request** (`enhancement` label):
-- **Problem**: the pain point being solved
-- **Proposed Solution**: expected behavior and functionality
-- **Suggested Approach** *(optional)*: implementation plan if known
-- **Acceptance Criteria**: at minimum — behaves as proposed, tests added/updated, no regressions
-- **References**: related issues, docs, or examples
+**Feature request** (`enhancement` label): Problem · Proposed Solution · Suggested Approach (optional) · Acceptance Criteria · References
 
-**Bug report** (`bug` label):
-- **Description**: clear summary of the bug
-- **Steps to Reproduce**: numbered, minimal steps
-- **Expected / Actual Behavior**: one section each
-- **Environment**: runtime versions + OS
-- **Additional Context**: logs, screenshots, stack traces
-- **Possible Solution** *(optional)*: suggested fix or workaround
+**Bug report** (`bug` label): Description · Steps to Reproduce · Expected/Actual Behavior · Environment · Additional Context · Possible Solution (optional)
 
 ### Key workflows
 
 **Add an endpoint**: Add DTO in `Models/` → update `PlayerMappingProfile` in `Mappings/` → add repository method(s) in `Repositories/` → add service method in `Services/` → add controller action in `Controllers/` → add/update validator rule set in `Validators/` → add tests in `test/.../Unit/` → run pre-commit checks.
 
-**Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → update `HasData()` seed data in `OnModelCreating` if needed → run `dotnet ef migrations add <Name>` twice (once for each provider: output goes to `Migrations/` for SQLite, `Migrations/Npgsql/` for PostgreSQL) → update tests → run `dotnet test`.
+**Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → update `HasData()` seed data in `OnModelCreating` if needed → add migrations for both providers → update tests → run `dotnet test`.
 
-**Switch database provider**: Set `DATABASE_PROVIDER=postgres` (plus `DATABASE_URL`) to use PostgreSQL, or leave unset for SQLite (default). `ProviderSpecificMigrationsAssembly` filters migration discovery to the active provider's namespace at runtime — no code changes needed to switch.
+```bash
+# SQLite migration (default)
+dotnet ef migrations add <Name> --project src/Dotnet.Samples.AspNetCore.WebApi
+# PostgreSQL migration
+DATABASE_PROVIDER=postgres DATABASE_URL="Host=localhost;..." \
+  dotnet ef migrations add <Name> --project src/Dotnet.Samples.AspNetCore.WebApi --output-dir Migrations/Npgsql
+```
+
+**Switch database provider**: Set `DATABASE_PROVIDER=postgres` (plus `DATABASE_URL`) to use PostgreSQL, or leave unset for SQLite (default). `DATABASE_URL` follows the Npgsql convention: `Host=...;Database=...;Username=...;Password=...`. For SQLite, `STORAGE_PATH` overrides the default database file path (`AppContext.BaseDirectory/storage/players-sqlite3.db`). `ProviderSpecificMigrationsAssembly` filters migration discovery to the active provider's namespace at runtime — no code changes needed to switch. Migrations run automatically at startup via `MigrateAsync()`; no manual `dotnet ef database update` is required.
 
 ## Invariants (never change without explicit discussion)
 

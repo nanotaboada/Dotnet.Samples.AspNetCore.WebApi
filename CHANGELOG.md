@@ -59,6 +59,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- Improved `CLAUDE.md` project guidance via the [CLAUDE.md Management plugin](https://claude.com/plugins/claude-md-management): added `Migrations/`, `Utilities/` (src) and `Integration/` (test) to the structure tree; documented `DATABASE_URL` Npgsql format, `STORAGE_PATH` SQLite path override, and exact `dotnet ef migrations add` commands for both providers; collapsed issue template bullets for conciseness; clarified `MigrateAsync()` runs automatically at startup.
 - `adr/` directory moved to `docs/adr/`; all references in `README.md`, `CONTRIBUTING.md`, and `.coderabbit.yaml` updated to the new path (issue #505).
 - `.coderabbit.yaml` controller path instruction updated: status code list corrected from `(200, 201, 400, 404, 409, 500)` to `(200, 201, 404, 409, 500)` with explicit note that FluentValidation failures must return 422 via `TypedResults.Problem(new HttpValidationProblemDetails(...))` (issue #505).
 - `.coderabbit.yaml` knowledge base guidelines updated from `.github/copilot-instructions.md` to `CLAUDE.md` and `docs/adr/README.md` (issue #505).
