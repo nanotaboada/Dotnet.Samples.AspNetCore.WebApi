@@ -1,9 +1,5 @@
 # CLAUDE.md
 
-## Claude Code
-
-- Run `/pre-commit` to execute the full pre-commit checklist for this project.
-
 ## Overview
 
 REST API for managing football players built with ASP.NET Core 10. Implements CRUD operations with a layered architecture, EF Core persistence (SQLite by default, PostgreSQL opt-in via `DATABASE_PROVIDER`), FluentValidation, AutoMapper, and in-memory caching. Primarily a learning and reference project — clarity and educational value take precedence over brevity.
@@ -232,7 +228,7 @@ DATABASE_PROVIDER=postgres DATABASE_URL="Host=localhost;..." \
 
 ## Architecture Decision Records
 
-Significant architectural decisions are documented in `docs/adr/` (ADR-0001–0014).
+Significant architectural decisions are documented in `docs/adr/` (ADR-0001–0017).
 
 Load `#file:docs/adr/README.md` when:
 - The user asks about architectural choices or "why we use X"
@@ -248,3 +244,7 @@ feat(scope): description (#issue)
 
 Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
+
+## Claude Code
+
+- Run `/pre-commit` to execute the full pre-commit checklist for this project.
