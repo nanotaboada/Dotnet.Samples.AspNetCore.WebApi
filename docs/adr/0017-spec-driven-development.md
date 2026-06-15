@@ -38,6 +38,7 @@ bumps) may skip the Issue step at the developer's discretion.
 ## Consequences
 
 ### Positive
+
 - Requirements are stated explicitly before implementation; the agent
   works against a written spec rather than an interpreted prompt
 - Issues survive session boundaries — a new session can resume from
@@ -46,12 +47,14 @@ bumps) may skip the Issue step at the developer's discretion.
   without relying on session memory
 
 ### Negative
+
 - Adds upfront overhead for changes that feel small; the Issue step can
   seem bureaucratic for straightforward work
 - The line between "spec-worthy" and "trivial" is judgment-dependent
   and not enforced by tooling
 
 ### Neutral
+
 - GitHub Issues double as the project backlog; SDD and backlog
   management share the same artifact
 - Plan mode discussion is ephemeral — not persisted outside the session;

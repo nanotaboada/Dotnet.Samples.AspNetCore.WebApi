@@ -51,6 +51,7 @@ independent of the primary workflow.
 ## Consequences
 
 ### Positive
+
 - Stack-specific idioms are enforced by the agent's collective knowledge
   rather than individual developer discipline
 - `CLAUDE.md` is living architectural documentation: it must stay
@@ -60,6 +61,7 @@ independent of the primary workflow.
   than incidental
 
 ### Negative
+
 - Token economics: long-running work may exceed context limits, requiring
   active session management and continuation prompts to resume work
   across sessions
@@ -67,6 +69,7 @@ independent of the primary workflow.
   aligned; drift between them produces inconsistent agent behavior
 
 ### Neutral
+
 - Development workflow moves to the terminal/CLI rather than an IDE;
   this has no impact on the codebase itself
 - `CLAUDE.md` is specific to Claude Code; a different tool would require

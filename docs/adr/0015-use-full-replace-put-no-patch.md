@@ -30,17 +30,20 @@ active consideration.
 ## Consequences
 
 ### Positive
+
 - Simpler server-side implementation: a single validation path,
   no partial-update merge logic
 - PUT semantics are idempotent and well-understood by API consumers
 - Consistent with all sibling repos in the cross-language comparison set
 
 ### Negative
+
 - Clients must send the full resource representation even for
   single-field changes
 - Fine-grained partial updates require a GET followed by a full PUT
 - PATCH tracked in backlog — if implemented, this ADR will be superseded
 
 ### Neutral
+
 - Standard REST semantics; no ambiguity about the update contract
   for current consumers
