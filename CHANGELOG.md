@@ -56,6 +56,9 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 - `.env.example` documenting `DATABASE_PROVIDER`, `DATABASE_URL`, and `POSTGRES_PASSWORD`.
 - `.env` added to `.gitignore`.
 - ADR-0014 (`docs/adr/0014-configurable-database-provider.md`) documenting the decision; supersedes ADR-0003.
+- ADR-0015: Use Full-Replace PUT as the Partial Update Strategy
+- ADR-0016: Adopt AI-Assisted Development Workflow
+- ADR-0017: Adopt Spec-Driven Development (SDD)
 
 ### Changed
 

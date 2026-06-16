@@ -20,6 +20,9 @@ This directory contains Architecture Decision Records (ADRs) for this project. A
 | [0012](0012-use-stadium-themed-semantic-versioning.md) | Use Stadium-Themed Semantic Versioning | Accepted |
 | [0013](0013-testing-strategy.md) | Testing Strategy | Accepted |
 | [0014](0014-configurable-database-provider.md) | Configurable Database Provider | Accepted |
+| [0015](0015-use-full-replace-put-no-patch.md) | Use Full-Replace PUT as the Partial Update Strategy | Accepted |
+| [0016](0016-ai-assisted-development-workflow.md) | Adopt AI-Assisted Development Workflow | Accepted |
+| [0017](0017-spec-driven-development.md) | Adopt Spec-Driven Development (SDD) | Accepted |
 
 ## When to Create an ADR
 
