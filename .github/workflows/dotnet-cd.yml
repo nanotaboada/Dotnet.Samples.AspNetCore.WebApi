@@ -132,7 +132,7 @@ jobs:
             ghcr.io/${{ env.PACKAGE_NAME }}:${{ steps.version.outputs.stadium }}
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v4.1.0
+        uses: actions/attest-build-provenance@v4.1.1
         with:
           subject-name: ghcr.io/${{ env.PACKAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
