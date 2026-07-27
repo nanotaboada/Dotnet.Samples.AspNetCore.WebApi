@@ -72,6 +72,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 - `scripts/entrypoint.sh`: SQLite file-presence check is skipped when `DATABASE_PROVIDER=postgres`.
 - ADR-0003 status updated to "Superseded by ADR-0014".
 - `README.md`: added Database section documenting SQLite and PostgreSQL modes.
+- `CLAUDE.md` trimmed: removed the Tech Stack table and directory-tree diagram (derivable from `.csproj`/`Dockerfile` and `find`/`ls`); condensed the embedded pre-commit checklist to a pointer at `/pre-commit`; moved the schema-migration/provider-switching workflow to a new `database-schema-workflow` skill, loaded on demand instead of always-resident.
 
 ### Fixed
 
