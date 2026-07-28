@@ -3,6 +3,8 @@ name: database-schema-workflow
 description: How to modify the Player entity schema, add EF Core migrations for both SQLite and PostgreSQL, and switch the active database provider (DATABASE_PROVIDER/DATABASE_URL/STORAGE_PATH). Use when changing entity fields, adding migrations, or configuring which database provider to run against.
 ---
 
+# Database schema workflow
+
 **Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → update `HasData()` seed data in `OnModelCreating` if needed → add migrations for both providers → update tests → run `dotnet test`.
 
 ```bash
