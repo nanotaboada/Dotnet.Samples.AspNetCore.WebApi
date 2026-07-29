@@ -4,46 +4,7 @@
 
 REST API for managing football players built with ASP.NET Core 10. Implements CRUD operations with a layered architecture, EF Core persistence (SQLite by default, PostgreSQL opt-in via `DATABASE_PROVIDER`), FluentValidation, AutoMapper, and in-memory caching. Primarily a learning and reference project — clarity and educational value take precedence over brevity.
 
-## Tech Stack
-
-| Category        | Technology                                                |
-|-----------------|-----------------------------------------------------------|
-| Language        | C# (.NET 10 LTS)                                         |
-| Framework       | ASP.NET Core (MVC controllers)                           |
-| ORM             | Entity Framework Core 10                                  |
-| Database        | SQLite (default) · PostgreSQL 17 (opt-in)                |
-| Mapping         | AutoMapper                                                |
-| Validation      | FluentValidation                                          |
-| Caching         | `IMemoryCache` (10-min sliding + 1-hour absolute expiry) |
-| Logging         | Serilog (structured, console + file)                     |
-| Testing         | xUnit + Moq + FluentAssertions                           |
-| Formatting      | CSharpier                                                 |
-| Containerization| Docker                                                    |
-
 ## Structure
-
-```tree
-src/Dotnet.Samples.AspNetCore.WebApi/
-├── Controllers/        — HTTP handlers; minimal logic, delegate to services        [HTTP layer]
-├── Services/           — Business logic + IMemoryCache caching                     [business layer]
-├── Repositories/       — Generic Repository<T> + specific implementations          [data layer]
-├── Models/             — Player entity + request/response DTOs
-├── Validators/         — FluentValidation validators (one per request model)
-├── Mappings/           — AutoMapper profiles (PlayerMappingProfile)
-├── Enums/              — Position abbreviations and other domain enumerations
-├── Extensions/         — IServiceCollection extension methods (service registration)
-├── Configurations/     — Options classes bound from appsettings.json
-├── Middlewares/        — Custom ASP.NET Core middleware
-├── Data/               — DbContext; seed data via HasData() in OnModelCreating
-├── Migrations/         — EF Core migrations; Npgsql/ subdirectory for PostgreSQL provider
-├── Utilities/          — Internal helpers: HttpContext, Swagger, PlayerData seed source
-└── Storage/            — SQLite database file (runtime-generated, gitignored)
-
-test/Dotnet.Samples.AspNetCore.WebApi.Tests/
-├── Integration/        — Repository and WebApplication integration tests
-├── Unit/               — Unit tests (controllers, services, validators)
-└── Utilities/          — Shared test helpers: PlayerFakes, PlayerMocks, PlayerStubs
-```
 
 **Layer rule**: `Controller → Service → Repository → Database`. Controllers must not access repositories directly. Business logic must not live in controllers.
 
@@ -145,12 +106,7 @@ docker compose up
 
 ### Pre-commit Checks
 
-1. Update `CHANGELOG.md` `[Unreleased]` section (Added / Changed / Fixed / Removed)
-2. `dotnet build --configuration Release` — must succeed
-3. `dotnet test --settings .runsettings` — all tests must pass
-4. `dotnet csharpier .` — format; fix any reported issues
-5. Commit message follows Conventional Commits format (enforced by commitlint)
-6. If this commit introduces or changes an architectural decision, update CLAUDE.md and create or amend the relevant ADR in `docs/adr/`.
+Run `/pre-commit` for the full checklist (CHANGELOG, build, tests, format, CodeRabbit, commit message).
 
 ### Commits
 
@@ -200,23 +156,7 @@ This project uses Spec-Driven Development (SDD): discuss in Plan mode first, cre
 
 **Add an endpoint**: Add DTO in `Models/` → update `PlayerMappingProfile` in `Mappings/` → add repository method(s) in `Repositories/` → add service method in `Services/` → add controller action in `Controllers/` → add/update validator rule set in `Validators/` → add tests in `test/.../Unit/` → run pre-commit checks.
 
-**Modify schema**: Update `Player` entity → update DTOs → update AutoMapper profile → update `HasData()` seed data in `OnModelCreating` if needed → add migrations for both providers → update tests → run `dotnet test`.
-
-```bash
-# SQLite migration (default)
-dotnet ef migrations add <Name> --project src/Dotnet.Samples.AspNetCore.WebApi
-# PostgreSQL migration
-DATABASE_PROVIDER=postgres DATABASE_URL="Host=localhost;..." \
-  dotnet ef migrations add <Name> --project src/Dotnet.Samples.AspNetCore.WebApi --output-dir Migrations/Npgsql
-```
-
-**Switch database provider**:
-
-- Set `DATABASE_PROVIDER=postgres` to use PostgreSQL, or leave unset for SQLite (default).
-- `DATABASE_URL` (required for PostgreSQL) follows the Npgsql convention: `Host=...;Database=...;Username=...;Password=...`.
-- For SQLite, `STORAGE_PATH` overrides the default file path (`AppContext.BaseDirectory/storage/players-sqlite3.db`).
-- `ProviderSpecificMigrationsAssembly` filters migration discovery to the active provider's namespace at runtime — no code changes needed to switch.
-- Migrations run automatically at startup via `MigrateAsync()`; no manual `dotnet ef database update` is required.
+**Modify schema or switch database provider**: see the `database-schema-workflow` skill.
 
 ## Invariants (never change without explicit discussion)
 
@@ -242,7 +182,7 @@ Each ADR is self-contained. When a proposal would change an accepted decision, c
 ```text
 feat(scope): description (#issue)
 
-Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
+Co-authored-by: Claude Sonnet 5 <noreply@anthropic.com>
 ```
 
 ## Claude Code
