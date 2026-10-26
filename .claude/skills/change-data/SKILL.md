@@ -9,8 +9,9 @@ Schema changes are on the "ask before changing" list: confirm with the user and
 make sure an issue exists first. Never rename the migration namespace constants
 in `Migrations/ProviderSpecificMigrationsAssembly.cs`.
 
-All paths below are relative to `src/Dotnet.Samples.AspNetCore.WebApi/` unless
-they start with `test/`.
+Source paths below are relative to `src/Dotnet.Samples.AspNetCore.WebApi/`.
+Test paths start with `test/`. Repository-root files (`README.md`,
+`CLAUDE.md`, `docs/`) use repository-root paths.
 
 ## Schema change
 

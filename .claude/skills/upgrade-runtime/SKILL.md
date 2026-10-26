@@ -13,7 +13,7 @@ the target version with the user and make sure an issue exists first.
 | File | What to change |
 | ---- | -------------- |
 | `global.json` | `sdk.version` |
-| `src/Dotnet.Samples.AspNetCore.WebApi/*.csproj` | `<TargetFramework>`, `Microsoft.*` / `Npgsql.*` package versions |
+| `src/Dotnet.Samples.AspNetCore.WebApi/*.csproj` | `<TargetFramework>`, every `PackageReference` version (check each package for a release that supports the new framework) |
 | `test/Dotnet.Samples.AspNetCore.WebApi.Tests/*.csproj` | `<TargetFramework>`, test package versions |
 | `packages.lock.json` (both projects) | regenerate with `dotnet restore --force-evaluate` |
 | `Dockerfile` | `dotnet/sdk:<ver>` builder and `dotnet/aspnet:<ver>-alpine` runtime images |

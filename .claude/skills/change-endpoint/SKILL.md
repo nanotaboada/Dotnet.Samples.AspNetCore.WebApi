@@ -8,8 +8,9 @@ description: Add a new endpoint or change an existing one (route, HTTP status co
 The API contract (endpoints, status codes, response shapes) is an invariant:
 confirm the change with the user and make sure an issue exists before editing.
 
-All paths below are relative to `src/Dotnet.Samples.AspNetCore.WebApi/` unless
-they start with `test/`.
+Source paths below are relative to `src/Dotnet.Samples.AspNetCore.WebApi/`.
+Test paths start with `test/`. Repository-root files (`README.md`,
+`CLAUDE.md`, `docs/`) use repository-root paths.
 
 1. **Models** — add or update DTOs in `Models/` (`PlayerRequestModel`,
    `PlayerResponseModel`); keep the `Player` entity untouched unless the
