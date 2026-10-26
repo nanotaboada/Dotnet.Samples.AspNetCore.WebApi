@@ -7,7 +7,7 @@ Run the pre-commit checklist for this project:
 3. Run `dotnet test --settings .runsettings` — all tests must pass.
 4. If `dotnet csharpier` is available, run `dotnet csharpier --check .` — must pass
    (run `dotnet csharpier .` to auto-fix). Skip this step with a note if not installed.
-5. If `coderabbit` CLI is installed, run `coderabbit review --type uncommitted --prompt-only`:
+5. If `coderabbit` CLI is installed, run `coderabbit review --uncommitted --agent`:
    - If actionable/serious findings are reported, stop and address them before proposing the commit.
    - If only nitpick-level findings, report them and continue to the commit proposal.
    - If `coderabbit` is not installed, skip this step with a note.
