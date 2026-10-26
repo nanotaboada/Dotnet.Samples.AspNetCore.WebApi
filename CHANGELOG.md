@@ -64,6 +64,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- `upgrade-runtime` skill targets only .NET LTS releases (even-numbered majors) and leaves patch/minor bumps to Dependabot (issue #577).
 - `database-schema-workflow` skill renamed to `change-data` and extended with seed data and test fake updates (issue #577).
 - `CLAUDE.md` "Creating Issues" and "Key workflows" reduced to pointers to the skills; "After completing work" moved into "Agent Mode" and no longer hardcodes a model name in the co-author line (issue #577).
 - Improved `CLAUDE.md` project guidance via the [CLAUDE.md Management plugin](https://claude.com/plugins/claude-md-management): added `Migrations/`, `Utilities/` (src) and `Integration/` (test) to the structure tree; documented `DATABASE_URL` Npgsql format, `STORAGE_PATH` SQLite path override, and exact `dotnet ef migrations add` commands for both providers; collapsed issue template bullets for conciseness; clarified `MigrateAsync()` runs automatically at startup.
