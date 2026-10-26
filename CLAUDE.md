@@ -4,6 +4,18 @@
 
 REST API for managing football players built with ASP.NET Core 10. Implements CRUD operations with a layered architecture, EF Core persistence (SQLite by default, PostgreSQL opt-in via `DATABASE_PROVIDER`), FluentValidation, AutoMapper, and in-memory caching. Primarily a learning and reference project — clarity and educational value take precedence over brevity.
 
+## Tech Stack
+
+| Category | Technology |
+| -------- | ---------- |
+| Runtime / framework | .NET 10 (LTS), ASP.NET Core MVC controllers |
+| Persistence | EF Core with SQLite (default) or PostgreSQL (opt-in) |
+| Validation / mapping | FluentValidation, AutoMapper |
+| API docs | Swashbuckle (Swagger UI, dev only) |
+| Logging | Serilog |
+| Testing | xUnit, Moq, FluentAssertions, `WebApplicationFactory` |
+| Containers | Docker, Docker Compose |
+
 ## Structure
 
 **Layer rule**: `Controller → Service → Repository → Database`. Controllers must not access repositories directly. Business logic must not live in controllers.
@@ -146,17 +158,16 @@ Example: `feat(api): add player search endpoint (#123)`
 
 ### Creating Issues
 
-This project uses Spec-Driven Development (SDD): discuss in Plan mode first, create a GitHub Issue as the spec artifact, then implement. Always offer to draft an issue before writing code.
-
-**Feature request** (`enhancement` label): Problem · Proposed Solution · Suggested Approach (optional) · Acceptance Criteria · References
-
-**Bug report** (`bug` label): Description · Steps to Reproduce · Expected/Actual Behavior · Environment · Additional Context · Possible Solution (optional)
+This project uses Spec-Driven Development (SDD): discuss in Plan mode first, create a GitHub Issue as the spec artifact, then implement. Always offer to draft an issue before writing code. See the `create-issue` skill.
 
 ### Key workflows
 
-**Add an endpoint**: Add DTO in `Models/` → update `PlayerMappingProfile` in `Mappings/` → add repository method(s) in `Repositories/` → add service method in `Services/` → add controller action in `Controllers/` → add/update validator rule set in `Validators/` → add tests in `test/.../Unit/` → run pre-commit checks.
+- **Add or change an endpoint**: `change-endpoint` skill
+- **Change the schema, seed data, or database provider**: `change-data` skill
+- **Upgrade .NET or a major dependency**: `upgrade-runtime` skill
+- **Record an architectural decision**: `create-adr` skill
 
-**Modify schema or switch database provider**: see the `database-schema-workflow` skill.
+**After completing work**: Propose a branch name (e.g. `feat/123-add-player-search`) and a commit message following Conventional Commits, ending with the `Co-Authored-By` line for the model in use. Do not create a branch, commit, or push until the user explicitly approves.
 
 ## Invariants (never change without explicit discussion)
 
@@ -175,15 +186,7 @@ Load `#file:docs/adr/README.md` when:
 - Proposing changes to core architecture or dependencies
 - Historical context for past decisions is needed
 
-Each ADR is self-contained. When a proposal would change an accepted decision, create a new ADR rather than editing the existing one.
-
-**After completing work**: Suggest a branch name (e.g. `feat/add-player-search`) and a commit message following Conventional Commits including co-author line:
-
-```text
-feat(scope): description (#issue)
-
-Co-authored-by: Claude Sonnet 5 <noreply@anthropic.com>
-```
+Each ADR is self-contained. When a proposal would change an accepted decision, create a new ADR rather than editing the existing one (see the `create-adr` skill).
 
 ## Claude Code
 
