@@ -8,6 +8,10 @@ description: Upgrade the .NET SDK / ASP.NET Core target framework or a major dep
 Dependencies, CI/CD, and Docker are on the "ask before changing" list: confirm
 the target version with the user and make sure an issue exists first.
 
+Target only LTS releases of .NET (even-numbered majors such as 10, 12); skip
+STS releases. Patch and minor dependency bumps are handled by Dependabot and do
+not need this skill.
+
 ## Where the version lives
 
 | File | What to change |

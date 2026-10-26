@@ -64,6 +64,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Changed
 
+- `upgrade-runtime` skill targets only .NET LTS releases (even-numbered majors) and leaves patch/minor bumps to Dependabot (issue #577).
 - `database-schema-workflow` skill renamed to `change-data` and extended with seed data and test fake updates (issue #577).
 - `CLAUDE.md` "Creating Issues" and "Key workflows" reduced to pointers to the skills; "After completing work" moved into "Agent Mode" and no longer hardcodes a model name in the co-author line (issue #577).
 - `README.md` error codes now document `422 Unprocessable Entity` for validation failures and `400 Bad Request` for route/body squad-number mismatch on `PUT`; Tech Stack versions aligned with the `.csproj` (AutoMapper 16.2, Serilog.AspNetCore 10) (issue #579).
