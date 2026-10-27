@@ -59,9 +59,14 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 - ADR-0015: Use Full-Replace PUT as the Partial Update Strategy
 - ADR-0016: Adopt AI-Assisted Development Workflow
 - ADR-0017: Adopt Spec-Driven Development (SDD)
+- Claude Code skills `create-issue`, `change-endpoint`, `upgrade-runtime`, and `create-adr` in `.claude/skills/`, one per recurring change type (issue #577).
+- `Tech Stack` section to `CLAUDE.md` (issue #577).
 
 ### Changed
 
+- `upgrade-runtime` skill targets only .NET LTS releases (even-numbered majors) and leaves patch/minor bumps to Dependabot (issue #577).
+- `database-schema-workflow` skill renamed to `change-data` and extended with seed data and test fake updates (issue #577).
+- `CLAUDE.md` "Creating Issues" and "Key workflows" reduced to pointers to the skills; "After completing work" moved into "Agent Mode" and no longer hardcodes a model name in the co-author line (issue #577).
 - Improved `CLAUDE.md` project guidance via the [CLAUDE.md Management plugin](https://claude.com/plugins/claude-md-management): added `Migrations/`, `Utilities/` (src) and `Integration/` (test) to the structure tree; documented `DATABASE_URL` Npgsql format, `STORAGE_PATH` SQLite path override, and exact `dotnet ef migrations add` commands for both providers; collapsed issue template bullets for conciseness; clarified `MigrateAsync()` runs automatically at startup.
 - `adr/` directory moved to `docs/adr/`; all references in `README.md`, `CONTRIBUTING.md`, and `.coderabbit.yaml` updated to the new path (issue #505).
 - `.coderabbit.yaml` controller path instruction updated: status code list corrected from `(200, 201, 400, 404, 409, 500)` to `(200, 201, 404, 409, 500)` with explicit note that FluentValidation failures must return 422 via `TypedResults.Problem(new HttpValidationProblemDetails(...))` (issue #505).
@@ -75,6 +80,7 @@ This project uses famous football stadiums (A-Z) that hosted FIFA World Cup matc
 
 ### Fixed
 
+- `/pre-commit` CodeRabbit step uses the current CLI flags (`--uncommitted --agent`); the old `--type uncommitted --prompt-only` flags only printed the help text (issue #577).
 - Populate `BuildTargetModel` in Npgsql seed migration designer files so Npgsql's SQL generator can resolve column types when applying `InsertData` operations.
 - Suppress `PendingModelChangesWarning` for the postgres provider path — hand-crafted designer files cannot replicate Npgsql-injected runtime annotations (`Relational:MaxIdentifierLength`, `UseIdentityByDefaultColumn`), causing a false-positive that aborted `MigrateAsync()` at startup.
 - Normalize `DATABASE_PROVIDER` to lowercase in `entrypoint.sh` via `tr` so `POSTGRES`, `Postgres`, etc. are handled consistently with `AddDbContextPool`.
