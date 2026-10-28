@@ -31,10 +31,10 @@ Proof of Concept for a RESTful API built with .NET 10 (LTS) and ASP.NET Core. Ma
 | **Web Framework** | [ASP.NET Core 10.0](https://github.com/dotnet/aspnetcore) |
 | **API Documentation** | [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) (OpenAPI 3.0) |
 | **Validation** | [FluentValidation 12](https://github.com/FluentValidation/FluentValidation) |
-| **Mapping** | [AutoMapper 14](https://github.com/AutoMapper/AutoMapper) |
+| **Mapping** | [AutoMapper 16.2](https://github.com/AutoMapper/AutoMapper) |
 | **Database** | [SQLite 3](https://github.com/sqlite/sqlite) (default) · [PostgreSQL 17](https://github.com/postgres/postgres) (opt-in) |
 | **ORM** | [Entity Framework Core 10.0](https://github.com/dotnet/efcore) |
-| **Logging** | [Serilog 9](https://github.com/serilog/serilog) |
+| **Logging** | [Serilog.AspNetCore 10](https://github.com/serilog/serilog-aspnetcore) |
 | **Testing** | [xUnit](https://github.com/xunit/xunit), [Moq](https://github.com/devlooped/moq), [FluentAssertions](https://github.com/fluentassertions/fluentassertions) |
 | **Containerization** | [Docker](https://github.com/docker) & [Docker Compose](https://github.com/docker/compose) |
 
@@ -151,7 +151,7 @@ Interactive API documentation is available via Swagger UI at `https://localhost:
 | `DELETE` | `/players/squadNumber/{squadNumber:int}` | Remove player by squad number | `204 No Content` |
 | `GET` | `/health` | Health check | `200 OK` |
 
-Error codes: `400 Bad Request` (validation failed) · `404 Not Found` (player not found) · `409 Conflict` (duplicate squad number on `POST`)
+Error codes: `400 Bad Request` (route/body squad-number mismatch on `PUT`) · `404 Not Found` (player not found) · `409 Conflict` (duplicate squad number on `POST`) · `422 Unprocessable Entity` (field validation failed)
 
 For complete endpoint documentation with request/response schemas, explore the [interactive Swagger UI](https://localhost:9000/swagger/index.html).
 
