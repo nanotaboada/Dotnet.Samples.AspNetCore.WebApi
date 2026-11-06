@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.14" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
-    <PackageReference Include="AutoMapper" Version="[16.2.0, 17.0.0)" />
+    <PackageReference Include="AutoMapper" Version="[16.3.0, 17.0.0)" />
     <PackageReference Include="FluentValidation" Version="12.2.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
