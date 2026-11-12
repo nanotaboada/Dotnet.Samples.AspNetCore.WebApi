@@ -5,3 +5,5 @@ TestResults/
 storage/*.db
 .env
 .claude/settings.local.json
+# Visual Studio local workspace
+.vs/
