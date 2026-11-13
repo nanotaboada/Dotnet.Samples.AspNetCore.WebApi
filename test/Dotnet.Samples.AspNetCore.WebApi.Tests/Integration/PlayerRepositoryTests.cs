@@ -51,6 +51,167 @@ public class PlayerRepositoryTests : IAsyncLifetime
     }
 
     /* -------------------------------------------------------------------------
+    * SearchAsync
+    * ---------------------------------------------------------------------- */
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task
+      SearchAsync_NoFilters_ReturnsFirstPageAndTotalCount()
+    {
+        // Act
+        var result =
+            await _repository.SearchAsync(
+                team: null,
+                position: null,
+                page: 1,
+                pageSize: 10,
+                cancellationToken:
+                    CancellationToken.None);
+
+        // Assert
+        result.TotalCount.Should().Be(26);
+        result.Items.Should().HaveCount(10);
+
+        result.Items
+            .Select(player =>
+                player.SquadNumber)
+            .Should()
+            .BeInAscendingOrder();
+
+        _dbContext.ChangeTracker
+            .Entries<Player>()
+            .Should()
+            .BeEmpty();
+    }
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task
+    SearchAsync_TeamProvided_ReturnsOnlyMatchingPlayers()
+    {
+        // Arrange
+        const string team = "SL Benfica";
+
+        // Act
+        var result =
+            await _repository.SearchAsync(
+                team: team,
+                position: null,
+                page: 1,
+                pageSize: 100,
+                cancellationToken:
+                    CancellationToken.None);
+
+        // Assert
+        result.Items.Should().NotBeEmpty();
+
+        result.Items.Should().OnlyContain(
+            player => player.Team == team);
+
+        result.TotalCount
+            .Should()
+            .Be(result.Items.Count);
+    }
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task
+    SearchAsync_PositionProvided_ReturnsOnlyMatchingPlayers()
+    {
+        // Arrange
+        const string position = "CM";
+
+        // Act
+        var result =
+            await _repository.SearchAsync(
+                team: null,
+                position: position,
+                page: 1,
+                pageSize: 100,
+                cancellationToken:
+                    CancellationToken.None);
+
+        // Assert
+        result.Items.Should().NotBeEmpty();
+
+        result.Items.Should().OnlyContain(
+            player =>
+                player.AbbrPosition
+                == position);
+
+        result.TotalCount
+            .Should()
+            .Be(result.Items.Count);
+    }
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task
+    SearchAsync_SecondPage_ReturnsDifferentPlayers()
+    {
+        // Act
+        var firstPage =
+            await _repository.SearchAsync(
+                team: null,
+                position: null,
+                page: 1,
+                pageSize: 10,
+                cancellationToken:
+                    CancellationToken.None);
+
+        var secondPage =
+            await _repository.SearchAsync(
+                team: null,
+                position: null,
+                page: 2,
+                pageSize: 10,
+                cancellationToken:
+                    CancellationToken.None);
+
+        // Assert
+        firstPage.Items.Should().HaveCount(10);
+        secondPage.Items.Should().HaveCount(10);
+
+        secondPage.TotalCount
+            .Should()
+            .Be(firstPage.TotalCount);
+
+        var firstPageIds =
+            firstPage.Items.Select(
+                player => player.Id);
+
+        var secondPageIds =
+            secondPage.Items.Select(
+                player => player.Id);
+
+        firstPageIds
+            .Intersect(secondPageIds)
+            .Should()
+            .BeEmpty();
+    }
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task
+    SearchAsync_NoMatches_ReturnsEmptyPage()
+    {
+        // Act
+        var result =
+            await _repository.SearchAsync(
+                team: "Team That Does Not Exist",
+                position: null,
+                page: 1,
+                pageSize: 10,
+                cancellationToken:
+                    CancellationToken.None);
+
+        // Assert
+        result.TotalCount.Should().Be(0);
+        result.Items.Should().BeEmpty();
+    }
+
+    /* -------------------------------------------------------------------------
      * FindByIdAsync
      * ---------------------------------------------------------------------- */
 

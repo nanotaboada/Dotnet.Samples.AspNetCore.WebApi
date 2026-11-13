@@ -18,4 +18,12 @@ public interface IPlayerRepository : IRepository<Player>
     ///  if found, or null if no Player with the specified Squad Number exists.
     /// </returns>
     Task<Player?> FindBySquadNumberAsync(int squadNumber);
+
+    Task<(List<Player> Items, int TotalCount)>
+    SearchAsync(
+        string? team,
+        string? position,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken);
 }
