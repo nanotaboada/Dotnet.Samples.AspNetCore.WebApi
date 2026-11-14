@@ -119,6 +119,105 @@ public class PlayerServiceTests
         second.Should().BeLessThan(first);
     }
 
+    /* -------------------------------------------------------------------------
+ * Search
+ * ---------------------------------------------------------------------- */
+
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task
+        SearchAsync_WhenCalled_ReturnsMappedPagedResponse()
+    {
+        // Arrange
+        var request =
+            new PlayerSearchRequest
+            {
+                Team = null,
+                Position = "CM",
+                Page = 2,
+                PageSize = 3
+            };
+
+        var players =
+            PlayerFakes.MakeStarting11()
+                .Take(3)
+                .ToList();
+
+        var responseModels =
+            PlayerFakes
+                .MakeResponseModelsForRetrieve()
+                .Take(3)
+                .ToList();
+
+        const int totalCount = 8;
+
+        var (
+            repository,
+            logger,
+            memoryCache,
+            mapper,
+            environment
+        ) = PlayerMocks.InitServiceMocks();
+
+        repository
+            .Setup(repository =>
+                repository.SearchAsync(
+                    request.Team,
+                    request.Position,
+                    request.Page,
+                    request.PageSize,
+                    CancellationToken.None))
+            .ReturnsAsync(
+                (players, totalCount));
+
+        mapper
+            .Setup(mapper =>
+                mapper.Map<
+                    List<PlayerResponseModel>>(
+                    players))
+            .Returns(responseModels);
+
+        var service =
+            new PlayerService(
+                repository.Object,
+                logger.Object,
+                memoryCache.Object,
+                mapper.Object,
+                environment.Object);
+
+        // Act
+        var result =
+            await service.SearchAsync(
+                request,
+                CancellationToken.None);
+
+        // Assert
+        result.Items
+            .Should()
+            .BeEquivalentTo(responseModels);
+
+        result.Page.Should().Be(2);
+        result.PageSize.Should().Be(3);
+        result.TotalCount.Should().Be(8);
+
+        repository.Verify(
+            repository =>
+                repository.SearchAsync(
+                    request.Team,
+                    request.Position,
+                    request.Page,
+                    request.PageSize,
+                    CancellationToken.None),
+            Times.Once);
+
+        mapper.Verify(
+            mapper =>
+                mapper.Map<
+                    List<PlayerResponseModel>>(
+                    players),
+            Times.Once);
+    }
+
     [Fact]
     [Trait("Category", "Unit")]
     public async Task RetrieveByIdAsync_PlayerNotFound_ReturnsNull()

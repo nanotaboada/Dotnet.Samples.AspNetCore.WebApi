@@ -77,6 +77,40 @@ public class PlayerService(
         }
     }
 
+    public async Task<
+    PagedResponse<PlayerResponseModel>>
+    SearchAsync(
+        PlayerSearchRequest request,
+        CancellationToken cancellationToken)
+    {
+        var (players, totalCount) =
+            await playerRepository.SearchAsync(
+                request.Team,
+                request.Position,
+                request.Page,
+                request.PageSize,
+                cancellationToken);
+
+        var items =
+            mapper.Map<List<PlayerResponseModel>>(
+                players);
+
+        logger.LogInformation(
+            "Player search returned {Count} of "
+                + "{TotalCount} matching player(s)",
+            items.Count,
+            totalCount
+        );
+
+        return new PagedResponse<PlayerResponseModel>
+        {
+            Items = items,
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalCount = totalCount
+        };
+    }
+
     public async Task<PlayerResponseModel?> RetrieveByIdAsync(Guid id)
     {
         var player = await playerRepository.FindByIdAsync(id);

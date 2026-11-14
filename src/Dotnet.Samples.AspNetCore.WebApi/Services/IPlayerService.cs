@@ -23,6 +23,23 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Services
         public Task<List<PlayerResponseModel>> RetrieveAsync();
 
         /// <summary>
+        /// Searches and paginates players.
+        /// </summary>
+        /// <param name="request">
+        /// The search and pagination parameters.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// Signal used to cancel the operation.
+        /// </param>
+        /// <returns>
+        /// A page containing matching players.
+        /// </returns>
+        public Task<PagedResponse<PlayerResponseModel>>
+            SearchAsync(
+                PlayerSearchRequest request,
+                CancellationToken cancellationToken);
+
+        /// <summary>
         /// Retrieves a Player from the repository by its ID.
         /// </summary>
         /// <param name="id">The ID of the Player to retrieve.</param>
@@ -30,6 +47,7 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Services
         /// A Task representing the asynchronous operation, containing the Player if found,
         /// or null if not.
         /// </returns>
+        /// 
         public Task<PlayerResponseModel?> RetrieveByIdAsync(Guid id);
 
         /// <summary>
