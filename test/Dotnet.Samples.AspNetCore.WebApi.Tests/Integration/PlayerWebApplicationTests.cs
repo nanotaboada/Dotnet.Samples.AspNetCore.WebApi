@@ -115,6 +115,135 @@ public class PlayerWebApplicationTests : IAsyncLifetime
     }
 
     /* -------------------------------------------------------------------------
+    * GET /players/search
+    * ---------------------------------------------------------------------- */
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task
+         Get_PlayerSearch_ValidRequest_ReturnsPagedPlayers()
+    {
+        // Arrange
+        const string team = "SL Benfica";
+        var encodedTeam = Uri.EscapeDataString(team);
+
+        // Act
+        var response = await _client.GetAsync(
+            $"/players/search" +
+            $"?team={encodedTeam}" +
+            $"&page=1" +
+            $"&pageSize=2");
+
+        // Assert
+        response.StatusCode
+            .Should()
+            .Be(HttpStatusCode.OK);
+
+        var result = await response.Content
+            .ReadFromJsonAsync<
+                PagedResponse<PlayerResponseModel>>();
+
+        result.Should().NotBeNull();
+
+        result!.Page.Should().Be(1);
+        result.PageSize.Should().Be(2);
+        result.Items.Should().NotBeEmpty();
+        result.Items.Should().HaveCountLessThanOrEqualTo(2);
+
+        result.Items.Should().OnlyContain(
+            player => player.Club == team);
+
+        result.TotalCount
+            .Should()
+            .BeGreaterThanOrEqualTo(result.Items.Count);
+    }
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task
+    Get_PlayerSearch_InvalidPagination_Returns422()
+    {
+        // Act
+        var response = await _client.GetAsync(
+            "/players/search?page=0&pageSize=101");
+
+        // Assert
+        response.StatusCode
+            .Should()
+            .Be(HttpStatusCode.UnprocessableEntity);
+
+        var problem = await response.Content
+            .ReadFromJsonAsync<
+                HttpValidationProblemDetails>();
+
+        problem.Should().NotBeNull();
+
+        problem!.Status
+            .Should()
+            .Be(
+                StatusCodes.Status422UnprocessableEntity);
+
+        problem.Errors
+            .Should()
+            .ContainKey(nameof(PlayerSearchRequest.Page));
+
+        problem.Errors
+            .Should()
+            .ContainKey(nameof(PlayerSearchRequest.PageSize));
+    }
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task
+    Get_PlayerSearch_SecondPage_ReturnsDifferentPlayers()
+    {
+        // Act
+        var firstResponse = await _client.GetAsync(
+            "/players/search?page=1&pageSize=10");
+
+        var secondResponse = await _client.GetAsync(
+            "/players/search?page=2&pageSize=10");
+
+        var firstPage = await firstResponse.Content
+            .ReadFromJsonAsync<
+                PagedResponse<PlayerResponseModel>>();
+
+        var secondPage = await secondResponse.Content
+            .ReadFromJsonAsync<
+                PagedResponse<PlayerResponseModel>>();
+
+        // Assert
+        firstResponse.StatusCode
+            .Should()
+            .Be(HttpStatusCode.OK);
+
+        secondResponse.StatusCode
+            .Should()
+            .Be(HttpStatusCode.OK);
+
+        firstPage.Should().NotBeNull();
+        secondPage.Should().NotBeNull();
+
+        firstPage!.Page.Should().Be(1);
+        secondPage!.Page.Should().Be(2);
+
+        secondPage.TotalCount
+            .Should()
+            .Be(firstPage.TotalCount);
+
+        var firstPageSquadNumbers =
+            firstPage.Items.Select(player => player.Dorsal);
+
+        var secondPageSquadNumbers =
+            secondPage.Items.Select(player => player.Dorsal);
+
+        firstPageSquadNumbers
+            .Intersect(secondPageSquadNumbers)
+            .Should()
+            .BeEmpty();
+    }
+
+    /* -------------------------------------------------------------------------
      * GET /players/{id:Guid}
      * ---------------------------------------------------------------------- */
 
