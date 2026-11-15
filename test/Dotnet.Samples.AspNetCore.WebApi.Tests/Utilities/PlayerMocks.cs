@@ -29,14 +29,16 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Tests.Utilities
         public static (
             Mock<IPlayerService> service,
             Mock<ILogger<PlayerController>> logger,
-            Mock<IValidator<PlayerRequestModel>> validator
+            Mock<IValidator<PlayerRequestModel>> validator,
+            Mock<IValidator<PlayerSearchRequest>> searchValidator
         ) InitControllerMocks()
         {
             var service = new Mock<IPlayerService>();
             var logger = new Mock<ILogger<PlayerController>>();
             var validator = new Mock<IValidator<PlayerRequestModel>>();
+            var searchValidator = new Mock<IValidator<PlayerSearchRequest>>();
 
-            return (service, logger, validator);
+            return (service, logger, validator,searchValidator);
         }
 
         /// <summary>

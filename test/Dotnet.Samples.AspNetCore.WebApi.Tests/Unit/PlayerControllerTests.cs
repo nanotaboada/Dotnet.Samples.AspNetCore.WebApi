@@ -30,7 +30,7 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         validator
             .Setup(validator =>
                 validator.ValidateAsync(
@@ -47,7 +47,7 @@ public class PlayerControllerTests : IDisposable
                 )
             );
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.PostAsync(request);
@@ -84,7 +84,7 @@ public class PlayerControllerTests : IDisposable
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
         var response = PlayerFakes.MakeResponseModelForCreate();
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(request.SquadNumber))
             .ReturnsAsync(response);
@@ -97,7 +97,7 @@ public class PlayerControllerTests : IDisposable
             )
             .ReturnsAsync(new ValidationResult(new List<ValidationFailure> { }));
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.PostAsync(request);
@@ -124,7 +124,7 @@ public class PlayerControllerTests : IDisposable
         // Arrange
         var request = PlayerFakes.MakeRequestModelForCreate();
         var response = PlayerFakes.MakeResponseModelForCreate();
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(request.SquadNumber))
             .ReturnsAsync(null as PlayerResponseModel);
@@ -138,7 +138,7 @@ public class PlayerControllerTests : IDisposable
             )
             .ReturnsAsync(new ValidationResult(new List<ValidationFailure> { }));
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object)
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object)
         {
             Url = PlayerMocks.SetupUrlHelperMock().Object,
         };
@@ -175,10 +175,10 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var response = PlayerFakes.MakeResponseModelsForRetrieve();
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service.Setup(service => service.RetrieveAsync()).ReturnsAsync(response);
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.GetAsync();
@@ -196,10 +196,10 @@ public class PlayerControllerTests : IDisposable
     public async Task Get_Players_Empty_Returns200OkWithEmptyList()
     {
         // Arrange
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service.Setup(service => service.RetrieveAsync()).ReturnsAsync([]);
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.GetAsync();
@@ -213,16 +213,166 @@ public class PlayerControllerTests : IDisposable
 
     [Fact]
     [Trait("Category", "Unit")]
+    public async Task
+    Search_Players_ValidRequest_Returns200Ok()
+    {
+        // Arrange
+        var request = new PlayerSearchRequest
+        {
+            Position = "CM",
+            Page = 1,
+            PageSize = 2
+        };
+
+        var response = new PagedResponse<PlayerResponseModel>
+        {
+            Items = PlayerFakes
+                .MakeResponseModelsForRetrieve()
+                .Take(2)
+                .ToList(),
+            Page = 1,
+            PageSize = 2,
+            TotalCount = 8
+        };
+
+        var (
+            service,
+            logger,
+            validator,
+            searchValidator
+        ) = PlayerMocks.InitControllerMocks();
+
+        searchValidator
+            .Setup(searchValidator =>
+                searchValidator.ValidateAsync(
+                    request,
+                    CancellationToken.None))
+            .ReturnsAsync(new ValidationResult());
+
+        service
+            .Setup(service =>
+                service.SearchAsync(
+                    request,
+                    CancellationToken.None))
+            .ReturnsAsync(response);
+
+        var controller = new PlayerController(
+            service.Object,
+            logger.Object,
+            validator.Object,
+            searchValidator.Object);
+
+        // Act
+        var result = await controller.SearchAsync(
+            request,
+            CancellationToken.None);
+
+        // Assert
+        var httpResult = result
+            .Should()
+            .BeOfType<
+                Ok<PagedResponse<PlayerResponseModel>>>()
+            .Subject;
+
+        httpResult.StatusCode
+            .Should()
+            .Be(StatusCodes.Status200OK);
+
+        httpResult.Value
+            .Should()
+            .BeEquivalentTo(response);
+
+        searchValidator.Verify(
+            searchValidator =>
+                searchValidator.ValidateAsync(
+                    request,
+                    CancellationToken.None),
+            Times.Once);
+
+        service.Verify(
+            service =>
+                service.SearchAsync(
+                    request,
+                    CancellationToken.None),
+            Times.Once);
+    }
+
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task
+    Search_Players_InvalidRequest_Returns422()
+    {
+        // Arrange
+        var request = new PlayerSearchRequest
+        {
+            Page = 0,
+            PageSize = 10
+        };
+
+        var (
+            service,
+            logger,
+            validator,
+            searchValidator
+        ) = PlayerMocks.InitControllerMocks();
+
+        searchValidator
+            .Setup(searchValidator =>
+                searchValidator.ValidateAsync(
+                    request,
+                    CancellationToken.None))
+            .ReturnsAsync(
+                new ValidationResult(
+                    new List<ValidationFailure>
+                    {
+                    new(
+                        nameof(PlayerSearchRequest.Page),
+                        "Page must be greater than 0.")
+                    }));
+
+        var controller = new PlayerController(
+            service.Object,
+            logger.Object,
+            validator.Object,
+            searchValidator.Object);
+
+        // Act
+        var result = await controller.SearchAsync(
+            request,
+            CancellationToken.None);
+
+        // Assert
+        var httpResult = result
+            .Should()
+            .BeOfType<ProblemHttpResult>()
+            .Subject;
+
+        httpResult.StatusCode
+            .Should()
+            .Be(
+                StatusCodes.Status422UnprocessableEntity);
+
+        service.Verify(
+            service =>
+                service.SearchAsync(
+                    It.IsAny<PlayerSearchRequest>(),
+                    It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+
+    [Fact]
+    [Trait("Category", "Unit")]
     public async Task Get_PlayerById_Unknown_Returns404NotFound()
     {
         // Arrange
         var id = Guid.NewGuid();
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveByIdAsync(id))
             .ReturnsAsync(null as PlayerResponseModel);
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.GetByIdAsync(id);
@@ -240,10 +390,10 @@ public class PlayerControllerTests : IDisposable
         // Arrange
         var id = Guid.NewGuid();
         var response = PlayerFakes.MakeResponseModelForRetrieve(10);
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service.Setup(service => service.RetrieveByIdAsync(id)).ReturnsAsync(response);
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.GetByIdAsync(id);
@@ -262,12 +412,12 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var squadNumber = 999;
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
             .ReturnsAsync(null as PlayerResponseModel);
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.GetBySquadNumberAsync(squadNumber);
@@ -285,12 +435,12 @@ public class PlayerControllerTests : IDisposable
         // Arrange
         var squadNumber = 10;
         var response = PlayerFakes.MakeResponseModelForRetrieve(squadNumber);
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
             .ReturnsAsync(response);
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.GetBySquadNumberAsync(squadNumber);
@@ -315,9 +465,9 @@ public class PlayerControllerTests : IDisposable
         var squadNumber = 20;
         var request = PlayerFakes.MakeRequestModelForUpdate(squadNumber);
         request.SquadNumber = -999; // Invalid Squad Number
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         validator
             .Setup(validator =>
@@ -369,7 +519,7 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var squadNumber = 999;
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
             .ReturnsAsync(null as PlayerResponseModel);
@@ -382,7 +532,7 @@ public class PlayerControllerTests : IDisposable
             )
             .ReturnsAsync(new ValidationResult(new List<ValidationFailure> { }));
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.PutAsync(
@@ -414,7 +564,7 @@ public class PlayerControllerTests : IDisposable
         var request = PlayerFakes.MakeRequestModelForUpdate(squadNumber);
         request.SquadNumber = 99; // Mismatched squad number
         var response = PlayerFakes.MakeResponseModelForUpdate(squadNumber);
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
             .ReturnsAsync(response);
@@ -427,7 +577,7 @@ public class PlayerControllerTests : IDisposable
             )
             .ReturnsAsync(new ValidationResult(new List<ValidationFailure> { }));
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.PutAsync(squadNumber, request);
@@ -449,7 +599,7 @@ public class PlayerControllerTests : IDisposable
         var response = PlayerFakes.MakeResponseModelForUpdate(squadNumber);
         request.FirstName = "Emiliano";
         request.MiddleName = string.Empty;
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
             .ReturnsAsync(response);
@@ -463,7 +613,7 @@ public class PlayerControllerTests : IDisposable
             )
             .ReturnsAsync(new ValidationResult(new List<ValidationFailure> { }));
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.PutAsync(squadNumber, request);
@@ -485,12 +635,12 @@ public class PlayerControllerTests : IDisposable
     {
         // Arrange
         var squadNumber = 999;
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
             .ReturnsAsync(null as PlayerResponseModel);
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.DeleteAsync(squadNumber);
@@ -509,13 +659,13 @@ public class PlayerControllerTests : IDisposable
         // Arrange
         var response = PlayerFakes.MakeResponseModelForCreate();
         var squadNumber = response.Dorsal;
-        var (service, logger, validator) = PlayerMocks.InitControllerMocks();
+        var (service, logger, validator, searchValidator) = PlayerMocks.InitControllerMocks();
         service
             .Setup(service => service.RetrieveBySquadNumberAsync(squadNumber))
             .ReturnsAsync(response);
         service.Setup(service => service.DeleteAsync(squadNumber));
 
-        var controller = new PlayerController(service.Object, logger.Object, validator.Object);
+        var controller = new PlayerController(service.Object, logger.Object, validator.Object, searchValidator.Object);
 
         // Act
         var result = await controller.DeleteAsync(squadNumber);

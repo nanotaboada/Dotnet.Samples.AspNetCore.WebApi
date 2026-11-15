@@ -13,7 +13,8 @@ namespace Dotnet.Samples.AspNetCore.WebApi.Controllers;
 public class PlayerController(
     IPlayerService playerService,
     ILogger<PlayerController> logger,
-    IValidator<PlayerRequestModel> validator
+    IValidator<PlayerRequestModel> validator,
+    IValidator<PlayerSearchRequest> searchValidator
 ) : ControllerBase
 {
     private const string NotFoundTitle = "Not Found";
@@ -104,6 +105,68 @@ public class PlayerController(
         logger.LogInformation("GET /players retrieved {Count} player(s)", players.Count);
 
         return TypedResults.Ok(players);
+    }
+
+    /// <summary>
+    /// Searches and paginates Players
+    /// </summary>
+    /// <param name="request">Search and pagination parameters</param>
+    /// <param name="cancellationToken">
+    /// Indicates that the HTTP request was cancelled
+    /// </param>
+    /// <response code="200">OK</response>
+    /// <response code="422">Validation failed</response>
+    [HttpGet("search", Name = "SearchPlayers")]
+    [ProducesResponseType<PagedResponse<PlayerResponseModel>>(
+        StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(
+        StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IResult> SearchAsync(
+        [FromQuery] PlayerSearchRequest request,
+        CancellationToken cancellationToken)
+    {
+        var validation = await searchValidator.ValidateAsync(
+            request,
+            cancellationToken);
+
+        if (!validation.IsValid)
+        {
+            var errors = validation
+                .Errors
+                .GroupBy(error => error.PropertyName)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group
+                        .Select(error => error.ErrorMessage)
+                        .ToArray());
+
+            logger.LogWarning(
+                "GET /players/search validation failed: {@Errors}",
+                errors);
+
+            return TypedResults.Problem(
+                new HttpValidationProblemDetails(errors)
+                {
+                    Status =
+                        StatusCodes.Status422UnprocessableEntity,
+                    Detail =
+                        "See the errors field for details.",
+                    Instance =
+                        HttpContext?.Request?.Path.ToString(),
+                });
+        }
+
+        var result = await playerService.SearchAsync(
+            request,
+            cancellationToken);
+
+        logger.LogInformation(
+            "GET /players/search returned {Count} of " +
+            "{TotalCount} player(s)",
+            result.Items.Count,
+            result.TotalCount);
+
+        return TypedResults.Ok(result);
     }
 
     /// <summary>
